@@ -1,6 +1,8 @@
-const helpers = require("../../__helpers__");
+const jsonMerger = require("../../dist");
+const {testConfig} = require("../__helpers__");
 
 jest.mock("fs");
+const fs = require("fs");
 
 describe("when compiling an object containing an $import identifier it", function () {
 
@@ -18,9 +20,9 @@ describe("when compiling an object containing an $import identifier it", functio
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -39,9 +41,9 @@ describe("when compiling an object containing an $import identifier it", functio
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -64,9 +66,9 @@ describe("when compiling an object containing an $import identifier it", functio
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -79,9 +81,9 @@ describe("when compiling an object containing an $import identifier it", functio
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -100,11 +102,11 @@ describe("when compiling an object containing an $import identifier it", functio
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -119,19 +121,16 @@ describe("when compiling an object containing an $import identifier it", functio
                 }
             };
 
-            helpers.fromObject(object, {
+            jsonMerger.fromObject(object, testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$import"`),
-                expect.stringContaining(`at #/a/$import`),
-                expect.stringMatching(/The file ".*non_existing\.json" does not exist/)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$import"`);
+            expect(e.message).toMatch(`at #/a/$import`);
+            expect(e.message).toMatch(/The file ".*non_existing\.json" does not exist/);
         }
     });
 
@@ -156,21 +155,18 @@ describe("when compiling an object containing an $import identifier it", functio
                 }
             };
 
-            require("fs").__setJsonMockFiles(files);
+            fs.__setJsonMockFiles(files);
 
-            helpers.fromObject(object, {
+            jsonMerger.fromObject(object, testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$import"`),
-                expect.stringContaining(`at #/a/$import`),
-                expect.stringMatching(/The ref "\/a\/b\/nonExisting" does not exist/)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$import"`);
+            expect(e.message).toMatch(`at #/a/$import`);
+            expect(e.message).toMatch(/The ref "\/a\/b\/nonExisting" does not exist/);
         }
     });
 });

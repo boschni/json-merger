@@ -1,4 +1,5 @@
-const helpers = require("../../__helpers__");
+const jsonMerger = require("../../dist");
+const {testConfig} = require("../__helpers__");
 
 describe("when merging two arrays and the source item has", function () {
 
@@ -25,7 +26,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -54,7 +55,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -84,7 +85,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -118,7 +119,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -148,7 +149,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -178,7 +179,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -208,7 +209,7 @@ describe("when merging two arrays and the source item has", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -229,7 +230,7 @@ test("$move on a non array item should do nothing and be stripped", function () 
         }
     };
 
-    const result = helpers.mergeObjects([object1, object2]);
+    const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
     expect(result).toMatchSnapshot();
 });

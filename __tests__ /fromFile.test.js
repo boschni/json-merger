@@ -1,7 +1,8 @@
-const jsonMerger = require("..");
-const helpers = require("../__helpers__");
+const jsonMerger = require("../dist");
+const {testConfig} = require("./__helpers__");
 
 jest.mock("fs");
+const fs = require("fs");
 
 describe(".fromFile()", function () {
 
@@ -15,11 +16,11 @@ describe(".fromFile()", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromFile("a.json", {
+        const result = jsonMerger.fromFile("a.json", testConfig({
             stringify: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -34,7 +35,7 @@ describe(".fromFile()", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
         const result = jsonMerger.fromFile("/root/a.json");
 
@@ -51,20 +52,20 @@ describe(".fromFile()", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromFile("a.json", {
+        const result = jsonMerger.fromFile("a.json", testConfig({
             stringify: "pretty"
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
 
     test("should return undefined if the file does not exist and config.throwOnInvalidRef is false", function () {
 
-        const result = jsonMerger.fromFile("nonExisting.json", {
+        const result = jsonMerger.fromFile("nonExisting.json", testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toBe(undefined);
     });
@@ -73,17 +74,14 @@ describe(".fromFile()", function () {
 
         try {
 
-            jsonMerger.fromFile("nonExisting.json", {
+            jsonMerger.fromFile("nonExisting.json", testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringMatching(/The file ".*nonExisting\.json" does not exist/)
-            ]);
+            expect(e.message).toMatch(/The file ".*nonExisting\.json" does not exist/);
         }
     });
 });

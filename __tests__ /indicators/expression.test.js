@@ -1,4 +1,5 @@
-const helpers = require("../../__helpers__");
+const jsonMerger = require("../../dist");
+const {testConfig} = require("../__helpers__");
 
 describe("when merging two objects and a source property has an $expression indicator", function () {
 
@@ -18,7 +19,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -33,17 +34,14 @@ describe("when merging two objects and a source property has an $expression indi
                 }
             };
 
-            helpers.fromObject(object);
+            jsonMerger.fromObject(object, testConfig());
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$expression"`),
-                expect.stringContaining(`at #/a/$expression`),
-                expect.stringContaining(`Invalid or unexpected token`)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$expression"`);
+            expect(e.message).toMatch(`at #/a/$expression`);
+            expect(e.message).toMatch(`Invalid or unexpected token`);
         }
     });
 
@@ -63,7 +61,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -84,7 +82,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -102,7 +100,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -120,7 +118,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -140,7 +138,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -159,7 +157,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -180,7 +178,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });

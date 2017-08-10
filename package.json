@@ -2,11 +2,19 @@
   "name": "json-merger",
   "version": "1.0.0",
   "description": "Merge JSON files and objects with indicators like $import $remove $replace $merge etc",
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
     "json-merger": "./bin/json-merger-cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsc",
+    "clean": "rimraf ./dist",
+    "prebuild": "npm run clean",
+    "prepublish": "npm run test",
+    "pretest": "npm run build",
     "test": "jest"
   },
   "repository": {
@@ -39,6 +47,10 @@
     "safe-eval": "^0.3.0"
   },
   "devDependencies": {
-    "jest": "^20.0.4"
+    "@types/jsonpath": "^0.2.0",
+    "@types/node": "^8.0.20",
+    "jest": "^20.0.4",
+    "rimraf": "^2.6.1",
+    "typescript": "^2.4.2"
   }
 }

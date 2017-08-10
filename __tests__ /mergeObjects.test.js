@@ -1,4 +1,5 @@
-const helpers = require("../__helpers__");
+const jsonMerger = require("../dist");
+const {testConfig} = require("./__helpers__");
 
 describe(".mergeObjects() when merging two objects it", function () {
 
@@ -16,7 +17,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -31,7 +32,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             "1a": "overwrite"
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -48,7 +49,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             "1a": "overwrite"
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -63,7 +64,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             "1a": "overwrite"
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -80,7 +81,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             "1a": ["overwrite"]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -97,7 +98,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -114,7 +115,7 @@ describe(".mergeObjects() when merging two objects it", function () {
             ]
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -129,7 +130,7 @@ describe(".mergeObjects() when merging two objects it", function () {
 
         const object2 = "overwrite";
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -150,7 +151,7 @@ describe(".mergeObjects() when merging two objects it", function () {
 
         const objects = [object1, object2];
 
-        helpers.mergeObjects(objects);
+        jsonMerger.mergeObjects(objects);
 
         expect(objects).toMatchSnapshot();
     });
@@ -181,7 +182,7 @@ describe("when merging two arrays it", function () {
             }
         ];
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -203,7 +204,7 @@ describe("when merging two arrays it", function () {
             }
         ];
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -218,7 +219,7 @@ describe("when merging two arrays it", function () {
 
         const object2 = [];
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });

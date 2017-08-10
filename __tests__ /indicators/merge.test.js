@@ -1,4 +1,5 @@
-const helpers = require("../../__helpers__");
+const jsonMerger = require("../../dist");
+const {testConfig} = require("../__helpers__");
 
 describe("when merging two objects and a source property has a $merge indicator", function () {
 
@@ -23,7 +24,7 @@ describe("when merging two objects and a source property has a $merge indicator"
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -51,7 +52,7 @@ describe("when merging two objects and a source property has a $merge indicator"
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -79,7 +80,7 @@ describe("when merging two objects and a source property has a $merge indicator"
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -108,7 +109,7 @@ describe("when merging two objects and a source property has a $merge indicator"
             }
         };
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });

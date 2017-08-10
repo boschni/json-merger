@@ -1,4 +1,5 @@
-const helpers = require("../__helpers__");
+const jsonMerger = require("../dist");
+const {testConfig} = require("./__helpers__");
 
 describe(".fromObject() should process the object and return", function () {
 
@@ -11,9 +12,9 @@ describe(".fromObject() should process the object and return", function () {
             "$value": 2
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             indicatorPrefix: "@"
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -26,9 +27,9 @@ describe(".fromObject() should process the object and return", function () {
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             stringify: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -41,9 +42,9 @@ describe(".fromObject() should process the object and return", function () {
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             stringify: true
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -56,9 +57,9 @@ describe(".fromObject() should process the object and return", function () {
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             stringify: "pretty"
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });

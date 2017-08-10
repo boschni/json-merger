@@ -1,6 +1,8 @@
-const {Merger} = require("..");
+const {Merger} = require("../dist");
+const {testConfig} = require("./__helpers__");
 
 jest.mock("fs");
+const fs = require("fs");
 
 describe("Merger()", function () {
 
@@ -14,10 +16,9 @@ describe("Merger()", function () {
             }
         };
 
-        const fs = require("fs");
         fs.__setJsonMockFiles(files);
 
-        const merger = new Merger({stringify: true});
+        const merger = new Merger(testConfig());
         const result1 = merger.fromFile("a.json");
         const result2 = merger.fromFile("a.json");
 
@@ -34,11 +35,10 @@ describe("Merger()", function () {
             }
         };
 
-        const fs = require("fs");
         fs.readFileSync.mockClear();
         fs.__setJsonMockFiles(files);
 
-        const merger = new Merger();
+        const merger = new Merger(testConfig());
         merger.fromFile("a.json");
         merger.fromFile("a.json");
 
@@ -63,11 +63,10 @@ describe("Merger()", function () {
             }
         };
 
-        const fs = require("fs");
         fs.readFileSync.mockClear();
         fs.__setJsonMockFiles(files);
 
-        const merger = new Merger();
+        const merger = new Merger(testConfig());
         merger.fromFile("a.json");
 
         expect(fs.readFileSync).toHaveBeenCalledTimes(2);
@@ -86,11 +85,10 @@ describe("Merger()", function () {
             }
         };
 
-        const fs = require("fs");
         fs.readFileSync.mockClear();
         fs.__setJsonMockFiles(files);
 
-        const merger = new Merger();
+        const merger = new Merger(testConfig());
         merger.mergeFiles(["a.json", "b.json", "b.json"]);
 
         expect(fs.readFileSync).toHaveBeenCalledTimes(2);

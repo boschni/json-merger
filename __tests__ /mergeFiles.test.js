@@ -1,7 +1,8 @@
-const jsonMerger = require("..");
-const helpers = require("../__helpers__");
+const jsonMerger = require("../dist");
+const {testConfig} = require("./__helpers__");
 
 jest.mock("fs");
+const fs = require("fs");
 
 describe(".mergeFiles()", function () {
 
@@ -20,11 +21,11 @@ describe(".mergeFiles()", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.mergeFiles(["a.json", "b.json"], {
+        const result = jsonMerger.mergeFiles(["a.json", "b.json"], testConfig({
             stringify: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -42,11 +43,11 @@ describe(".mergeFiles()", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.mergeFiles(["a.json", "b.json", "b.json"], {
+        const result = jsonMerger.mergeFiles(["a.json", "b.json", "b.json"], testConfig({
             stringify: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -61,20 +62,20 @@ describe(".mergeFiles()", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.mergeFiles(["a.json"], {
+        const result = jsonMerger.mergeFiles(["a.json"], testConfig({
             stringify: "pretty"
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
 
     test("should return undefined if the file does not exist and config.throwOnInvalidRef is false", function () {
 
-        const result = jsonMerger.mergeFiles(["nonExisting.json"], {
+        const result = jsonMerger.mergeFiles(["nonExisting.json"], testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toBe(undefined);
     });
@@ -83,17 +84,14 @@ describe(".mergeFiles()", function () {
 
         try {
 
-            jsonMerger.mergeFiles(["nonExisting.json"], {
+            jsonMerger.mergeFiles(["nonExisting.json"], testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringMatching(/The file ".*nonExisting\.json" does not exist/)
-            ]);
+            expect(e.message).toMatch(/The file ".*nonExisting\.json" does not exist/);
         }
     });
 });

@@ -2,7 +2,7 @@
 
 var program = require("commander");
 var fs = require("fs");
-var jsonMerger = require("../json-merger");
+var jsonMerger = require("../dist");
 var packageJson = require("../package");
 
 // parse process arguments

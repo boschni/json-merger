@@ -1,6 +1,8 @@
-const helpers = require("../../__helpers__");
+const jsonMerger = require("../../dist");
+const {testConfig} = require("../__helpers__");
 
 jest.mock("fs");
+const fs = require("fs");
 
 describe("containing a local pointer", function () {
 
@@ -15,7 +17,7 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -31,7 +33,7 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -49,7 +51,7 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -68,7 +70,7 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -88,7 +90,7 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -109,9 +111,9 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -124,9 +126,9 @@ describe("containing a local pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -141,19 +143,16 @@ describe("containing a local pointer", function () {
                 }
             };
 
-            helpers.fromObject(object, {
+            jsonMerger.fromObject(object, testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$ref"`),
-                expect.stringContaining(`at #/a/$ref`),
-                expect.stringContaining(`The ref "/nonExisting" does not exist`)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$ref"`);
+            expect(e.message).toMatch(`at #/a/$ref`);
+            expect(e.message).toMatch(`The ref "/nonExisting" does not exist`);
         }
     });
 
@@ -174,20 +173,17 @@ describe("containing a local pointer", function () {
                 }
             };
 
-            helpers.fromObject(object, {
+            jsonMerger.fromObject(object, testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$ref"`),
-                expect.stringContaining(`at #/$ref`),
-                expect.stringContaining(`at #/a/$ref`),
-                expect.stringContaining(`The ref "/nonExisting" does not exist`)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$ref"`);
+            expect(e.message).toMatch(`at #/$ref`);
+            expect(e.message).toMatch(`at #/a/$ref`);
+            expect(e.message).toMatch(`The ref "/nonExisting" does not exist`);
         }
     });
 });
@@ -208,9 +204,9 @@ describe("containing a file pointer", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -229,9 +225,9 @@ describe("containing a file pointer", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object);
+        const result = jsonMerger.fromObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -265,9 +261,9 @@ describe("containing a file pointer", function () {
             ]
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.mergeObjects([object1, object2]);
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -282,9 +278,9 @@ describe("containing a file pointer", function () {
             }
         };
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -303,11 +299,11 @@ describe("containing a file pointer", function () {
             }
         };
 
-        require("fs").__setJsonMockFiles(files);
+        fs.__setJsonMockFiles(files);
 
-        const result = helpers.fromObject(object, {
+        const result = jsonMerger.fromObject(object, testConfig({
             throwOnInvalidRef: false
-        });
+        }));
 
         expect(result).toMatchSnapshot();
     });
@@ -322,19 +318,16 @@ describe("containing a file pointer", function () {
                 }
             };
 
-            helpers.fromObject(object, {
+            jsonMerger.fromObject(object, testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$ref"`),
-                expect.stringContaining(`at #/a/$ref`),
-                expect.stringMatching(/The file ".*non_existing\.json" does not exist/)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$ref"`);
+            expect(e.message).toMatch(`at #/a/$ref`);
+            expect(e.message).toMatch(/The file ".*non_existing\.json" does not exist/);
         }
     });
 
@@ -359,21 +352,18 @@ describe("containing a file pointer", function () {
                 }
             };
 
-            require("fs").__setJsonMockFiles(files);
+            fs.__setJsonMockFiles(files);
 
-            helpers.fromObject(object, {
+            jsonMerger.fromObject(object, testConfig({
                 throwOnInvalidRef: true
-            });
+            }));
 
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-
-            helpers.expectStringWithMatchers(e.message, [
-                expect.stringContaining(`An error occurred while processing the property "$ref"`),
-                expect.stringContaining(`at #/a/$ref`),
-                expect.stringMatching(/The ref "\/a\/b\/nonExisting" does not exist/)
-            ]);
+            expect(e.message).toMatch(`An error occurred while processing the property "$ref"`);
+            expect(e.message).toMatch(`at #/a/$ref`);
+            expect(e.message).toMatch(/The ref "\/a\/b\/nonExisting" does not exist/);
         }
     });
 });
