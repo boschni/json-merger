@@ -1,5 +1,6 @@
 .DS_Store
 /.idea
+/dist
 /node_modules
 /npm-debug.log
 Thumbs.db
