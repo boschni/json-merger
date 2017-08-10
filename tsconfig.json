@@ -12,8 +12,8 @@
     "target": "ES5"
   },
   "include": [
-    "index.ts",
-    "modules.d.ts"
+    "./src/index.ts",
+    "./src/modules.d.ts"
   ],
   "exclude": [
     "node_modules"

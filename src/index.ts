@@ -1,5 +1,5 @@
-import Merger, {JsonObject} from "./src/Merger";
-import {Config} from "./src/config";
+import Merger, {JsonObject} from "./Merger";
+import {Config} from "./config";
 
 export function fromObject(object: JsonObject, config?: Config) {
     const merger = new Merger(config);
