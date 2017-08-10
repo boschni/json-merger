@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.fromFile() should be able to load an absolute path 1`] = `
+Object {
+  "a": 10,
+}
+`;
+
+exports[`.fromFile() should process a file if it exists and return the processed object if config.stringify is false 1`] = `
+Object {
+  "a": 10,
+}
+`;
+
+exports[`.fromFile() should return a pretty JSON string if config.stringify is 'pretty' 1`] = `
+"{
+	\\"a\\": 10
+}"
+`;

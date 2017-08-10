@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`containing a file pointer TODO: what should happen here? 1`] = `
+"{
+	\\"a\\": [
+		null,
+		2,
+		3,
+		5
+	]
+}"
+`;
+
+exports[`containing a file pointer should resolve to the uncompiled file 1`] = `
+"{
+	\\"a\\": {
+		\\"b\\": 100
+	}
+}"
+`;
+
+exports[`containing a file pointer should resolve to the uncompiled file and return the referenced value if also a pointer is given 1`] = `
+"{
+	\\"a\\": 100
+}"
+`;
+
+exports[`containing a file pointer should resolve to undefined if the file does exist but the pointer does not and options.throwOnInvalidRef is false 1`] = `"{}"`;
+
+exports[`containing a file pointer should resolve to undefined if the file does not exist and options.throwOnInvalidRef is false 1`] = `
+"{
+	\\"a\\": {}
+}"
+`;
+
+exports[`containing a local pointer should also resolve to the referenced value if the pointer begins with a fragment identifier 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": 10
+	},
+	\\"b\\": {
+		\\"aa\\": 10
+	}
+}"
+`;
+
+exports[`containing a local pointer should compile the result of the reference in the context of $ref 1`] = `
+"{
+	\\"a\\": {
+		\\"$ref\\": \\"/c\\"
+	},
+	\\"b\\": {
+		\\"$ref\\": \\"/c\\"
+	}
+}"
+`;
+
+exports[`containing a local pointer should not resolve a deep path containing a $ref 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": 10
+	},
+	\\"b\\": {
+		\\"bb\\": {
+			\\"aa\\": 10
+		}
+	}
+}"
+`;
+
+exports[`containing a local pointer should resolve a deep path 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": [
+			1,
+			2,
+			3
+		]
+	},
+	\\"b\\": 3
+}"
+`;
+
+exports[`containing a local pointer should resolve to the referenced value 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": 10
+	},
+	\\"b\\": {
+		\\"aa\\": 10
+	}
+}"
+`;
+
+exports[`containing a local pointer should resolve to the uncompiled referenced value 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": 10
+	},
+	\\"b\\": 10
+}"
+`;
+
+exports[`containing a local pointer should resolve to undefined if it does not exist and options.throwOnInvalidRef is false 1`] = `"{}"`;

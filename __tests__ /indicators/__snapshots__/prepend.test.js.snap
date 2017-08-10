@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`$prepend on a non array item should do nothing and be stripped 1`] = `
+"{
+	\\"1a\\": {
+		\\"1aa\\": 1
+	},
+	\\"2b\\": {
+		\\"2bb\\": 2
+	}
+}"
+`;
+
+exports[`when merging two arrays and the source item has $prepend and an other item also has $prepend it should prepend them in the order they are defined 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"bb\\": \\"prepend 1\\"
+		},
+		{
+			\\"cc\\": \\"prepend 2\\"
+		},
+		{
+			\\"aa\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $prepend it should prepend the source array item 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"bb\\": \\"prepend\\"
+		},
+		{
+			\\"aa\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $prepend it should prepend the source array item even if there is an $index indicator with index: 0 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"bb\\": \\"prepend\\"
+		},
+		{
+			\\"cc\\": \\"insert\\"
+		},
+		{
+			\\"aa\\": \\"string\\"
+		}
+	]
+}"
+`;

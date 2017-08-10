@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two arrays and a source property has a $remove indicator it should remove the item 1`] = `
+"{
+	\\"a\\": [
+		2,
+		3
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $remove indicator it should remove the property 1`] = `
+"{
+	\\"a\\": {}
+}"
+`;

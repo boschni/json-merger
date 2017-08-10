@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.mergeObjects() when merging two objects it should add properties if they do not exist on the target 1`] = `
+"{
+	\\"1a\\": {
+		\\"1aa\\": 1
+	},
+	\\"2b\\": {
+		\\"2bb\\": 2
+	}
+}"
+`;
+
+exports[`.mergeObjects() when merging two objects it should not mutate any of the input objects 1`] = `
+Array [
+  Object {
+    "1a": Object {
+      "1aa": 1,
+    },
+  },
+  Object {
+    "2b": Object {
+      "2bb": 2,
+    },
+  },
+]
+`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite a primitive property value if the source property value is a primitive 1`] = `
+"{
+	\\"1a\\": \\"overwrite\\"
+}"
+`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite a string property value if the source property value is an array 1`] = `
+"{
+	\\"1a\\": [
+		\\"overwrite\\"
+	]
+}"
+`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite a string property value if the source property value is an object 1`] = `
+"{
+	\\"1a\\": {
+		\\"1aa\\": \\"overwrite\\"
+	}
+}"
+`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite an array property value if the source property value is a primitive 1`] = `
+"{
+	\\"1a\\": \\"overwrite\\"
+}"
+`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite an object if the source is a primitive 1`] = `"\\"overwrite\\""`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite an object property value if the source property value is a primitive 1`] = `
+"{
+	\\"1a\\": \\"overwrite\\"
+}"
+`;
+
+exports[`.mergeObjects() when merging two objects it should overwrite an object property value if the source property value is an array 1`] = `
+"{
+	\\"1a\\": [
+		\\"overwrite\\"
+	]
+}"
+`;
+
+exports[`when merging two arrays it should add items if the source array has more items 1`] = `
+"[
+	{
+		\\"1a\\": \\"1a\\",
+		\\"2a\\": \\"2a\\"
+	},
+	{
+		\\"2b\\": \\"2b\\"
+	}
+]"
+`;
+
+exports[`when merging two arrays it should merge items on matching index 1`] = `
+"[
+	{
+		\\"1a\\": \\"1a\\",
+		\\"2a\\": \\"2a\\"
+	},
+	{
+		\\"1b\\": \\"1b\\",
+		\\"2b\\": \\"2b\\"
+	},
+	{
+		\\"1c\\": \\"1c\\"
+	}
+]"
+`;
+
+exports[`when merging two arrays it should not modify the array if the source array is empty 1`] = `
+"[
+	{
+		\\"1a\\": \\"1a\\"
+	}
+]"
+`;

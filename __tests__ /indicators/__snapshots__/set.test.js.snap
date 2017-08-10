@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two objects and a source property has a $set indicator containing an array it should set all properties defined in $set: [{key,value},{key,value}] 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"$value\\": true,
+		\\"$remove\\": true
+	}
+}"
+`;
+
+exports[`when merging two objects and a source property has a $set indicator containing an object it should set a property with $set.key as key and $set.value as value 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"$value\\": true
+	}
+}"
+`;
+
+exports[`when merging two objects and a source property has a $set indicator it should process the value property in $set 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"one\\",
+		\\"$value\\": \\"two\\"
+	}
+}"
+`;

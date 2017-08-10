@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`$move on a non array item should do nothing and be stripped 1`] = `
+"{
+	\\"1a\\": {
+		\\"1aa\\": 1
+	},
+	\\"2b\\": {
+		\\"2bb\\": 2
+	}
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: - it should merge and append the target array item matching the source array item index 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"string\\"
+		},
+		{
+			\\"a3\\": \\"string\\"
+		},
+		{
+			\\"a1\\": \\"string\\",
+			\\"a11\\": \\"append\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: -1 it should merge and insert the target array item matching the source array item index before the last item 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"string\\"
+		},
+		{
+			\\"a1\\": \\"insert at index 1\\"
+		},
+		{
+			\\"a3\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: 0 it should merge and prepend the target array item matching the source array item index 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"move to index 0\\"
+		},
+		{
+			\\"a1\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: 0 it should prepend the source array item if no matching target array item found 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"b1\\": \\"move to index 0\\"
+		},
+		{
+			\\"a1\\": \\"string\\"
+		},
+		{
+			\\"a2\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: 1 it should merge and insert the target array item matching the source array item index at index 1 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"string\\"
+		},
+		{
+			\\"a1\\": \\"move to index 1\\"
+		},
+		{
+			\\"a3\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: 2 it should merge and insert the target array item matching the source array item index (not including insert items) at index 3 because an other item has been prepended 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"b1\\": \\"insert at index 0\\"
+		},
+		{
+			\\"a2\\": \\"string\\"
+		},
+		{
+			\\"a3\\": \\"string\\"
+		},
+		{
+			\\"a1\\": \\"move to index 3\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: 99 it should merge and append the target array item matching the source array item index 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"string\\"
+		},
+		{
+			\\"a3\\": \\"string\\"
+		},
+		{
+			\\"a1\\": \\"string\\",
+			\\"a11\\": \\"append\\"
+		}
+	]
+}"
+`;

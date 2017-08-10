@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two objects and a source property has a $replace indicator and a $merge indicator it should not merge the source property but replace it with the $merge result 1`] = `
+"{
+	\\"a\\": {
+		\\"bb\\": \\"replaced\\"
+	}
+}"
+`;
+
+exports[`when merging two objects and a source property has a $replace indicator and a $ref indicator it should not merge the source property but replace it with the $ref result 1`] = `
+"{
+	\\"a\\": {
+		\\"bb\\": \\"replaced\\"
+	},
+	\\"b\\": {
+		\\"bb\\": \\"replaced\\"
+	}
+}"
+`;
+
+exports[`when merging two objects and a source property has a $replace indicator and a $value indicator it should not merge the source property but replace it with the $value result 1`] = `
+"{
+	\\"a\\": {
+		\\"bb\\": \\"replaced\\"
+	}
+}"
+`;
+
+exports[`when merging two objects and a source property has a $replace indicator it should not merge the source property but replace it 1`] = `
+"{
+	\\"a\\": {
+		\\"bb\\": \\"replaced\\"
+	}
+}"
+`;

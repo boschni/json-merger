@@ -1,0 +1,44 @@
+{
+  "name": "json-merger",
+  "version": "1.0.0",
+  "description": "Merge JSON files and objects with indicators like $import $remove $replace $merge etc",
+  "main": "index.js",
+  "bin": {
+    "json-merger": "./bin/json-merger-cli.js"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boschni/json-merger.git"
+  },
+  "keywords": [
+    "JSON",
+    "merge",
+    "patch",
+    "extend",
+    "override",
+    "remove",
+    "replace",
+    "import",
+    "ref",
+    "append",
+    "prepend"
+  ],
+  "author": "Niek Bosch <just.niek@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/boschni/json-merger/issues"
+  },
+  "homepage": "https://github.com/boschni/json-merger#readme",
+  "dependencies": {
+    "commander": "^2.11.0",
+    "json-ptr": "^1.0.1",
+    "jsonpath": "^0.2.12",
+    "safe-eval": "^0.3.0"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
+}
