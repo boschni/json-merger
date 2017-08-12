@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`when merging two objects and a source property has a $merge indicator it should compile the $merge.source property before being merged with the $merge.with property 1`] = `
+exports[`when merging two objects and a source property has a $merge indicator it should process the $merge.source property before being merged with the $merge.with property 1`] = `
 "{
 	\\"a\\": {
 		\\"aa\\": \\"original\\",
@@ -10,7 +10,7 @@ exports[`when merging two objects and a source property has a $merge indicator i
 }"
 `;
 
-exports[`when merging two objects and a source property has a $merge indicator it should compile the $merge.with property before merging with the $merge.source property 1`] = `
+exports[`when merging two objects and a source property has a $merge indicator it should process the $merge.with property before merging with the $merge.source property 1`] = `
 "{
 	\\"a\\": {
 		\\"aa\\": \\"original\\",
@@ -29,11 +29,13 @@ exports[`when merging two objects and a source property has a $merge indicator i
 }"
 `;
 
-exports[`when merging two objects and a source property has a $merge indicator it should not compile the $merge result before merging with the target 1`] = `
+exports[`when merging two objects and a source property has a $merge indicator it should not process the $merge result before merging with the target 1`] = `
 "{
 	\\"a\\": {
 		\\"aa\\": \\"original\\",
-		\\"$value\\": \\"source\\",
+		\\"$replace\\": {
+			\\"with\\": \\"source\\"
+		},
 		\\"bb\\": \\"with\\"
 	}
 }"

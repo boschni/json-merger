@@ -11,7 +11,9 @@ describe(".fromFile()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };
@@ -30,7 +32,9 @@ describe(".fromFile()", function () {
         const files = {
             "/root/a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };
@@ -47,7 +51,9 @@ describe(".fromFile()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };

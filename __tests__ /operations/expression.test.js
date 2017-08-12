@@ -50,7 +50,9 @@ describe("when merging two objects and a source property has an $expression indi
         const object1 = {
             "a": {
                 "aa": {
-                    "$value": "original"
+                    "$replace": {
+                        "with": "original"
+                    }
                 }
             }
         };
@@ -71,7 +73,9 @@ describe("when merging two objects and a source property has an $expression indi
         const object1 = {
             "a": {
                 "aa": {
-                    "$value": "original"
+                    "$replace": {
+                        "with": "original"
+                    }
                 }
             }
         };
@@ -95,8 +99,10 @@ describe("when merging two objects and a source property has an $expression indi
 
         const object2 = {
             "a": {
-                "$expression": "$source['$value'] === 'original' ? 'is original' : 'is not original'",
-                "$value": "original"
+                "$expression": "$source.$comment.content === 'original' ? 'is original' : 'is not original'",
+                "$comment": {
+                    "content": "original"
+                }
             }
         };
 
@@ -113,8 +119,10 @@ describe("when merging two objects and a source property has an $expression indi
 
         const object2 = {
             "a": {
-                "$expression": "$sourceRoot.aa['$value'] === 'original' ? 'is original' : 'is not original'",
-                "$value": "original"
+                "$expression": "$sourceRoot.a.$comment.content === 'original' ? 'is original' : 'is not original'",
+                "$comment": {
+                    "content": "original"
+                }
             }
         };
 
@@ -128,7 +136,11 @@ describe("when merging two objects and a source property has an $expression indi
         const object = {
             "$merge": {
                 "source": {
-                    "a": "original"
+                    "a": {
+                        "$replace": {
+                            "with": "original"
+                        }
+                    }
                 },
                 "with": {
                     "isOriginal": {

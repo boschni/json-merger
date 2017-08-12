@@ -6,12 +6,14 @@ const fs = require("fs");
 
 describe("Merger()", function () {
 
-    test("should return the same result when compiling the same file twice", function () {
+    test("should return the same result when processing the same file twice", function () {
 
         const files = {
             "a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };
@@ -30,7 +32,9 @@ describe("Merger()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };
@@ -58,7 +62,9 @@ describe("Merger()", function () {
             },
             "b.json": {
                 "b": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };
@@ -92,5 +98,58 @@ describe("Merger()", function () {
         merger.mergeFiles(["a.json", "b.json", "b.json"]);
 
         expect(fs.readFileSync).toHaveBeenCalledTimes(2);
+    });
+
+    describe(".addFile()", function () {
+
+        test("should add a file so sources can reference it", function () {
+
+            const aJson = {
+                "a": 10
+            };
+
+            const files = {
+                "b.json": {
+                    "a": {
+                        "$expression": "$target + 10"
+                    }
+                }
+            };
+
+            fs.readFileSync.mockClear();
+            fs.__setJsonMockFiles(files);
+
+            const merger = new Merger(testConfig());
+            merger.addFile("a.json", aJson);
+            const result = merger.mergeFiles(["a.json", "b.json", "b.json"]);
+
+            expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+            expect(result).toMatchSnapshot();
+        });
+
+        test("should also work with URLs", function () {
+
+            const aJson = {
+                "a": 10
+            };
+
+            const files = {
+                "b.json": {
+                    "a": {
+                        "$expression": "$target + 10"
+                    }
+                }
+            };
+
+            fs.readFileSync.mockClear();
+            fs.__setJsonMockFiles(files);
+
+            const merger = new Merger(testConfig());
+            merger.addFile("http://example.com/a.json", aJson);
+            const result = merger.mergeFiles(["http://example.com/a.json", "b.json", "b.json"]);
+
+            expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+            expect(result).toMatchSnapshot();
+        });
     });
 });

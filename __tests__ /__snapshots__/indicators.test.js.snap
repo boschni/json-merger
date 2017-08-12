@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two objects it should be possible to escape an indicator but the value should be processed 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"$replace\\": {
+			\\"with\\": \\"not replaced\\"
+		}
+	}
+}"
+`;
+
+exports[`when merging two objects it should be possible to escape an indicator with an additional prefix character 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"$replace\\": {
+			\\"with\\": \\"not replaced\\"
+		}
+	}
+}"
+`;
+
+exports[`when merging two objects it should merge non-operation properties starting with the indicator prefix 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"$$noOperation\\": true
+	}
+}"
+`;

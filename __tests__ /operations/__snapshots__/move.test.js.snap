@@ -5,9 +5,7 @@ exports[`$move on a non array item should do nothing and be stripped 1`] = `
 	\\"1a\\": {
 		\\"1aa\\": 1
 	},
-	\\"2b\\": {
-		\\"2bb\\": 2
-	}
+	\\"2b\\": {}
 }"
 `;
 

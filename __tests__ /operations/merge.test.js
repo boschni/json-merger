@@ -29,7 +29,7 @@ describe("when merging two objects and a source property has a $merge indicator"
         expect(result).toMatchSnapshot();
     });
 
-    test("it should compile the $merge.source property before being merged with the $merge.with property", function () {
+    test("it should process the $merge.source property before being merged with the $merge.with property", function () {
 
         const object1 = {
             "a": {
@@ -42,7 +42,9 @@ describe("when merging two objects and a source property has a $merge indicator"
                 "$merge": {
                     "source": {
                         "ba": {
-                            "$value": "source"
+                            "$replace": {
+                                "with": "source"
+                            }
                         }
                     },
                     "with": {
@@ -57,7 +59,7 @@ describe("when merging two objects and a source property has a $merge indicator"
         expect(result).toMatchSnapshot();
     });
 
-    test("it should compile the $merge.with property before merging with the $merge.source property", function () {
+    test("it should process the $merge.with property before merging with the $merge.source property", function () {
 
         const object1 = {
             "a": {
@@ -73,7 +75,9 @@ describe("when merging two objects and a source property has a $merge indicator"
                     },
                     "with": {
                         "bb": {
-                            "$value": "with"
+                            "$replace": {
+                                "with": "with"
+                            }
                         }
                     }
                 }
@@ -85,7 +89,7 @@ describe("when merging two objects and a source property has a $merge indicator"
         expect(result).toMatchSnapshot();
     });
 
-    test("it should not compile the $merge result before merging with the target", function () {
+    test("it should not process the $merge result before merging with the target", function () {
 
         const object1 = {
             "a": {
@@ -97,9 +101,8 @@ describe("when merging two objects and a source property has a $merge indicator"
             "a": {
                 "$merge": {
                     "source": {
-                        "$set": {
-                            "key": "$value",
-                            "value": "source"
+                        "$$replace": {
+                            "with": "source"
                         }
                     },
                     "with": {

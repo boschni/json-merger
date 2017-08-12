@@ -38,16 +38,18 @@ describe("containing a local pointer", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("should resolve to the uncompiled referenced value", function () {
+    test("should resolve to the unprocessed referenced value", function () {
 
         const object = {
             "a": {
-                "$value": {
-                    "aa": 10
+                "$replace": {
+                    "with": {
+                        "aa": 10
+                    }
                 }
             },
             "b": {
-                "$ref": "/a/$value/aa"
+                "$ref": "/a/$replace/with/aa"
             }
         };
 
@@ -56,14 +58,11 @@ describe("containing a local pointer", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("should compile the result of the reference in the context of $ref", function () {
+    test("should process the result of the reference in the context of $ref", function () {
 
         const object = {
             "a": {
-                "$set": {
-                    "key": "$ref",
-                    "value": "/c"
-                }
+                "$$ref": "/c"
             },
             "b": {
                 "$ref": "/a"
@@ -190,7 +189,7 @@ describe("containing a local pointer", function () {
 
 describe("containing a file pointer", function () {
 
-    test("should resolve to the uncompiled file", function () {
+    test("should resolve to the unprocessed file", function () {
 
         const files = {
             "a.json": {
@@ -211,7 +210,7 @@ describe("containing a file pointer", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("should resolve to the uncompiled file and return the referenced value if also a pointer is given", function () {
+    test("should resolve to the unprocessed file and return the referenced value if also a pointer is given", function () {
 
         const files = {
             "a.json": {
@@ -232,31 +231,28 @@ describe("containing a file pointer", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("TODO: what should happen here?", function () {
+    test("and used in an source array item it should merge the $ref result with the target", function () {
 
         const files = {
-            "removeSecondItem.json": {
-                "$match": "$[1]",
-                "$remove": true
+            "a.json": {
+                "$replace": {
+                    "with": "replaced"
+                }
             }
         };
 
         const object1 = {
             "a": [
-                1,
-                2,
-                3
+                {
+                    "a": 1
+                }
             ]
         };
 
         const object2 = {
             "a": [
                 {
-                    "$ref": "removeSecondItem.json"
-                },
-                {
-                    "$append": true,
-                    "$value": 5
+                    "$ref": "a.json"
                 }
             ]
         };

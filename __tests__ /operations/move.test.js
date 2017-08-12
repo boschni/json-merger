@@ -20,8 +20,12 @@ describe("when merging two arrays and the source item has", function () {
             "a": [
                 {},
                 {
-                    "$move": 0,
-                    "a2": "move to index 0"
+                    "$move": {
+                        "index": 0,
+                        "value": {
+                            "a2": "move to index 0"
+                        }
+                    }
                 }
             ]
         };
@@ -49,8 +53,12 @@ describe("when merging two arrays and the source item has", function () {
                 {},
                 {},
                 {
-                    "$move": 0,
-                    "b1": "move to index 0"
+                    "$move": {
+                        "index": 0,
+                        "value": {
+                            "b1": "move to index 0"
+                        }
+                    }
                 }
             ]
         };
@@ -79,8 +87,12 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$move": 1,
-                    "a1": "move to index 1"
+                    "$move": {
+                        "index": 1,
+                        "value": {
+                            "a1": "move to index 1"
+                        }
+                    }
                 }
             ]
         };
@@ -109,12 +121,20 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$insert": 0,
-                    "b1": "insert at index 0"
+                    "$insert": {
+                        "index": 0,
+                        "value": {
+                            "b1": "insert at index 0"
+                        }
+                    }
                 },
                 {
-                    "$move": 2,
-                    "a1": "move to index 3"
+                    "$move": {
+                        "index": 2,
+                        "value": {
+                            "a1": "move to index 3"
+                        }
+                    }
                 }
             ]
         };
@@ -143,8 +163,12 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$move": -1,
-                    "a1": "insert at index 1"
+                    "$move": {
+                        "index": -1,
+                        "value": {
+                            "a1": "insert at index 1"
+                        }
+                    }
                 }
             ]
         };
@@ -173,8 +197,12 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$move": 99,
-                    "a11": "append"
+                    "$move": {
+                        "index": 99,
+                        "value": {
+                            "a11": "append"
+                        }
+                    }
                 }
             ]
         };
@@ -203,8 +231,12 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$move": "-",
-                    "a11": "append"
+                    "$move": {
+                        "index": "-",
+                        "value": {
+                            "a11": "append"
+                        }
+                    }
                 }
             ]
         };
@@ -225,8 +257,12 @@ test("$move on a non array item should do nothing and be stripped", function () 
 
     const object2 = {
         "2b": {
-            "$move": 1,
-            "2bb": 2
+            "$move": {
+                "index": 1,
+                "value": {
+                    "2bb": 2
+                }
+            }
         }
     };
 

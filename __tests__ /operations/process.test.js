@@ -1,9 +1,9 @@
 const jsonMerger = require("../../dist");
 const {testConfig} = require("../__helpers__");
 
-describe("when merging two objects and a source property has a $compile indicator", function () {
+describe("when merging two objects and a source property has a $process indicator", function () {
 
-    test("it should compile the $compile property and then compile/merge the result with the target", function () {
+    test("it should process the $process property and then process/merge the result with the target", function () {
 
         const object1 = {
             "a": {
@@ -13,10 +13,9 @@ describe("when merging two objects and a source property has a $compile indicato
 
         const object2 = {
             "a": {
-                "$compile": {
-                    "$set": {
-                        "key": "$value",
-                        "value": "replaced"
+                "$process": {
+                    "$$replace": {
+                        "with": "replaced"
                     }
                 }
             }
@@ -27,17 +26,14 @@ describe("when merging two objects and a source property has a $compile indicato
         expect(result).toMatchSnapshot();
     });
 
-    test("it should use the $compile property result as $sourceRoot when compiling/merging with the target", function () {
+    test("it should use the $process property result as $sourceRoot when processing/merging with the target", function () {
 
         const object = {
-            "$compile": {
+            "$process": {
                 "$merge": {
                     "source": {
                         "a": {
-                            "$set": {
-                                "key": "$expression",
-                                "value": "$sourceRoot.b"
-                            }
+                            "$$expression": "$sourceRoot.b"
                         }
                     },
                     "with": {

@@ -1,9 +1,9 @@
 const jsonMerger = require("../../dist");
 const {testConfig} = require("../__helpers__");
 
-describe("when merging two arrays and the source item has", function () {
+describe("when merging two arrays and a source item has $append", function () {
 
-    test("$prepend it should prepend the source array item", function () {
+    test("it should append the source array item to the target array", function () {
 
         const object1 = {
             "a": [
@@ -16,8 +16,11 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$prepend": true,
-                    "bb": "prepend"
+                    "$append": {
+                        "value": {
+                            "bb": "append"
+                        }
+                    }
                 }
             ]
         };
@@ -27,7 +30,7 @@ describe("when merging two arrays and the source item has", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("$prepend and an other item also has $prepend it should prepend them in the order they are defined", function () {
+    test("it should process the $append.value property before appending it to the target array", function () {
 
         const object1 = {
             "a": [
@@ -40,12 +43,12 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$prepend": true,
-                    "bb": "prepend 1"
-                },
-                {
-                    "$prepend": true,
-                    "cc": "prepend 2"
+                    "$append": {
+                        "value": {
+                            "$comment": "this should be stripped",
+                            "bb": "append"
+                        }
+                    }
                 }
             ]
         };
@@ -55,7 +58,7 @@ describe("when merging two arrays and the source item has", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("$prepend it should prepend the source array item even if there is an $index indicator with index: 0", function () {
+    test("and an other item also has $append it should append them in the order they are defined", function () {
 
         const object1 = {
             "a": [
@@ -68,12 +71,18 @@ describe("when merging two arrays and the source item has", function () {
         const object2 = {
             "a": [
                 {
-                    "$prepend": true,
-                    "bb": "prepend"
+                    "$append": {
+                        "value": {
+                            "bb": "append 1"
+                        }
+                    }
                 },
                 {
-                    "$insert": 0,
-                    "cc": "insert"
+                    "$append": {
+                        "value": {
+                            "cc": "append 2"
+                        }
+                    }
                 }
             ]
         };
@@ -84,7 +93,7 @@ describe("when merging two arrays and the source item has", function () {
     });
 });
 
-test("$prepend on a non array item should do nothing and be stripped", function () {
+test("$append on a non array item should do nothing and be stripped", function () {
 
     const object1 = {
         "1a": {
@@ -94,8 +103,11 @@ test("$prepend on a non array item should do nothing and be stripped", function 
 
     const object2 = {
         "2b": {
-            "$prepend": true,
-            "2bb": 2
+            "$append": {
+                "value": {
+                    "2bb": 2
+                }
+            }
         }
     };
 

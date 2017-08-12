@@ -4,7 +4,7 @@ const {testConfig} = require("../__helpers__");
 jest.mock("fs");
 const fs = require("fs");
 
-describe("when compiling an object containing an $import identifier it", function () {
+describe("when processing an object containing an $import identifier it", function () {
 
     test("should resolve to the file defined in the $import property", function () {
 
@@ -27,11 +27,13 @@ describe("when compiling an object containing an $import identifier it", functio
         expect(result).toMatchSnapshot();
     });
 
-    test("should resolve to the compiled file", function () {
+    test("should resolve to the processed file", function () {
 
         const files = {
             "a.json": {
-                "$value": "compiled"
+                "$replace": {
+                    "with": "processed"
+                }
             }
         };
 
@@ -48,13 +50,15 @@ describe("when compiling an object containing an $import identifier it", functio
         expect(result).toMatchSnapshot();
     });
 
-    test("should resolve to a property in the compiled file if also a json pointer is given", function () {
+    test("should resolve to a property in the processed file if also a json pointer is given", function () {
 
         const files = {
             "a.json": {
                 "b": {
                     "bb": {
-                        "$value": "compiled"
+                        "$replace": {
+                            "with": "processed"
+                        }
                     }
                 }
             }

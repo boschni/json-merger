@@ -32,13 +32,13 @@ exports[`when merging two objects and a source property has an $expression indic
 
 exports[`when merging two objects and a source property has an $expression indicator then the expression should have a local property named '$source' referring to the unprocessed source property 1`] = `
 "{
-	\\"a\\": \\"original\\"
+	\\"a\\": \\"is original\\"
 }"
 `;
 
 exports[`when merging two objects and a source property has an $expression indicator then the expression should have a local property named '$sourceRoot' referring to the unprocessed source root 1`] = `
 "{
-	\\"a\\": \\"original\\"
+	\\"a\\": \\"is original\\"
 }"
 `;
 

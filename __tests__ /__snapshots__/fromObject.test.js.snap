@@ -11,7 +11,9 @@ exports[`.fromObject() should process the object and return a pretty JSON string
 exports[`.fromObject() should process the object and return the processed object if config.indicatorPrefix is @ 1`] = `
 "{
 	\\"a\\": 1,
-	\\"$value\\": 2
+	\\"$replace\\": {
+		\\"with\\": 2
+	}
 }"
 `;
 

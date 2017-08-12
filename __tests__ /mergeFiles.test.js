@@ -11,12 +11,16 @@ describe(".mergeFiles()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             },
             "b.json": {
                 "b": {
-                    "$value": 20
+                    "$replace": {
+                        "with": 20
+                    }
                 }
             }
         };
@@ -57,7 +61,9 @@ describe(".mergeFiles()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$value": 10
+                    "$replace": {
+                        "with": 10
+                    }
                 }
             }
         };

@@ -1,57 +1,90 @@
+import * as path from "path";
 import {NormalizedConfig} from "./config";
 
 export default class Context {
 
-    config: NormalizedConfig;
-    sourceStack: Source[];
     currentSource?: Source;
-    indicators: IndicatorMap;
-    allIndicators: IndicatorMap;
-    indicatorsArray: string[];
-    allIndicatorsArray: string[];
+    sourceStack: Source[] = [];
+
+    private config: NormalizedConfig;
+    private operationTypeValues: number[];
+    private operationTypeIndicatorMap: OperationTypeIndicatorMap;
+    private indicatorOperationTypeMap: IndicatorOperationTypeMap;
+    private operationsEnabled = true;
 
     constructor(config: NormalizedConfig) {
         this.config = config;
-        this.sourceStack = [];
-        this.currentSource = undefined;
-        this.allIndicators = this.createIndicatorMap(this.config.indicatorPrefix);
-        this.allIndicatorsArray = Object
-            .keys(this.allIndicators)
-            .map((key: keyof IndicatorMap) => this.allIndicators[key]);
-        this.indicators = this.allIndicators;
-        this.indicatorsArray = this.allIndicatorsArray;
+        this.operationTypeValues = this._getOperationsTypeValues();
+        this.operationTypeIndicatorMap = this._getOperationTypeIndicatorMap(this.config.indicatorPrefix);
+        this.indicatorOperationTypeMap = this._getIndicatorOperationTypeMap(this.operationTypeIndicatorMap);
     }
 
-    createIndicatorMap(prefix: string): IndicatorMap {
-        const indicators = {
-            Append: "append",
-            Comment: "comment",
-            Compile: "compile",
-            Expression: "expression",
-            Id: "id",
-            Import: "import",
-            Insert: "insert",
-            Match: "match",
-            Merge: "merge",
-            Move: "move",
-            Prepend: "prepend",
-            Ref: "ref",
-            Remove: "remove",
-            Replace: "replace",
-            Set: "set",
-            Value: "value"
-        };
-
-        const indicatorMap: IndicatorMap = {};
-
-        Object.keys(indicators).map((key: keyof IndicatorMap) => {
-            indicatorMap[key] = prefix + indicators[key];
-        });
-
-        return indicatorMap;
+    private _getOperationsTypeValues(): number[] {
+        return Object.keys(OperationType)
+            .map(key => OperationType[key as any])
+            .filter(value => typeof value === "number") as any as number[];
     }
 
-    enterSource(filePath?: string, targetRoot?: any, sourceRoot?: any) {
+    private _getOperationTypeIndicatorMap(prefix: string): OperationTypeIndicatorMap {
+        return Object.keys(OperationType)
+            .filter(key => typeof key === "string")
+            .reduce((result, key) => {
+                result[OperationType[key as any] as any] = prefix + key.toLowerCase();
+                return result;
+            }, {} as OperationTypeIndicatorMap);
+    }
+
+    private _getIndicatorOperationTypeMap(obj: OperationTypeIndicatorMap): IndicatorOperationTypeMap {
+        return Object.keys(obj)
+            .reduce((result, key) => {
+                result[obj[Number(key)]] = Number(key);
+                return result;
+            }, {} as IndicatorOperationTypeMap);
+    }
+
+    getOperation(source: any): Operation | undefined {
+        if (source === undefined || !this.operationsEnabled) {
+            return;
+        }
+        for (let i = 0; i < this.operationTypeValues.length; i++) {
+            const type = this.operationTypeValues[i];
+            const indicator = this.operationTypeIndicatorMap[type];
+            const value = source[indicator];
+            if (value !== undefined) {
+                return {indicator, type, source, value};
+            }
+        }
+    }
+
+    getTargetPropertyName(sourcePropertyName: string): string | undefined {
+        const indicator = sourcePropertyName.substr(1);
+        if (this.indicatorOperationTypeMap[indicator] !== undefined) {
+            return indicator;
+        }
+        if (indicator === "comment") {
+            return;
+        }
+        return sourcePropertyName;
+    }
+
+    enableOperations() {
+        this.operationsEnabled = true;
+    }
+
+    disableOperations() {
+        this.operationsEnabled = false;
+    }
+
+    resolveFilePath(filePath: string): string {
+        if (path.isAbsolute(filePath)) {
+            return filePath;
+        }
+        const currentFilePath = this.currentSource !== undefined && this.currentSource.filePath;
+        const cwd = typeof currentFilePath === "string" ? path.dirname(currentFilePath) : this.config.cwd;
+        return path.resolve(cwd, filePath);
+    }
+
+    enterSource(filePath?: string, sourceRoot?: any, targetRoot?: any) {
         if (this.currentSource) {
             filePath = filePath !== undefined ? filePath : this.currentSource.filePath;
             targetRoot = targetRoot !== undefined ? targetRoot : this.currentSource.targetRoot;
@@ -75,36 +108,137 @@ export default class Context {
     leaveProperty() {
         this.currentSource.path.pop();
     }
-
-    enableIndicators() {
-        this.indicators = this.allIndicators;
-        this.indicatorsArray = this.allIndicatorsArray;
-    }
-
-    disableIndicators() {
-        this.indicators = {};
-        this.indicatorsArray = [];
-    }
 }
 
-export interface IndicatorMap {
-    Append?: string;
-    Comment?: string;
-    Compile?: string;
-    Expression?: string;
-    Id?: string;
-    Import?: string;
-    Insert?: string;
-    Match?: string;
-    Merge?: string;
-    Move?: string;
-    Prepend?: string;
-    Ref?: string;
-    Remove?: string;
-    Replace?: string;
-    Set?: string;
-    Value?: string;
+/*
+ * TYPES
+ */
+
+export enum OperationType {
+    Append,
+    Expression,
+    Import,
+    Insert,
+    Match,
+    Merge,
+    Move,
+    Prepend,
+    Process,
+    Ref,
+    Remove,
+    Replace
 }
+
+interface OperationTypeIndicatorMap {
+    [operationType: number]: string;
+}
+
+interface IndicatorOperationTypeMap {
+    [indicator: string]: number;
+}
+
+/*
+ * OPERATIONS
+ */
+
+export interface OperationBase<T> {
+    indicator: string;
+    source: {
+        [indicator: string]: T
+    };
+}
+
+export interface ImportOperation extends OperationBase<ImportOperation> {
+    type: OperationType.Import;
+    value: string;
+}
+
+export interface RefOperation extends OperationBase<RefOperation> {
+    type: OperationType.Ref;
+    value: string;
+}
+
+export interface RemoveOperation extends OperationBase<RemoveOperation> {
+    type: OperationType.Remove;
+    value: boolean;
+}
+
+export interface ProcessOperation extends OperationBase<ProcessOperation> {
+    type: OperationType.Process;
+    value: any;
+}
+
+export interface ExpressionOperation extends OperationBase<ExpressionOperation> {
+    type: OperationType.Expression;
+    value: string;
+}
+
+export interface MergeOperation extends OperationBase<MergeOperation> {
+    type: OperationType.Merge;
+    value: {
+        "source": any;
+        "with": any;
+    };
+}
+
+export interface ReplaceOperation extends OperationBase<ReplaceOperation> {
+    type: OperationType.Replace;
+    value: {
+        "with": any;
+    };
+}
+
+export interface AppendOperation extends OperationBase<AppendOperation> {
+    type: OperationType.Append;
+    value: {
+        "value": any;
+    };
+}
+
+export interface PrependOperation extends OperationBase<PrependOperation> {
+    type: OperationType.Prepend;
+    value: {
+        "value": any;
+    };
+}
+
+export interface InsertOperation extends OperationBase<InsertOperation> {
+    type: OperationType.Insert;
+    value: {
+        "index": number | "-";
+        "value": any;
+    };
+}
+
+export interface MoveOperation extends OperationBase<MoveOperation> {
+    type: OperationType.Move;
+    value: {
+        "index": number | "-";
+        "value": any;
+    };
+}
+
+export interface MatchOperation extends OperationBase<MatchOperation> {
+    type: OperationType.Match;
+    value: {
+        "index"?: number | "-";
+        "jsonPath"?: string;
+        "then": any;
+    };
+}
+
+export type Operation = AppendOperation
+    | ExpressionOperation
+    | ImportOperation
+    | InsertOperation
+    | MatchOperation
+    | MergeOperation
+    | MoveOperation
+    | PrependOperation
+    | ProcessOperation
+    | RefOperation
+    | RemoveOperation
+    | ReplaceOperation;
 
 export interface Source {
     filePath: string;

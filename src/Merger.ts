@@ -2,62 +2,72 @@ import * as fs from "fs";
 import * as jsonpath from "jsonpath";
 import * as safeEval from "safe-eval";
 import * as jsonPtr from "json-ptr";
-import * as path from "path";
 import {normalize as normalizeConfig, Config, NormalizedConfig} from "./config";
 import {isObject} from "./utils";
-import Context from "./Context";
+import Context, {Operation, OperationType} from "./Context";
 import MergerError from "./MergerError";
 
 export default class Merger {
 
     private config: NormalizedConfig;
     private context: Context;
-    private fileCache: FileCache;
-    private compiledFileCache: CompiledFileCache;
+    private fileCache: FileMap;
+    private processedFileCache: ProcessedFileCache;
 
     /**************************************************************************
      * Public API
      **************************************************************************/
 
     constructor(config: Config) {
-        this.setConfig(config);
         this.resetCaches();
+        this.setConfig(config);
     }
 
     setConfig(config: Config) {
         this.config = normalizeConfig(config);
+        if (this.config.files) {
+            this.addFiles(this.config.files);
+        }
     }
 
     resetCaches() {
         this.fileCache = Object.create(null);
-        this.compiledFileCache = [];
+        this.processedFileCache = [];
     }
 
-    fromObject(object: JsonObject) {
-        const items = [{object}];
-        return this._compile(items);
+    addFile(uri: string, object: object) {
+        this.fileCache[uri] = object;
     }
 
-    mergeObjects(objects: JsonObject[]) {
-        const items = objects.map(object => ({object}));
-        return this._compile(items);
+    addFiles(files: FileMap) {
+        Object.keys(files).forEach(uri => this.addFile(uri, files[uri]));
     }
 
-    fromFile(ref: string) {
-        const items = [{ref}];
-        return this._compile(items);
+    fromObject(object: object) {
+        const sources = [{type: SourceType.Object, object} as Source];
+        return this._mergeSources(sources);
     }
 
-    mergeFiles(refs: string[]) {
-        const items = refs.map(ref => ({ref}));
-        return this._compile(items);
+    mergeObjects(objects: object[]) {
+        const sources = objects.map(object => ({type: SourceType.Object, object} as Source));
+        return this._mergeSources(sources);
+    }
+
+    fromFile(uri: string) {
+        const sources = [{type: SourceType.Uri, uri} as Source];
+        return this._mergeSources(sources);
+    }
+
+    mergeFiles(uris: string[]) {
+        const sources = uris.map(uri => ({type: SourceType.Uri, uri} as Source));
+        return this._mergeSources(sources);
     }
 
     /**************************************************************************
-     * Compilation
+     * Merge sources
      **************************************************************************/
 
-    private _compile(compileItems: CompileItem[]): any {
+    private _mergeSources(sources: Source[]): any {
         // Init result
         let result: any = undefined;
 
@@ -65,15 +75,19 @@ export default class Merger {
         this.context = new Context(this.config);
 
         try {
-            // Compile and merge items
-            result = compileItems.reduce((target: any, item) => {
-                if (item.ref !== undefined) {
-                    return this._compileReference(item.ref, target);
-                } else {
-                    return this._compileObject(item.object, target);
+            // Process and merge sources
+            result = sources.reduce((target: any, job) => {
+
+                // Is the source an object?
+                if (job.type === SourceType.Object) {
+                    return this._processObjectSource(job.object, target);
+                }
+
+                // Or is the source an uri?
+                else if (job.type === SourceType.Uri) {
+                    return this._processUriSource(job.uri, target);
                 }
             }, result);
-
         } catch (e) {
             throw new MergerError(e, this.context);
         }
@@ -83,46 +97,49 @@ export default class Merger {
 
         // Stringify?
         if (this.config.stringify) {
-            result = JSON.stringify(result, null, this.config.stringify === "pretty" ? "\t" : undefined);
+            const space = this.config.stringify === "pretty" ? "\t" : undefined;
+            result = JSON.stringify(result, null, space);
         }
 
         return result;
     }
 
-    private _compileReference(ref: string, target?: any) {
-        const [filePath, pointer] = ref.split("#");
-        const result = this._compileFile(filePath, target);
-        return this._resolvePointer(result, pointer);
+    private _processObjectSource(object: object, target?: any): any {
+        this.context.enterSource(undefined, object, target);
+        const result = this._processUnknown(object, target);
+        this.context.leaveSource();
+        return result;
     }
 
-    private _compileFile(filePath: string, target?: any): any {
-        // Determine file path
-        filePath = this._resolveFilePathInContext(filePath);
+    private _processUriSource(uri: string, target?: any) {
+        const [uriPrimary, uriFragment] = uri.split("#");
+        const result = this._processFile(uriPrimary, target);
+        return this._resolvePointer(result, uriFragment);
+    }
+
+    private _processFile(filePath: string, target?: any): any {
+        // Resolve file path
+        const contextFilePath = this.context.resolveFilePath(filePath);
 
         // Check if a match is in the cache
-        const compiledFiles = this.compiledFileCache
-            .filter(x => x.filePath === filePath && x.target === target);
+        const processedFiles = this.processedFileCache
+            .filter(x => (x.uri === filePath || x.uri === contextFilePath) && x.target === target);
 
         // Return the match if found
-        if (compiledFiles.length > 1) {
-            return compiledFiles[0].result;
+        if (processedFiles.length > 1) {
+            return processedFiles[0].result;
         }
 
-        let result;
-
+        // Load source
         const source = this._readFile(filePath);
 
-        // Compile if a file has been found
-        if (source !== undefined) {
+        // Process source
+        this.context.enterSource(filePath, source, target);
+        const result = this._processUnknown(source, target);
+        this.context.leaveSource();
 
-            // Process source
-            this.context.enterSource(filePath, target, source);
-            result = this._processUnknown(target, source);
-            this.context.leaveSource();
-
-            // Add to compiled file cache
-            this.compiledFileCache.push({filePath, target, result});
-        }
+        // Add to processed file cache
+        this.processedFileCache.push({uri: filePath, target, result});
 
         return result;
     }
@@ -133,17 +150,22 @@ export default class Merger {
             return this._resolvePointer(target, ref);
         }
 
-        // Ref is remote pointer
+        // Ref is file pointer
         const [filePath, pointer] = ref.split("#");
         const result = this._readFile(filePath);
         return this._resolvePointer(result, pointer)
     }
 
     private _readFile(filePath: string): any {
-        // Determine file path
-        filePath = this._resolveFilePathInContext(filePath);
-
         // Check if the file is already in the cache
+        if (this.fileCache[filePath] !== undefined) {
+            return this.fileCache[filePath];
+        }
+
+        // Resolve file path
+        filePath = this.context.resolveFilePath(filePath);
+
+        // Check if the resolved file path is already in the cache
         if (this.fileCache[filePath] !== undefined) {
             return this.fileCache[filePath];
         }
@@ -170,14 +192,7 @@ export default class Merger {
         return content;
     }
 
-    private _compileObject(source: JsonObject, target?: any): any {
-        this.context.enterSource(undefined, target, source);
-        const result = this._processUnknown(target, source);
-        this.context.leaveSource();
-        return result;
-    }
-
-    private _resolvePointer(target: JsonObject, pointer?: string): any {
+    private _resolvePointer(target: object, pointer?: string): any {
         if (pointer === undefined) {
             return target;
         }
@@ -191,159 +206,40 @@ export default class Merger {
         return result;
     }
 
-    private _resolveFilePathInContext(filePath: string): string {
-        if (path.isAbsolute(filePath)) {
-            return filePath;
-        }
-        const currentFilePath = this.context.currentSource !== undefined && this.context.currentSource.filePath;
-        const cwd = typeof currentFilePath === "string" ? path.dirname(currentFilePath) : this.config.cwd;
-        return path.resolve(cwd, filePath);
-    }
-
     /**************************************************************************
      * Processing
      **************************************************************************/
 
-    private _processUnknown(target: any, source: any, propertyName?: string | number): any {
+    private _processUnknown(source: any, target?: any, propertyName?: string | number): any {
+        let result;
+
+        // Enter property
         this.context.enterProperty(propertyName);
 
+        // Process property if it is an object or array
         if (isObject(source)) {
-            source = this._processObject(target, source);
+            result = this._processObject(source, target);
         } else if (Array.isArray(source)) {
-            source = this._processArray(target, source);
+            result = this._processArray(source, target);
+        } else {
+            result = source;
         }
 
+        // Leave property
         this.context.leaveProperty();
 
-        return source;
+        return result;
     }
 
-    private _processObject(target: any, source: UntypedObject): any {
-        // Handle $replace
-        if (source[this.context.indicators.Replace] !== undefined) {
-            target = undefined;
-        }
-
-        // Handle $ref
-        if (source[this.context.indicators.Ref] !== undefined) {
-            this.context.enterProperty(this.context.indicators.Ref);
-
-            // Resolve reference
-            const value = this._resolveReference(
-                source[this.context.indicators.Ref],
-                this.context.currentSource.sourceRoot
-            );
-
-            // Merge with the target
-            this.context.enterSource();
-            const result = this._processUnknown(target, value);
-            this.context.leaveSource();
-
-            this.context.leaveProperty();
-
-            return result;
-        }
-
-        // Handle $import
-        if (source[this.context.indicators.Import] !== undefined) {
-            this.context.enterProperty(this.context.indicators.Import);
-
-            // Compile reference
-            const value = this._compileReference(source[this.context.indicators.Import]);
-
-            // Merge with the target
-            this.context.enterSource();
-            const result = this._processUnknown(target, value);
-            this.context.leaveSource();
-
-            this.context.leaveProperty();
-
-            return result;
-        }
-
-        // Handle $remove
-        if (source[this.context.indicators.Remove] === true) {
-            // undefined will remove the property in JSON.stringify
-            return undefined;
-        }
-
-        // Handle $value
-        if (source[this.context.indicators.Value] !== undefined) {
-            return this._processUnknown(target, source[this.context.indicators.Value], this.context.indicators.Value);
-        }
-
-        // Handle $merge
-        if (source[this.context.indicators.Merge] !== undefined) {
-            this.context.enterProperty(this.context.indicators.Merge);
-
-            // Compile $merge.source property without a target
-            const sourceProperty = source[this.context.indicators.Merge].source;
-            const sourcePropertyTarget: undefined = undefined;
-            this.context.enterSource(this.context.currentSource.filePath, sourcePropertyTarget, sourceProperty);
-            const compiledSourceProperty = this._processUnknown(sourcePropertyTarget, sourceProperty, "source");
-            this.context.leaveSource();
-
-            // Compile $merge.with property and use the compiled $merge.source property as target
-            const withProperty = source[this.context.indicators.Merge].with;
-            const withPropertyTarget = compiledSourceProperty;
-            this.context.enterSource(this.context.currentSource.filePath, withPropertyTarget, withProperty);
-            const compiledWithProperty = this._processUnknown(withPropertyTarget, withProperty, "with");
-            this.context.leaveSource();
-
-            // Compile $merge result and use the original target as target but do not process the indicators
-            const compiledWithPropertyTarget = target;
-            this.context.disableIndicators();
-            this.context.enterSource(this.context.currentSource.filePath, compiledWithPropertyTarget, compiledWithProperty);
-            const result = this._processUnknown(compiledWithPropertyTarget, compiledWithProperty);
-            this.context.leaveSource();
-            this.context.enableIndicators();
-
-            this.context.leaveProperty();
-
-            return result;
-        }
-
-        // Handle $expression
-        if (source[this.context.indicators.Expression] !== undefined) {
-            this.context.enterProperty(this.context.indicators.Expression);
-
-            const evalExpression = source[this.context.indicators.Expression];
-
-            const evalContext = {
-                $source: source,
-                $sourceRoot: this.context.currentSource.sourceRoot,
-                $target: target,
-                $targetRoot: this.context.currentSource.targetRoot
-            };
-
-            const result = safeEval(evalExpression, evalContext);
-
-            this.context.leaveProperty();
-
-            return result;
-        }
-
-        // Handle $compile
-        if (source[this.context.indicators.Compile] !== undefined) {
-
-            // Compile the $compile property without a target
-            const compileProperty = source[this.context.indicators.Compile];
-            const compilePropertyTarget: undefined = undefined;
-            this.context.enterSource(this.context.currentSource.filePath, compilePropertyTarget, compileProperty);
-            const compiledCompileProperty = this._processUnknown(compilePropertyTarget, compileProperty, this.context.indicators.Compile);
-            this.context.leaveSource();
-
-            // Compile the compiled $compile property and use the original target as target
-            const compiledCompilePropertyTarget = target;
-            this.context.enterSource(this.context.currentSource.filePath, compiledCompilePropertyTarget, compiledCompileProperty);
-            const result = this._processUnknown(compiledCompilePropertyTarget, compiledCompileProperty, this.context.indicators.Compile);
-            this.context.leaveSource();
-
-            return result;
+    private _processObject(source: object, target?: any): any {
+        // Check if the object is an operation
+        const operation = this.context.getOperation(source);
+        if (operation !== undefined) {
+            return this._processOperation(operation, target);
         }
 
         // Create result object
-        const result: UntypedObject = {};
+        const result: any = {};
 
         // Make sure target is an object
         if (!isObject(target)) {
@@ -357,162 +253,239 @@ export default class Merger {
 
         // Process source properties and copy to result object
         Object.keys(source).forEach(key => {
-            // Prevent indicators from being copied to the result
-            if (this.context.indicatorsArray.indexOf(key) === -1) {
-                // Process the source property
-                result[key] = this._processUnknown(target[key], source[key], key);
+            const targetPropertyName = this.context.getTargetPropertyName(key);
+            if (targetPropertyName !== undefined) {
+                result[targetPropertyName] = this._processUnknown((source as any)[key], target[key], key);
             }
         });
-
-        // Handle $set
-        if (source[this.context.indicators.Set] !== undefined) {
-            const setValue = source[this.context.indicators.Set];
-            const setItems = Array.isArray(setValue) ? setValue : [setValue];
-
-            // Process and set items
-            setItems.forEach(item => {
-                result[item.key] = this._processUnknown(undefined, item.value, item.key);
-            });
-        }
 
         return result;
     }
 
-    private _processArray(target: any, source: UntypedArray): any {
+    private _processOperation(operation: Operation, target?: any): any {
+        let result: any = {};
+
+        // Enter operation property
+        this.context.enterProperty(operation.indicator);
+
+        // Handle $remove
+        if (operation.type === OperationType.Remove && operation.value === true) {
+            // undefined will remove the property in JSON.stringify
+            result = undefined;
+        }
+
+        // Handle $replace
+        else if (operation.type === OperationType.Replace) {
+            result = this._processUnknown(operation.value.with, undefined, "with");
+        }
+
+        // Handle $ref
+        else if (operation.type === OperationType.Ref) {
+            // Resolve $ref
+            const value = this._resolveReference(operation.value, this.context.currentSource.sourceRoot);
+
+            // Merge with the target
+            result = this._processObjectSource(value, target);
+        }
+
+        // Handle $import
+        else if (operation.type === OperationType.Import) {
+            // Process file reference
+            const processedReference = this._processUriSource(operation.value);
+
+            // Merge with the target
+            result = this._processObjectSource(processedReference, target);
+        }
+
+        // Handle $merge
+        else if (operation.type === OperationType.Merge) {
+            // Process $merge.source property without a target
+            this.context.enterProperty("source");
+            const processedSourceProperty = this._processObjectSource(operation.value.source);
+            this.context.leaveProperty();
+
+            // Process $merge.with property and use the processed $merge.source property as target
+            this.context.enterProperty("with");
+            const processedWithProperty = this._processObjectSource(operation.value.with, processedSourceProperty);
+            this.context.leaveProperty();
+
+            // Process $merge result and use the original target as target but do not process operations
+            this.context.disableOperations();
+            result = this._processObjectSource(processedWithProperty, target);
+            this.context.enableOperations();
+        }
+
+        // Handle $expression
+        else if (operation.type === OperationType.Expression) {
+            // Create eval context
+            const evalContext = {
+                $source: operation.source,
+                $sourceRoot: this.context.currentSource.sourceRoot,
+                $target: target,
+                $targetRoot: this.context.currentSource.targetRoot
+            };
+
+            // Evaluate the expression
+            result = safeEval(operation.value, evalContext);
+        }
+
+        // Handle $process
+        else if (operation.type === OperationType.Process) {
+            // Process the $process property without a target
+            const processedProcessProperty = this._processObjectSource(operation.value);
+
+            // Process the processed $process property and use the original target as target
+            result = this._processObjectSource(processedProcessProperty, target);
+        }
+
+        // Leave operation property
+        this.context.leaveProperty();
+
+        return result;
+    }
+
+    private _processArray(source: any[], target?: any): any {
         if (!Array.isArray(target)) {
             target = [];
         }
 
-        // Fetch actions
-        const removeActions: ArrayRemoveAction[] = [];
-        const prependActions: ArrayPrependAction[] = [];
-        const appendActions: ArrayAppendAction[] = [];
-        const insertActions: ArrayInsertAction[] = [];
-        const mergeActions: ArrayMergeAction[] = [];
-        const moveActions: ArrayMoveAction[] = [];
+        // Fetch array operations
+        const appends: AppendArrayOperation[] = [];
+        const inserts: InsertArrayOperation[] = [];
+        const merges: MergeArrayOperation[] = [];
+        const moves: MoveArrayOperation[] = [];
+        const prepends: PrependArrayOperation[] = [];
+        const removes: RemoveArrayOperation[] = [];
+        const replaces: ReplaceArrayOperation[] = [];
 
         source.forEach((sourceItem, sourceItemIndex) => {
 
             // Calculate to which target item this source item should refer to
-            const matchingTargetItemIndex = mergeActions.length + removeActions.length;
+            let targetItemIndex = merges.length + removes.length;
+            let targetItem = target[targetItemIndex];
 
-            // Create variables to hold the
-            let matchedTargetItem: any;
-            let matchedTargetItemIndex: number;
+            // Try to get operation
+            let operation = this.context.getOperation(sourceItem);
 
             // Handle $match
-            if (sourceItem[this.context.indicators.Match] !== undefined) {
-                // Try to find a matching item in the target
-                const path = jsonpath.paths(target, sourceItem[this.context.indicators.Match])[0];
+            if (operation && operation.type === OperationType.Match) {
+                // Handle $match.index
+                if (operation.value.index !== undefined) {
+                    targetItemIndex = operation.value.index === "-" ? target.length - 1 : operation.value.index;
+                }
+
+                // Handle $match.jsonPath
+                else if (operation.value.jsonPath !== undefined) {
+                    // Try to find a matching item in the target
+                    const path = jsonpath.paths(target, operation.value.jsonPath)[0];
+                    targetItemIndex = path !== undefined ? path[1] as number : undefined;
+                }
 
                 // Ignore the item if no match found
-                if (path === undefined) {
+                if (targetItemIndex === undefined || target[targetItemIndex] === undefined) {
                     return;
                 }
 
                 // Set matched target
-                matchedTargetItemIndex = path[1] as number;
-                matchedTargetItem = target[matchedTargetItemIndex];
+                targetItem = target[targetItemIndex];
+
+                // Map source item to $match.then
+                sourceItem = operation.value.then;
+                operation = this.context.getOperation(operation.value.then);
             }
 
             // Handle $append
-            if (sourceItem[this.context.indicators.Append] === true) {
-                appendActions.push({
-                    value: matchedTargetItem !== undefined ? matchedTargetItem : sourceItem,
-                    sourceItemIndex: sourceItemIndex
-                });
+            if (operation && operation.type === OperationType.Append) {
+                const {value} = operation.value;
+                appends.push({sourceItemIndex, value});
             }
 
             // Handle $prepend
-            else if (sourceItem[this.context.indicators.Prepend] === true) {
-                prependActions.push({
-                    value: matchedTargetItem !== undefined ? matchedTargetItem : sourceItem,
-                    sourceItemIndex: sourceItemIndex
-                });
+            else if (operation && operation.type === OperationType.Prepend) {
+                const {value} = operation.value;
+                prepends.push({sourceItemIndex, value});
             }
 
             // Handle $insert
-            else if (sourceItem[this.context.indicators.Insert] !== undefined) {
-                insertActions.push({
-                    newTargetItemIndex: sourceItem[this.context.indicators.Insert],
-                    value: matchedTargetItem !== undefined ? matchedTargetItem : sourceItem,
-                    sourceItemIndex: sourceItemIndex
-                });
+            else if (operation && operation.type === OperationType.Insert) {
+                const {value, index: newTargetItemIndex} = operation.value;
+                inserts.push({newTargetItemIndex, sourceItemIndex, value});
             }
 
             // Handle $move
-            else if (sourceItem[this.context.indicators.Move] !== undefined) {
-                moveActions.push({
-                    newTargetItemIndex: sourceItem[this.context.indicators.Move],
-                    targetItem: target[matchedTargetItem !== undefined ? matchedTargetItemIndex : matchingTargetItemIndex],
-                    value: matchedTargetItem !== undefined ? matchedTargetItem : sourceItem,
-                    sourceItemIndex: sourceItemIndex
-                });
+            else if (operation && operation.type === OperationType.Move) {
+                const {value, index: newTargetItemIndex} = operation.value;
+                moves.push({newTargetItemIndex, sourceItemIndex, targetItem, value});
             }
 
             // Handle $remove
-            else if (sourceItem[this.context.indicators.Remove] === true) {
-                removeActions.push({
-                    targetItemIndex: matchedTargetItem !== undefined ? matchedTargetItemIndex : matchingTargetItemIndex,
-                    sourceItemIndex: sourceItemIndex
-                });
+            else if (operation && operation.type === OperationType.Remove) {
+                if (operation.value === true) {
+                    removes.push({targetItemIndex, sourceItemIndex});
+                }
             }
 
-            // No indicator, add merge action
+            // Handle $replace
+            else if (operation && operation.type === OperationType.Replace) {
+                const {"with": value} = operation.value;
+                replaces.push({sourceItemIndex, targetItemIndex, value});
+            }
+
+            // No array operation found, add merge action
             else {
-                mergeActions.push({
-                    targetItemIndex: matchedTargetItem !== undefined ? matchedTargetItemIndex : matchingTargetItemIndex,
-                    value: sourceItem,
-                    sourceItemIndex: sourceItemIndex
-                });
+                const value = sourceItem;
+                merges.push({sourceItemIndex, targetItem, targetItemIndex, value});
             }
         });
 
-        // Clone target array
+        // Execute array operations
         const result: any[] = target.slice();
 
         // Do merges first
-        mergeActions.forEach(action => {
-            const targetItem = result[action.targetItemIndex];
-            const item = this._processUnknown(targetItem, action.value, action.sourceItemIndex);
+        merges.forEach(action => {
+            const item = this._processUnknown(action.value, action.targetItem, action.sourceItemIndex);
+            result[action.targetItemIndex] = item;
+        });
+
+        // Then replaces
+        replaces.forEach(action => {
+            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
             result[action.targetItemIndex] = item;
         });
 
         // Then removes
-        removeActions.forEach(action => {
+        removes.forEach(action => {
             result.splice(action.targetItemIndex, 1);
         });
 
+        // Then prepends
+        prepends.reverse().forEach(action => {
+            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
+            result.unshift(item);
+        });
+
+        // Then appends
+        appends.forEach(action => {
+            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
+            result.push(item);
+        });
+
         // Then moves
-        moveActions.forEach(action => {
-            let targetItem = undefined;
-            result.forEach((item, index) => {
-                if (item === action.targetItem) {
-                    targetItem = result.splice(index, 1)[0];
-                }
-            });
-            const item = this._processUnknown(targetItem, action.value, action.sourceItemIndex);
+        moves.forEach(action => {
+            const targetItemIndex = result.reduce((index, item, i) => item === action.targetItem ? i : index, -1);
+            if (targetItemIndex !== -1) {
+                result.splice(targetItemIndex, 1);
+            }
+            const item = this._processUnknown(action.value, action.targetItem, action.sourceItemIndex);
             const index = action.newTargetItemIndex === "-" ? result.length : action.newTargetItemIndex;
             result.splice(index, 0, item);
         });
 
         // Then inserts
-        insertActions.forEach(action => {
-            const item = this._processUnknown(undefined, action.value, action.sourceItemIndex);
+        inserts.forEach(action => {
+            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
             const index = action.newTargetItemIndex === "-" ? result.length : action.newTargetItemIndex;
             result.splice(index, 0, item);
-        });
-
-        // Then prepends
-        prependActions.reverse().forEach(action => {
-            const item = this._processUnknown(undefined, action.value, action.sourceItemIndex);
-            result.unshift(item);
-        });
-
-        // And as last appends
-        appendActions.forEach(action => {
-            const item = this._processUnknown(undefined, action.value, action.sourceItemIndex);
-            result.push(item);
         });
 
         return result;
@@ -523,62 +496,82 @@ export default class Merger {
  * TYPES
  */
 
-export type JsonObject = UntypedObject | UntypedArray;
+/*
+ * SOURCE
+ */
 
-export interface UntypedObject {
-    [key: string]: any;
-    [key: number]: any;
+enum SourceType {
+    Object,
+    Uri
 }
 
-export interface UntypedArray extends Array<any> {}
-
-interface CompileItem {
-    ref?: string;
-    object?: JsonObject;
+interface UriSource {
+    type: SourceType.Uri;
+    uri: string;
 }
 
-interface ArrayAppendAction {
+interface ObjectSource {
+    object: object;
+    type: SourceType.Object;
+}
+
+type Source = UriSource
+    | ObjectSource;
+
+/*
+ * ARRAY ACTIONS
+ */
+
+interface ArrayOperation {
     sourceItemIndex: number;
+}
+
+interface AppendArrayOperation extends ArrayOperation {
     value: any;
 }
 
-interface ArrayPrependAction {
-    sourceItemIndex: number;
+interface PrependArrayOperation extends ArrayOperation {
     value: any;
 }
 
-interface ArrayInsertAction {
+interface InsertArrayOperation extends ArrayOperation {
     newTargetItemIndex: number | "-";
-    sourceItemIndex: number;
     value: any;
 }
 
-interface ArrayMoveAction {
+interface MoveArrayOperation extends ArrayOperation {
     newTargetItemIndex: number | "-";
-    sourceItemIndex: number;
     targetItem: any;
     value: any;
 }
 
-interface ArrayRemoveAction {
-    sourceItemIndex: number;
+interface RemoveArrayOperation extends ArrayOperation {
     targetItemIndex: number;
 }
 
-interface ArrayMergeAction {
-    sourceItemIndex: number;
+interface MergeArrayOperation extends ArrayOperation {
+    targetItem: any;
     targetItemIndex: number;
     value: any;
 }
 
-interface FileCache {
-    [filePath: string]: any;
+interface ReplaceArrayOperation extends ArrayOperation {
+    targetItemIndex: number;
+    value: any;
 }
 
-interface CompiledFileCache extends Array<CompiledFileCacheEntry> {}
+/*
+ * FILE CACHE
+ */
 
-interface CompiledFileCacheEntry {
-    filePath: string;
+export interface FileMap {
+    [uri: string]: object;
+}
+
+interface ProcessedFileCache extends Array<ProcessedFileCacheEntry> {}
+
+interface ProcessedFileCacheEntry {
     result: any;
-    target: any;
+    target: object;
+    uri: string;
 }

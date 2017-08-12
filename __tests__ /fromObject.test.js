@@ -7,9 +7,13 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "@value": 1,
+                "@replace": {
+                    "with": 1
+                },
             },
-            "$value": 2
+            "$replace": {
+                "with": 2
+            }
         };
 
         const result = jsonMerger.fromObject(object, testConfig({
@@ -23,7 +27,9 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "$value": 1
+                "$replace": {
+                    "with": 1
+                }
             }
         };
 
@@ -38,7 +44,9 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "$value": 1
+                "$replace": {
+                    "with": 1
+                }
             }
         };
 
@@ -53,7 +61,9 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "$value": 1
+                "$replace": {
+                    "with": 1
+                }
             }
         };
 
