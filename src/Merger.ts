@@ -182,7 +182,7 @@ export default class Merger {
             }
         }
 
-        // If read, parse JSON
+        // Parse if a file was found
         if (content !== undefined) {
 
             // YAML or JSON?
@@ -241,14 +241,11 @@ export default class Merger {
     }
 
     private _processObject(source: object, target?: any): any {
-        // Check if the object is an operation
+        // Check if the source is an operation
         const operation = this.context.getOperation(source);
         if (operation !== undefined) {
             return this._processOperation(operation, target);
         }
-
-        // Create result object
-        const result: any = {};
 
         // Make sure target is an object
         if (!isObject(target)) {
@@ -256,9 +253,7 @@ export default class Merger {
         }
 
         // Copy target properties to the result object
-        Object.keys(target).forEach(key => {
-            result[key] = target[key];
-        });
+        const result = {...target};
 
         // Process source properties and copy to result object
         Object.keys(source).forEach(key => {
@@ -278,9 +273,11 @@ export default class Merger {
         this.context.enterProperty(operation.indicator);
 
         // Handle $remove
-        if (operation.type === OperationType.Remove && operation.value === true) {
-            // undefined will remove the property in JSON.stringify
-            result = undefined;
+        if (operation.type === OperationType.Remove) {
+            if (operation.value === true) {
+                // undefined will remove the property in JSON.stringify
+                result = undefined;
+            }
         }
 
         // Handle $replace
@@ -451,49 +448,45 @@ export default class Merger {
         const result: any[] = target.slice();
 
         // Do merges first
-        merges.forEach(action => {
-            const item = this._processUnknown(action.value, action.targetItem, action.sourceItemIndex);
-            result[action.targetItemIndex] = item;
+        merges.forEach(op => {
+            result[op.targetItemIndex] = this._processUnknown(op.value, op.targetItem, op.sourceItemIndex);
         });
 
         // Then replaces
-        replaces.forEach(action => {
-            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
-            result[action.targetItemIndex] = item;
+        replaces.forEach(op => {
+            result[op.targetItemIndex] = this._processUnknown(op.value, undefined, op.sourceItemIndex);
         });
 
         // Then removes
-        removes.forEach(action => {
-            result.splice(action.targetItemIndex, 1);
+        removes.forEach(op => {
+            result.splice(op.targetItemIndex, 1);
         });
 
         // Then prepends
-        prepends.reverse().forEach(action => {
-            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
-            result.unshift(item);
+        prepends.reverse().forEach(op => {
+            result.unshift(this._processUnknown(op.value, undefined, op.sourceItemIndex));
         });
 
         // Then appends
-        appends.forEach(action => {
-            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
-            result.push(item);
+        appends.forEach(op => {
+            result.push(this._processUnknown(op.value, undefined, op.sourceItemIndex));
         });
 
         // Then moves
-        moves.forEach(action => {
-            const targetItemIndex = result.reduce((index, item, i) => item === action.targetItem ? i : index, -1);
+        moves.forEach(op => {
+            const targetItemIndex = result.reduce((index, item, i) => item === op.targetItem ? i : index, -1);
             if (targetItemIndex !== -1) {
                 result.splice(targetItemIndex, 1);
             }
-            const item = this._processUnknown(action.value, action.targetItem, action.sourceItemIndex);
-            const index = action.newTargetItemIndex === "-" ? result.length : action.newTargetItemIndex;
+            const item = this._processUnknown(op.value, op.targetItem, op.sourceItemIndex);
+            const index = op.newTargetItemIndex === "-" ? result.length : op.newTargetItemIndex;
             result.splice(index, 0, item);
         });
 
         // Then inserts
-        inserts.forEach(action => {
-            const item = this._processUnknown(action.value, undefined, action.sourceItemIndex);
-            const index = action.newTargetItemIndex === "-" ? result.length : action.newTargetItemIndex;
+        inserts.forEach(op => {
+            const item = this._processUnknown(op.value, undefined, op.sourceItemIndex);
+            const index = op.newTargetItemIndex === "-" ? result.length : op.newTargetItemIndex;
             result.splice(index, 0, item);
         });
 
