@@ -15,9 +15,9 @@ fs.__setMockFiles = function(newMockFiles) {
     });
 };
 
-fs.__setJsonMockFiles = function(newMockFiles) {
+fs.__setJsonMockFiles = function(newMockFiles, stringify) {
     Object.keys(newMockFiles).forEach(fileName => {
-        newMockFiles[fileName] = JSON.stringify(newMockFiles[fileName]);
+        newMockFiles[fileName] = stringify === false ? newMockFiles[fileName] : JSON.stringify(newMockFiles[fileName]);
     });
     fs.__setMockFiles(newMockFiles);
 };

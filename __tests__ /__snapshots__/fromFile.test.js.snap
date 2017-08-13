@@ -6,6 +6,8 @@ Object {
 }
 `;
 
+exports[`.fromFile() should process a YAML file 1`] = `"\\"\\\\n        a:\\\\n          aa:\\\\n            $replace:\\\\n              with: replaced\\\\n        \\""`;
+
 exports[`.fromFile() should process a file if it exists and return the processed object if config.stringify is false 1`] = `
 Object {
   "a": 10,

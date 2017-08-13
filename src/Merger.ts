@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as jsonpath from "jsonpath";
 import * as safeEval from "safe-eval";
 import * as jsonPtr from "json-ptr";
+import * as yaml from "js-yaml";
 import {normalize as normalizeConfig, Config, NormalizedConfig} from "./config";
 import {isObject} from "./utils";
 import Context, {Operation, OperationType} from "./Context";
@@ -183,7 +184,15 @@ export default class Merger {
 
         // If read, parse JSON
         if (content !== undefined) {
-            content = JSON.parse(content);
+
+            // YAML or JSON?
+            if (/\.yaml$/.test(filePath)) {
+                content = yaml.safeLoad(content, {
+                    filename: filePath
+                });
+            } else {
+                content = JSON.parse(content);
+            }
         }
 
         // Add result to cache

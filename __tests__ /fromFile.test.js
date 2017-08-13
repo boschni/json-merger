@@ -90,4 +90,24 @@ describe(".fromFile()", function () {
             expect(e.message).toMatch(/The file ".*nonExisting\.json" does not exist/);
         }
     });
+
+    test("should process YAML files", function () {
+
+        let yaml = `
+        a:
+          aa:
+            $replace:
+              with: replaced
+        `;
+
+        const files = {
+            "a.yaml": yaml
+        };
+
+        fs.__setJsonMockFiles(files, false);
+
+        const result = jsonMerger.fromFile("a.yaml", testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });

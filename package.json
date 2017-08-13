@@ -23,6 +23,7 @@
   },
   "keywords": [
     "JSON",
+    "YAML",
     "merge",
     "patch",
     "extend",
@@ -32,7 +33,8 @@
     "import",
     "ref",
     "append",
-    "prepend"
+    "prepend",
+    "schema"
   ],
   "author": "Niek Bosch <just.niek@gmail.com>",
   "license": "MIT",
@@ -42,11 +44,13 @@
   "homepage": "https://github.com/boschni/json-merger#readme",
   "dependencies": {
     "commander": "^2.11.0",
+    "js-yaml": "^3.9.1",
     "json-ptr": "^1.0.1",
     "jsonpath": "^0.2.12",
     "safe-eval": "^0.3.0"
   },
   "devDependencies": {
+    "@types/js-yaml": "^3.9.0",
     "@types/jsonpath": "^0.2.0",
     "@types/node": "^8.0.20",
     "jest": "^20.0.4",
