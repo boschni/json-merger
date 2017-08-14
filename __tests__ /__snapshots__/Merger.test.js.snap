@@ -11,3 +11,9 @@ exports[`Merger() .addFile() should also work with URLs 1`] = `
 	\\"a\\": 30
 }"
 `;
+
+exports[`Merger() .addFile() should also work with relative paths 1`] = `
+"{
+	\\"a\\": 30
+}"
+`;

@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as path from "path";
 import * as jsonpath from "jsonpath";
 import * as safeEval from "safe-eval";
 import * as jsonPtr from "json-ptr";
@@ -37,6 +38,7 @@ export default class Merger {
     }
 
     addFile(uri: string, object: object) {
+        uri = path.resolve(this.config.cwd, uri);
         this.fileCache[uri] = object;
     }
 
@@ -115,16 +117,16 @@ export default class Merger {
     private _processUriSource(uri: string, target?: any) {
         const [uriPrimary, uriFragment] = uri.split("#");
         const result = this._processFile(uriPrimary, target);
-        return this._resolvePointer(result, uriFragment);
+        return this._resolveJsonPointer(result, uriFragment);
     }
 
-    private _processFile(filePath: string, target?: any): any {
+    private _processFile(path: string, target?: any): any {
         // Resolve file path
-        const contextFilePath = this.context.resolveFilePath(filePath);
+        const contextFilePath = this.context.resolveFilePath(path);
 
         // Check if a match is in the cache
         const processedFiles = this.processedFileCache
-            .filter(x => (x.uri === filePath || x.uri === contextFilePath) && x.target === target);
+            .filter(x => (x.uri === path || x.uri === contextFilePath) && x.target === target);
 
         // Return the match if found
         if (processedFiles.length > 1) {
@@ -132,53 +134,36 @@ export default class Merger {
         }
 
         // Load source
-        const source = this._readFile(filePath);
+        const source = this._loadFile(path);
 
         // Process source
-        this.context.enterSource(filePath, source, target);
+        this.context.enterSource(path, source, target);
         const result = this._processUnknown(source, target);
         this.context.leaveSource();
 
         // Add to processed file cache
-        this.processedFileCache.push({uri: filePath, target, result});
+        this.processedFileCache.push({uri: path, target, result});
 
         return result;
     }
 
-    private _resolveReference(ref: string, target?: any) {
-        // Ref is local pointer
-        if (ref === "" || ref[0] === "#" || ref[0] === "/") {
-            return this._resolvePointer(target, ref);
-        }
-
-        // Ref is file pointer
-        const [filePath, pointer] = ref.split("#");
-        const result = this._readFile(filePath);
-        return this._resolvePointer(result, pointer)
-    }
-
-    private _readFile(filePath: string): any {
-        // Check if the file is already in the cache
-        if (this.fileCache[filePath] !== undefined) {
-            return this.fileCache[filePath];
-        }
-
+    private _loadFile(path: string): any {
         // Resolve file path
-        filePath = this.context.resolveFilePath(filePath);
+        path = this.context.resolveFilePath(path);
 
         // Check if the resolved file path is already in the cache
-        if (this.fileCache[filePath] !== undefined) {
-            return this.fileCache[filePath];
+        if (this.fileCache[path] !== undefined) {
+            return this.fileCache[path];
         }
 
         let content;
 
         // Try to read file
         try {
-            content = fs.readFileSync(filePath, "utf8");
+            content = fs.readFileSync(path, "utf8");
         } catch (e) {
             if (this.config.throwOnInvalidRef) {
-                throw new Error(`The file "${filePath}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+                throw new Error(`The file "${path}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
             }
         }
 
@@ -186,9 +171,9 @@ export default class Merger {
         if (content !== undefined) {
 
             // YAML or JSON?
-            if (/\.yaml$/.test(filePath)) {
+            if (/\.yaml$/.test(path)) {
                 content = yaml.safeLoad(content, {
-                    filename: filePath
+                    filename: path
                 });
             } else {
                 content = JSON.parse(content);
@@ -196,13 +181,29 @@ export default class Merger {
         }
 
         // Add result to cache
-        this.fileCache[filePath] = content;
+        this.fileCache[path] = content;
 
         return content;
     }
 
-    private _resolvePointer(target: object, pointer?: string): any {
+    private _resolveReference(ref: string, target?: any) {
+        // Ref is local pointer
+        if (ref === "" || ref[0] === "#" || ref[0] === "/") {
+            return this._resolveJsonPointer(target, ref);
+        }
+
+        // Ref is file pointer
+        const [filePath, pointer] = ref.split("#");
+        const result = this._loadFile(filePath);
+        return this._resolveJsonPointer(result, pointer)
+    }
+
+    private _resolveJsonPointer(target: object, pointer?: string): any {
         if (pointer === undefined) {
+            return target;
+        }
+
+        if (pointer === "/") {
             return target;
         }
 
@@ -210,6 +211,20 @@ export default class Merger {
 
         if (result === undefined && this.config.throwOnInvalidRef) {
             throw new Error(`The ref "${pointer}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+        }
+
+        return result;
+    }
+
+    private _resolveJsonPath(target: object, path?: string): any {
+        if (path === undefined) {
+            return target;
+        }
+
+        const result = jsonpath.query(target, path);
+
+        if (result === undefined && this.config.throwOnInvalidRef) {
+            throw new Error(`The json path "${path}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
         }
 
         return result;
@@ -319,6 +334,38 @@ export default class Merger {
             this.context.disableOperations();
             result = this._processObjectSource(processedWithProperty, target);
             this.context.enableOperations();
+        }
+
+        // Handle $select
+        else if (operation.type === OperationType.Select) {
+            let selectValue;
+
+            // Determine the select context
+            if (operation.value.from === "target") {
+                selectValue = target;
+            } else if (operation.value.from === "source") {
+                selectValue = operation.source;
+            } else if (operation.value.from === "targetRoot") {
+                selectValue = this.context.currentSource.targetRoot;
+            } else if (operation.value.from === "sourceRoot") {
+                selectValue = this.context.currentSource.sourceRoot;
+            } else if (operation.value.from !== undefined) {
+                this.context.enterProperty("from");
+                selectValue = this._processObjectSource(operation.value.from);
+                this.context.leaveProperty();
+            } else {
+                selectValue = target;
+            }
+
+            // Select based on JSON pointer or path
+            if (operation.value.pointer !== undefined) {
+                result = this._resolveJsonPointer(selectValue, operation.value.pointer);
+            } else if (operation.value.path !== undefined) {
+                result = this._resolveJsonPath(selectValue, operation.value.path);
+                if (operation.value.multiple !== true) {
+                    result = result[0];
+                }
+            }
         }
 
         // Handle $expression

@@ -14,12 +14,12 @@ export default class Context {
 
     constructor(config: NormalizedConfig) {
         this.config = config;
-        this.operationTypeValues = this._getOperationsTypeValues();
+        this.operationTypeValues = this._getOperationTypeValues();
         this.operationTypeIndicatorMap = this._getOperationTypeIndicatorMap(this.config.indicatorPrefix);
         this.indicatorOperationTypeMap = this._getIndicatorOperationTypeMap(this.operationTypeIndicatorMap);
     }
 
-    private _getOperationsTypeValues(): number[] {
+    private _getOperationTypeValues(): number[] {
         return Object.keys(OperationType)
             .map(key => OperationType[key as any])
             .filter(value => typeof value === "number") as any as number[];
@@ -76,9 +76,6 @@ export default class Context {
     }
 
     resolveFilePath(filePath: string): string {
-        if (path.isAbsolute(filePath)) {
-            return filePath;
-        }
         const currentFilePath = this.currentSource !== undefined && this.currentSource.filePath;
         const cwd = typeof currentFilePath === "string" ? path.dirname(currentFilePath) : this.config.cwd;
         return path.resolve(cwd, filePath);
@@ -126,7 +123,8 @@ export enum OperationType {
     Process,
     Ref,
     Remove,
-    Replace
+    Replace,
+    Select
 }
 
 interface OperationTypeIndicatorMap {
@@ -227,6 +225,16 @@ export interface MatchOperation extends OperationBase<MatchOperation> {
     };
 }
 
+export interface SelectOperation extends OperationBase<SelectOperation> {
+    type: OperationType.Select;
+    value: {
+        "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any;
+        "multiple"?: boolean;
+        "path"?: string;
+        "pointer"?: string;
+    };
+}
+
 export type Operation = AppendOperation
     | ExpressionOperation
     | ImportOperation
@@ -238,7 +246,8 @@ export type Operation = AppendOperation
     | ProcessOperation
     | RefOperation
     | RemoveOperation
-    | ReplaceOperation;
+    | ReplaceOperation
+    | SelectOperation;
 
 export interface Source {
     filePath: string;

@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'source' it should select from the source 1`] = `
+"{
+	\\"a\\": {
+		\\"$select\\": {
+			\\"from\\": \\"source\\",
+			\\"pointer\\": \\"/\\"
+		}
+	}
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'sourceRoot' it should select from the source root 1`] = `
+"{
+	\\"a\\": {
+		\\"a\\": {
+			\\"$select\\": {
+				\\"from\\": \\"sourceRoot\\",
+				\\"pointer\\": \\"/\\"
+			}
+		}
+	}
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'target' it should select from the target 1`] = `
+"{
+	\\"a\\": [
+		\\"target\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'targetRoot' it should select from the target root 1`] = `
+"{
+	\\"a\\": {
+		\\"a\\": [
+			\\"target\\"
+		]
+	}
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set to a different value it should process the $select.from value and select from the result 1`] = `
+"{
+	\\"a\\": {
+		\\"b\\": \\"replaced\\"
+	}
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and $select.path is set it should use the json path to select a value in the target 1`] = `
+"{
+	\\"a\\": \\"should be selected\\"
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and $select.pointer is set it should use the json pointer to select a value in the target 1`] = `
+"{
+	\\"a\\": \\"should be selected\\"
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and a $select.path matching multiple elements is set and $select.multiple is true it should return an array with all matches 1`] = `
+"{
+	\\"a\\": [
+		\\"should be selected\\",
+		\\"should also be selected\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source object contains a $select operation and a $select.path matching multiple elements is set but $select.multiple is not set it should return the first value 1`] = `
+"{
+	\\"a\\": \\"should be selected\\"
+}"
+`;

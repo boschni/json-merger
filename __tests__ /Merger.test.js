@@ -127,6 +127,31 @@ describe("Merger()", function () {
             expect(result).toMatchSnapshot();
         });
 
+        test("should also work with relative paths", function () {
+
+            const aJson = {
+                "a": 10
+            };
+
+            const files = {
+                "b.json": {
+                    "a": {
+                        "$expression": "$target + 10"
+                    }
+                }
+            };
+
+            fs.readFileSync.mockClear();
+            fs.__setJsonMockFiles(files);
+
+            const merger = new Merger(testConfig());
+            merger.addFile("./a.json", aJson);
+            const result = merger.mergeFiles(["./__tests__/../a.json", "b.json", "b.json"]);
+
+            expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+            expect(result).toMatchSnapshot();
+        });
+
         test("should also work with URLs", function () {
 
             const aJson = {
