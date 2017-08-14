@@ -121,7 +121,6 @@ export enum OperationType {
     Move,
     Prepend,
     Process,
-    Ref,
     Remove,
     Replace,
     Select
@@ -148,90 +147,90 @@ export interface OperationBase<T> {
 
 export interface ImportOperation extends OperationBase<ImportOperation> {
     type: OperationType.Import;
-    value: string;
-}
-
-export interface RefOperation extends OperationBase<RefOperation> {
-    type: OperationType.Ref;
-    value: string;
+    value: string // the path to the file to import
+        | {
+        "file": string; // the path to the file to import
+        "process": boolean; // indicates if the file should be processed
+    };
 }
 
 export interface RemoveOperation extends OperationBase<RemoveOperation> {
     type: OperationType.Remove;
-    value: boolean;
+    value: boolean; // indicates if the property should be removed
 }
 
 export interface ProcessOperation extends OperationBase<ProcessOperation> {
     type: OperationType.Process;
-    value: any;
+    value: any; // the value to process
 }
 
 export interface ExpressionOperation extends OperationBase<ExpressionOperation> {
     type: OperationType.Expression;
-    value: string;
+    value: string; // the expression
 }
 
 export interface MergeOperation extends OperationBase<MergeOperation> {
     type: OperationType.Merge;
     value: {
-        "source": any;
-        "with": any;
+        "source": any; // the value to merge
+        "with": any; // the value to merge with
     };
 }
 
 export interface ReplaceOperation extends OperationBase<ReplaceOperation> {
     type: OperationType.Replace;
     value: {
-        "with": any;
+        "with": any; // the value to replace the target with
     };
 }
 
 export interface AppendOperation extends OperationBase<AppendOperation> {
     type: OperationType.Append;
     value: {
-        "value": any;
+        "value": any; // the value to append
     };
 }
 
 export interface PrependOperation extends OperationBase<PrependOperation> {
     type: OperationType.Prepend;
     value: {
-        "value": any;
+        "value": any; // the value to prepend
     };
 }
 
 export interface InsertOperation extends OperationBase<InsertOperation> {
     type: OperationType.Insert;
     value: {
-        "index": number | "-";
-        "value": any;
+        "index": number | "-"; // the index to insert at, use '-' to append
+        "value": any; // the value to insert
     };
 }
 
 export interface MoveOperation extends OperationBase<MoveOperation> {
     type: OperationType.Move;
     value: {
-        "index": number | "-";
-        "value": any;
+        "index": number | "-"; // the index to move to, use '-' to append
+        "value"?: any; // the optional value to merge the target item with
     };
 }
 
 export interface MatchOperation extends OperationBase<MatchOperation> {
     type: OperationType.Match;
     value: {
-        "index"?: number | "-";
-        "jsonPath"?: string;
-        "then": any;
+        "index"?: number | "-"; // the index to match against, use '-' to match on the last item
+        "path"?: string; // the json path to match against
+        "pointer"?: string; // the json pointer to match against
+        "then": any; // the operation or value to use if a match is found
     };
 }
 
 export interface SelectOperation extends OperationBase<SelectOperation> {
     type: OperationType.Select;
     value: {
-        "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any;
-        "multiple"?: boolean;
-        "path"?: string;
-        "pointer"?: string;
+        "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any; // select context
+        "multiple"?: boolean; // expect multiple results?
+        "path"?: string; // json path
+        "pointer"?: string; // json pointer
     };
 }
 
@@ -244,7 +243,6 @@ export type Operation = AppendOperation
     | MoveOperation
     | PrependOperation
     | ProcessOperation
-    | RefOperation
     | RemoveOperation
     | ReplaceOperation
     | SelectOperation;

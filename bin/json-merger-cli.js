@@ -11,7 +11,7 @@ program
     .usage("[options] <file ...>")
     .option("-p, --pretty", "pretty-print the output json")
     .option("-o, --output [file]", "the output file. Defaults to stdout")
-    .option("-t, --throw-on-invalid-ref", "throw if a $ref indicator is invalid. Defaults to false")
+    .option("-t, --throw-on-invalid-ref", "throw if a reference does not exist. Defaults to true")
     .option("-i, --indicator-prefix [prefix]", "the indicator prefix. Defaults to $")
     .parse(process.argv);
 

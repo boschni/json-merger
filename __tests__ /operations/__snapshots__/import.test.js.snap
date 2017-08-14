@@ -1,18 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`when processing an object containing an $import identifier it should resolve to a property in the processed file if also a json pointer is given 1`] = `
+exports[`when processing an object containing an $import operation it and $import.process is set to false it and used in an source array item it should merge the $import result with the target 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"b\\": \\"replaced\\"
+		}
+	]
+}"
+`;
+
+exports[`when processing an object containing an $import operation it and $import.process is set to false it should resolve to the unprocessed file 1`] = `
+"{
+	\\"a\\": {
+		\\"bb\\": \\"replaced\\"
+	}
+}"
+`;
+
+exports[`when processing an object containing an $import operation it and $import.process is set to false it should resolve to the unprocessed file and return the referenced value if also a pointer is given 1`] = `
+"{
+	\\"a\\": {
+		\\"with\\": 100
+	}
+}"
+`;
+
+exports[`when processing an object containing an $import operation it and $import.process is set to false it should resolve to undefined if the file does exist but the pointer does not and options.throwOnInvalidRef is false 1`] = `"{}"`;
+
+exports[`when processing an object containing an $import operation it and $import.process is set to false it should resolve to undefined if the file does not exist and options.throwOnInvalidRef is false 1`] = `
+"{
+	\\"a\\": {}
+}"
+`;
+
+exports[`when processing an object containing an $import operation it should resolve to a property in the processed file if also a json pointer is given 1`] = `
 "{
 	\\"a\\": \\"processed\\"
 }"
 `;
 
-exports[`when processing an object containing an $import identifier it should resolve to the processed file 1`] = `
-"{
-	\\"a\\": \\"processed\\"
-}"
-`;
-
-exports[`when processing an object containing an $import identifier it should resolve to the file defined in the $import property 1`] = `
+exports[`when processing an object containing an $import operation it should resolve to the file defined in the $import property 1`] = `
 "{
 	\\"a\\": {
 		\\"b\\": 100
@@ -20,6 +48,12 @@ exports[`when processing an object containing an $import identifier it should re
 }"
 `;
 
-exports[`when processing an object containing an $import identifier it should resolve to undefined if the file does exist but the pointer does not and options.throwOnInvalidRef is false 1`] = `"{}"`;
+exports[`when processing an object containing an $import operation it should resolve to the processed file 1`] = `
+"{
+	\\"a\\": \\"processed\\"
+}"
+`;
 
-exports[`when processing an object containing an $import identifier it should resolve to undefined if the file does not exist and options.throwOnInvalidRef is false 1`] = `"{}"`;
+exports[`when processing an object containing an $import operation it should resolve to undefined if the file does exist but the pointer does not and options.throwOnInvalidRef is false 1`] = `"{}"`;
+
+exports[`when processing an object containing an $import operation it should resolve to undefined if the file does not exist and options.throwOnInvalidRef is false 1`] = `"{}"`;

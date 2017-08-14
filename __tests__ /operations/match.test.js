@@ -59,7 +59,7 @@ describe("when merging two arrays and a source array item has a $match indicator
         expect(result).toMatchSnapshot();
     });
 
-    test("and $match.jsonPath is set it should search for a match in the target array and use $match.then as value", function () {
+    test("and $match.path is set it should search for a match in the target array and use $match.then as value", function () {
 
         const object1 = {
             "a": [
@@ -73,7 +73,35 @@ describe("when merging two arrays and a source array item has a $match indicator
             "a": [
                 {
                     "$match": {
-                        "jsonPath": "$[1]",
+                        "path": "$[1]",
+                        "then": {
+                            "$remove": true
+                        }
+                    }
+                }
+            ]
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $match.pointer is set it should search for a match in the target array and use $match.then as value", function () {
+
+        const object1 = {
+            "a": [
+                1,
+                2,
+                3
+            ]
+        };
+
+        const object2 = {
+            "a": [
+                {
+                    "$match": {
+                        "pointer": "/1",
                         "then": {
                             "$remove": true
                         }
@@ -115,7 +143,7 @@ describe("when merging two arrays and a source array item has a $match indicator
         expect(result).toMatchSnapshot();
     });
 
-    test("it should ignore the item if no matching $match.jsonPath has been found", function () {
+    test("it should ignore the item if no matching $match.path has been found", function () {
 
         const object1 = {
             "a": [
@@ -129,7 +157,7 @@ describe("when merging two arrays and a source array item has a $match indicator
             "a": [
                 {
                     "$match": {
-                        "jsonPath": "$[99]",
+                        "path": "$[99]",
                         "then": {
                             "$remove": true
                         }

@@ -83,12 +83,12 @@ export default class Merger {
 
                 // Is the source an object?
                 if (job.type === SourceType.Object) {
-                    return this._processObjectSource(job.object, target);
+                    return this._processSourceObject(job.object, target);
                 }
 
                 // Or is the source an uri?
                 else if (job.type === SourceType.Uri) {
-                    return this._processUriSource(job.uri, target);
+                    return this._processFileWithRef(job.uri, target);
                 }
             }, result);
         } catch (e) {
@@ -107,17 +107,49 @@ export default class Merger {
         return result;
     }
 
-    private _processObjectSource(object: object, target?: any): any {
-        this.context.enterSource(undefined, object, target);
-        const result = this._processUnknown(object, target);
-        this.context.leaveSource();
-        return result;
+    private _loadFile(path: string): any {
+        // Resolve file path
+        path = this.context.resolveFilePath(path);
+
+        // Check if the resolved file path is already in the cache
+        if (this.fileCache[path] !== undefined) {
+            return this.fileCache[path];
+        }
+
+        let content;
+
+        // Try to read file
+        try {
+            content = fs.readFileSync(path, "utf8");
+        } catch (e) {
+            if (this.config.throwOnInvalidRef) {
+                throw new Error(`The file "${path}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+            }
+        }
+
+        // Parse if a file was found
+        if (content !== undefined) {
+
+            // YAML or JSON?
+            if (/\.ya?ml$/.test(path)) {
+                content = yaml.safeLoad(content, {
+                    filename: path
+                });
+            } else {
+                content = JSON.parse(content);
+            }
+        }
+
+        // Add result to cache
+        this.fileCache[path] = content;
+
+        return content;
     }
 
-    private _processUriSource(uri: string, target?: any) {
-        const [uriPrimary, uriFragment] = uri.split("#");
-        const result = this._processFile(uriPrimary, target);
-        return this._resolveJsonPointer(result, uriFragment);
+    private _loadFileWithRef(ref: string) {
+        const [path, pointer] = ref.split("#");
+        const result = this._loadFile(path);
+        return this._resolveJsonPointer(result, pointer)
     }
 
     private _processFile(path: string, target?: any): any {
@@ -147,55 +179,10 @@ export default class Merger {
         return result;
     }
 
-    private _loadFile(path: string): any {
-        // Resolve file path
-        path = this.context.resolveFilePath(path);
-
-        // Check if the resolved file path is already in the cache
-        if (this.fileCache[path] !== undefined) {
-            return this.fileCache[path];
-        }
-
-        let content;
-
-        // Try to read file
-        try {
-            content = fs.readFileSync(path, "utf8");
-        } catch (e) {
-            if (this.config.throwOnInvalidRef) {
-                throw new Error(`The file "${path}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
-            }
-        }
-
-        // Parse if a file was found
-        if (content !== undefined) {
-
-            // YAML or JSON?
-            if (/\.yaml$/.test(path)) {
-                content = yaml.safeLoad(content, {
-                    filename: path
-                });
-            } else {
-                content = JSON.parse(content);
-            }
-        }
-
-        // Add result to cache
-        this.fileCache[path] = content;
-
-        return content;
-    }
-
-    private _resolveReference(ref: string, target?: any) {
-        // Ref is local pointer
-        if (ref === "" || ref[0] === "#" || ref[0] === "/") {
-            return this._resolveJsonPointer(target, ref);
-        }
-
-        // Ref is file pointer
-        const [filePath, pointer] = ref.split("#");
-        const result = this._loadFile(filePath);
-        return this._resolveJsonPointer(result, pointer)
+    private _processFileWithRef(ref: string, target?: any) {
+        const [path, pointer] = ref.split("#");
+        const result = this._processFile(path, target);
+        return this._resolveJsonPointer(result, pointer);
     }
 
     private _resolveJsonPointer(target: object, pointer?: string): any {
@@ -233,6 +220,13 @@ export default class Merger {
     /**************************************************************************
      * Processing
      **************************************************************************/
+
+    private _processSourceObject(object: object, target?: any): any {
+        this.context.enterSource(undefined, object, target);
+        const result = this._processUnknown(object, target);
+        this.context.leaveSource();
+        return result;
+    }
 
     private _processUnknown(source: any, target?: any, propertyName?: string | number): any {
         let result;
@@ -300,39 +294,41 @@ export default class Merger {
             result = this._processUnknown(operation.value.with, undefined, "with");
         }
 
-        // Handle $ref
-        else if (operation.type === OperationType.Ref) {
-            // Resolve $ref
-            const value = this._resolveReference(operation.value, this.context.currentSource.sourceRoot);
-
-            // Merge with the target
-            result = this._processObjectSource(value, target);
-        }
-
         // Handle $import
         else if (operation.type === OperationType.Import) {
-            // Process file reference
-            const processedReference = this._processUriSource(operation.value);
+            let importResult;
+
+            if (typeof operation.value === "string") {
+                // Process file reference
+                importResult = this._processFileWithRef(operation.value);
+            } else {
+                // Should the file reference be processed or not?
+                if (operation.value.process === false) {
+                    importResult = this._loadFileWithRef(operation.value.file);
+                } else {
+                    importResult = this._processFileWithRef(operation.value.file);
+                }
+            }
 
             // Merge with the target
-            result = this._processObjectSource(processedReference, target);
+            result = this._processSourceObject(importResult, target);
         }
 
         // Handle $merge
         else if (operation.type === OperationType.Merge) {
             // Process $merge.source property without a target
             this.context.enterProperty("source");
-            const processedSourceProperty = this._processObjectSource(operation.value.source);
+            const processedSourceProperty = this._processSourceObject(operation.value.source);
             this.context.leaveProperty();
 
             // Process $merge.with property and use the processed $merge.source property as target
             this.context.enterProperty("with");
-            const processedWithProperty = this._processObjectSource(operation.value.with, processedSourceProperty);
+            const processedWithProperty = this._processSourceObject(operation.value.with, processedSourceProperty);
             this.context.leaveProperty();
 
             // Process $merge result and use the original target as target but do not process operations
             this.context.disableOperations();
-            result = this._processObjectSource(processedWithProperty, target);
+            result = this._processSourceObject(processedWithProperty, target);
             this.context.enableOperations();
         }
 
@@ -351,7 +347,7 @@ export default class Merger {
                 selectValue = this.context.currentSource.sourceRoot;
             } else if (operation.value.from !== undefined) {
                 this.context.enterProperty("from");
-                selectValue = this._processObjectSource(operation.value.from);
+                selectValue = this._processSourceObject(operation.value.from);
                 this.context.leaveProperty();
             } else {
                 selectValue = target;
@@ -385,10 +381,10 @@ export default class Merger {
         // Handle $process
         else if (operation.type === OperationType.Process) {
             // Process the $process property without a target
-            const processedProcessProperty = this._processObjectSource(operation.value);
+            const processedProcessProperty = this._processSourceObject(operation.value);
 
             // Process the processed $process property and use the original target as target
-            result = this._processObjectSource(processedProcessProperty, target);
+            result = this._processSourceObject(processedProcessProperty, target);
         }
 
         // Leave operation property
@@ -427,11 +423,19 @@ export default class Merger {
                     targetItemIndex = operation.value.index === "-" ? target.length - 1 : operation.value.index;
                 }
 
-                // Handle $match.jsonPath
-                else if (operation.value.jsonPath !== undefined) {
+                // Handle $match.path
+                else if (operation.value.path !== undefined) {
                     // Try to find a matching item in the target
-                    const path = jsonpath.paths(target, operation.value.jsonPath)[0];
+                    const path = jsonpath.paths(target, operation.value.path)[0];
                     targetItemIndex = path !== undefined ? path[1] as number : undefined;
+                }
+
+                // Handle $match.pointer
+                else if (operation.value.pointer !== undefined) {
+                    // Try to find a matching item in the target
+                    if (jsonPtr.get(target, operation.value.pointer) !== undefined) {
+                        [targetItemIndex] = jsonPtr.decodePointer(operation.value.pointer)[0];
+                    }
                 }
 
                 // Ignore the item if no match found
