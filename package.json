@@ -7,6 +7,7 @@
     "json-merger": "./bin/json-merger-cli.js"
   },
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {
