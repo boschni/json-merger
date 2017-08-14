@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import * as path from "path";
+import * as nodePath from "path";
 import * as jsonpath from "jsonpath";
 import * as safeEval from "safe-eval";
 import * as jsonPtr from "json-ptr";
@@ -37,13 +37,13 @@ export default class Merger {
         this.processedFileCache = [];
     }
 
-    addFile(uri: string, object: object) {
-        uri = path.resolve(this.config.cwd, uri);
-        this.fileCache[uri] = object;
+    addFile(path: string, object: object) {
+        const resolvedPath = nodePath.resolve(this.config.cwd, path);
+        this.fileCache[resolvedPath] = object;
     }
 
     addFiles(files: FileMap) {
-        Object.keys(files).forEach(uri => this.addFile(uri, files[uri]));
+        Object.keys(files).forEach(path => this.addFile(path, files[path]));
     }
 
     fromObject(object: object) {
@@ -56,13 +56,13 @@ export default class Merger {
         return this._mergeSources(sources);
     }
 
-    fromFile(uri: string) {
-        const sources = [{type: SourceType.Uri, uri} as Source];
+    fromFile(ref: string) {
+        const sources = [{type: SourceType.Ref, ref} as Source];
         return this._mergeSources(sources);
     }
 
-    mergeFiles(uris: string[]) {
-        const sources = uris.map(uri => ({type: SourceType.Uri, uri} as Source));
+    mergeFiles(refs: string[]) {
+        const sources = refs.map(ref => ({type: SourceType.Ref, ref} as Source));
         return this._mergeSources(sources);
     }
 
@@ -86,9 +86,9 @@ export default class Merger {
                     return this._processSourceObject(job.object, target);
                 }
 
-                // Or is the source an uri?
-                else if (job.type === SourceType.Uri) {
-                    return this._processFileWithRef(job.uri, target);
+                // Or is the source a ref?
+                else if (job.type === SourceType.Ref) {
+                    return this._processFileByRef(job.ref, target);
                 }
             }, result);
         } catch (e) {
@@ -109,21 +109,21 @@ export default class Merger {
 
     private _loadFile(path: string): any {
         // Resolve file path
-        path = this.context.resolveFilePath(path);
+        const pathInContext = this.context.resolveFilePath(path);
 
         // Check if the resolved file path is already in the cache
-        if (this.fileCache[path] !== undefined) {
-            return this.fileCache[path];
+        if (this.fileCache[pathInContext] !== undefined) {
+            return this.fileCache[pathInContext];
         }
 
         let content;
 
         // Try to read file
         try {
-            content = fs.readFileSync(path, "utf8");
+            content = fs.readFileSync(pathInContext, "utf8");
         } catch (e) {
             if (this.config.throwOnInvalidRef) {
-                throw new Error(`The file "${path}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+                throw new Error(`The file "${pathInContext}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
             }
         }
 
@@ -131,9 +131,9 @@ export default class Merger {
         if (content !== undefined) {
 
             // YAML or JSON?
-            if (/\.ya?ml$/.test(path)) {
+            if (/\.ya?ml$/.test(pathInContext)) {
                 content = yaml.safeLoad(content, {
-                    filename: path
+                    filename: pathInContext
                 });
             } else {
                 content = JSON.parse(content);
@@ -141,12 +141,12 @@ export default class Merger {
         }
 
         // Add result to cache
-        this.fileCache[path] = content;
+        this.fileCache[pathInContext] = content;
 
         return content;
     }
 
-    private _loadFileWithRef(ref: string) {
+    private _loadFileByRef(ref: string) {
         const [path, pointer] = ref.split("#");
         const result = this._loadFile(path);
         return this._resolveJsonPointer(result, pointer)
@@ -154,32 +154,32 @@ export default class Merger {
 
     private _processFile(path: string, target?: any): any {
         // Resolve file path
-        const contextFilePath = this.context.resolveFilePath(path);
+        const pathInContext = this.context.resolveFilePath(path);
 
         // Check if a match is in the cache
         const processedFiles = this.processedFileCache
-            .filter(x => (x.uri === path || x.uri === contextFilePath) && x.target === target);
+            .filter(x => (x.path === pathInContext) && x.target === target);
 
         // Return the match if found
         if (processedFiles.length > 1) {
             return processedFiles[0].result;
         }
 
-        // Load source
-        const source = this._loadFile(path);
+        // Load file
+        const source = this._loadFile(pathInContext);
 
         // Process source
-        this.context.enterSource(path, source, target);
+        this.context.enterSource(pathInContext, source, target);
         const result = this._processUnknown(source, target);
         this.context.leaveSource();
 
         // Add to processed file cache
-        this.processedFileCache.push({uri: path, target, result});
+        this.processedFileCache.push({path: pathInContext, target, result});
 
         return result;
     }
 
-    private _processFileWithRef(ref: string, target?: any) {
+    private _processFileByRef(ref: string, target?: any) {
         const [path, pointer] = ref.split("#");
         const result = this._processFile(path, target);
         return this._resolveJsonPointer(result, pointer);
@@ -300,13 +300,13 @@ export default class Merger {
 
             if (typeof operation.value === "string") {
                 // Process file reference
-                importResult = this._processFileWithRef(operation.value);
+                importResult = this._processFileByRef(operation.value);
             } else {
                 // Should the file reference be processed or not?
                 if (operation.value.process === false) {
-                    importResult = this._loadFileWithRef(operation.value.file);
+                    importResult = this._loadFileByRef(operation.value.file);
                 } else {
-                    importResult = this._processFileWithRef(operation.value.file);
+                    importResult = this._processFileByRef(operation.value.file);
                 }
             }
 
@@ -555,12 +555,12 @@ export default class Merger {
 
 enum SourceType {
     Object,
-    Uri
+    Ref
 }
 
-interface UriSource {
-    type: SourceType.Uri;
-    uri: string;
+interface RefSource {
+    ref: string;
+    type: SourceType.Ref;
 }
 
 interface ObjectSource {
@@ -568,7 +568,7 @@ interface ObjectSource {
     type: SourceType.Object;
 }
 
-type Source = UriSource
+type Source = RefSource
     | ObjectSource;
 
 /*
@@ -618,13 +618,13 @@ interface ReplaceArrayOperation extends ArrayOperation {
  */
 
 export interface FileMap {
-    [uri: string]: object;
+    [path: string]: object;
 }
 
 interface ProcessedFileCache extends Array<ProcessedFileCacheEntry> {}
 
 interface ProcessedFileCacheEntry {
+    path: string;
     result: any;
     target: object;
-    uri: string;
 }
