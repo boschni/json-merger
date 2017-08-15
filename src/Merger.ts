@@ -133,7 +133,8 @@ export default class Merger {
             // YAML or JSON?
             if (/\.ya?ml$/.test(pathInContext)) {
                 content = yaml.safeLoad(content, {
-                    filename: pathInContext
+                    filename: pathInContext,
+                    schema: yaml.JSON_SCHEMA
                 });
             } else {
                 content = JSON.parse(content);
