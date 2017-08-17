@@ -4,9 +4,7 @@ exports[`when merging two objects it should be possible to escape an indicator b
 "{
 	\\"a\\": {
 		\\"aa\\": \\"original\\",
-		\\"$replace\\": {
-			\\"with\\": \\"not replaced\\"
-		}
+		\\"$replace\\": \\"not replaced\\"
 	}
 }"
 `;
@@ -15,9 +13,7 @@ exports[`when merging two objects it should be possible to escape an indicator w
 "{
 	\\"a\\": {
 		\\"aa\\": \\"original\\",
-		\\"$replace\\": {
-			\\"with\\": \\"not replaced\\"
-		}
+		\\"$replace\\": \\"not replaced\\"
 	}
 }"
 `;

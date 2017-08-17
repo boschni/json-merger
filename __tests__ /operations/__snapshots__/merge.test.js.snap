@@ -1,5 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`when merging two objects and a source property has a $merge indicator it should merge the $merge.source property with the $merge.with property and the result of it should be merged with the target 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"bb\\": \\"with\\"
+	}
+}"
+`;
+
+exports[`when merging two objects and a source property has a $merge indicator it should not process the $merge result before merging with the target 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"original\\",
+		\\"$replace\\": \\"source\\",
+		\\"bb\\": \\"with\\"
+	}
+}"
+`;
+
 exports[`when merging two objects and a source property has a $merge indicator it should process the $merge.source property before being merged with the $merge.with property 1`] = `
 "{
 	\\"a\\": {
@@ -15,27 +34,6 @@ exports[`when merging two objects and a source property has a $merge indicator i
 	\\"a\\": {
 		\\"aa\\": \\"original\\",
 		\\"ba\\": \\"source\\",
-		\\"bb\\": \\"with\\"
-	}
-}"
-`;
-
-exports[`when merging two objects and a source property has a $merge indicator it should merge the $merge.source property with the $merge.with property and the result of it should be merged with the target 1`] = `
-"{
-	\\"a\\": {
-		\\"aa\\": \\"original\\",
-		\\"bb\\": \\"with\\"
-	}
-}"
-`;
-
-exports[`when merging two objects and a source property has a $merge indicator it should not process the $merge result before merging with the target 1`] = `
-"{
-	\\"a\\": {
-		\\"aa\\": \\"original\\",
-		\\"$replace\\": {
-			\\"with\\": \\"source\\"
-		},
 		\\"bb\\": \\"with\\"
 	}
 }"
