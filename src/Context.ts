@@ -212,8 +212,8 @@ export interface MatchOperation extends OperationBase<MatchOperation> {
     type: OperationType.Match;
     value: {
         "index"?: number | "-"; // the index to match against, use '-' to match on the last item
-        "path"?: string; // the json path to match against
-        "pointer"?: string; // the json pointer to match against
+        "path"?: string; // the json pointer to match against
+        "query"?: string; // the json path to match against
         "then": any; // the operation or value to use if a match is found
     };
 }
@@ -223,8 +223,8 @@ export interface SelectOperation extends OperationBase<SelectOperation> {
     value: {
         "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any; // select context
         "multiple"?: boolean; // expect multiple results?
-        "path"?: string; // json path
-        "pointer"?: string; // json pointer
+        "path"?: string; // json pointer
+        "query"?: string; // json path
     };
 }
 

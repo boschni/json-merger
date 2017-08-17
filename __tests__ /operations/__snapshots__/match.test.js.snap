@@ -27,7 +27,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 }"
 `;
 
-exports[`when merging two arrays and a source array item has a $match indicator and $match.pointer is set it should search for a match in the target array and use $match.then as value 1`] = `
+exports[`when merging two arrays and a source array item has a $match indicator and $match.query is set it should search for a match in the target array and use $match.then as value 1`] = `
 "{
 	\\"a\\": [
 		1,
@@ -46,7 +46,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 }"
 `;
 
-exports[`when merging two arrays and a source array item has a $match indicator it should ignore the item if no matching $match.path has been found 1`] = `
+exports[`when merging two arrays and a source array item has a $match indicator it should ignore the item if no matching $match.query has been found 1`] = `
 "{
 	\\"a\\": [
 		1,

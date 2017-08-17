@@ -359,11 +359,11 @@ export default class Merger {
                 selectValue = target;
             }
 
-            // Select based on JSON pointer or path
-            if (operation.value.pointer !== undefined) {
-                result = this._resolveJsonPointer(selectValue, operation.value.pointer);
-            } else if (operation.value.path !== undefined) {
-                result = this._resolveJsonPath(selectValue, operation.value.path);
+            // Select based on JSON pointer or JSON path
+            if (operation.value.path !== undefined) {
+                result = this._resolveJsonPointer(selectValue, operation.value.path);
+            } else if (operation.value.query !== undefined) {
+                result = this._resolveJsonPath(selectValue, operation.value.query);
                 if (operation.value.multiple !== true) {
                     result = result[0];
                 }
@@ -429,18 +429,18 @@ export default class Merger {
                     targetItemIndex = operation.value.index === "-" ? target.length - 1 : operation.value.index;
                 }
 
-                // Handle $match.path
-                else if (operation.value.path !== undefined) {
+                // Handle $match.query
+                else if (operation.value.query !== undefined) {
                     // Try to find a matching item in the target
-                    const path = jsonpath.paths(target, operation.value.path)[0];
+                    const path = jsonpath.paths(target, operation.value.query)[0];
                     targetItemIndex = path !== undefined ? path[1] as number : undefined;
                 }
 
-                // Handle $match.pointer
-                else if (operation.value.pointer !== undefined) {
+                // Handle $match.path
+                else if (operation.value.path !== undefined) {
                     // Try to find a matching item in the target
-                    if (jsonPtr.get(target, operation.value.pointer) !== undefined) {
-                        [targetItemIndex] = jsonPtr.decodePointer(operation.value.pointer)[0];
+                    if (jsonPtr.get(target, operation.value.path) !== undefined) {
+                        [targetItemIndex] = jsonPtr.decodePointer(operation.value.path)[0];
                     }
                 }
 

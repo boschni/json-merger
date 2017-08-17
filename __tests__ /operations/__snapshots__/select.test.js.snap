@@ -5,7 +5,7 @@ exports[`when merging two objects and a source object contains a $select operati
 	\\"a\\": {
 		\\"$select\\": {
 			\\"from\\": \\"source\\",
-			\\"pointer\\": \\"/\\"
+			\\"path\\": \\"/\\"
 		}
 	}
 }"
@@ -17,7 +17,7 @@ exports[`when merging two objects and a source object contains a $select operati
 		\\"a\\": {
 			\\"$select\\": {
 				\\"from\\": \\"sourceRoot\\",
-				\\"pointer\\": \\"/\\"
+				\\"path\\": \\"/\\"
 			}
 		}
 	}
@@ -50,19 +50,19 @@ exports[`when merging two objects and a source object contains a $select operati
 }"
 `;
 
-exports[`when merging two objects and a source object contains a $select operation and $select.path is set it should use the json path to select a value in the target 1`] = `
+exports[`when merging two objects and a source object contains a $select operation and $select.path is set it should use the json pointer to select a value in the target 1`] = `
 "{
 	\\"a\\": \\"should be selected\\"
 }"
 `;
 
-exports[`when merging two objects and a source object contains a $select operation and $select.pointer is set it should use the json pointer to select a value in the target 1`] = `
+exports[`when merging two objects and a source object contains a $select operation and $select.query is set it should use the json path to select a value in the target 1`] = `
 "{
 	\\"a\\": \\"should be selected\\"
 }"
 `;
 
-exports[`when merging two objects and a source object contains a $select operation and a $select.path matching multiple elements is set and $select.multiple is true it should return an array with all matches 1`] = `
+exports[`when merging two objects and a source object contains a $select operation and a $select.query matching multiple elements is set and $select.multiple is true it should return an array with all matches 1`] = `
 "{
 	\\"a\\": [
 		\\"should be selected\\",
@@ -71,7 +71,7 @@ exports[`when merging two objects and a source object contains a $select operati
 }"
 `;
 
-exports[`when merging two objects and a source object contains a $select operation and a $select.path matching multiple elements is set but $select.multiple is not set it should return the first value 1`] = `
+exports[`when merging two objects and a source object contains a $select operation and a $select.query matching multiple elements is set but $select.multiple is not set it should return the first value 1`] = `
 "{
 	\\"a\\": \\"should be selected\\"
 }"

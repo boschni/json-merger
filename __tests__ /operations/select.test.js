@@ -3,7 +3,7 @@ const {testConfig} = require("../__helpers__");
 
 describe("when merging two objects and a source object contains a $select operation", function () {
 
-    test("and $select.pointer is set it should use the json pointer to select a value in the target", function () {
+    test("and $select.path is set it should use the json pointer to select a value in the target", function () {
 
         const object1 = {
             "a": [
@@ -15,7 +15,7 @@ describe("when merging two objects and a source object contains a $select operat
         const object2 = {
             "a": {
                 "$select": {
-                    "pointer": "/1"
+                    "path": "/1"
                 }
             }
         };
@@ -25,7 +25,7 @@ describe("when merging two objects and a source object contains a $select operat
         expect(result).toMatchSnapshot();
     });
 
-    test("and $select.path is set it should use the json path to select a value in the target", function () {
+    test("and $select.query is set it should use the json path to select a value in the target", function () {
 
         const object1 = {
             "a": [
@@ -37,7 +37,7 @@ describe("when merging two objects and a source object contains a $select operat
         const object2 = {
             "a": {
                 "$select": {
-                    "path": "$[1]"
+                    "query": "$[1]"
                 }
             }
         };
@@ -47,7 +47,7 @@ describe("when merging two objects and a source object contains a $select operat
         expect(result).toMatchSnapshot();
     });
 
-    test("and a $select.path matching multiple elements is set but $select.multiple is not set it should return the first value", function () {
+    test("and a $select.query matching multiple elements is set but $select.multiple is not set it should return the first value", function () {
 
         const object1 = {
             "a": [
@@ -59,7 +59,7 @@ describe("when merging two objects and a source object contains a $select operat
         const object2 = {
             "a": {
                 "$select": {
-                    "path": "$[*]"
+                    "query": "$[*]"
                 }
             }
         };
@@ -69,7 +69,7 @@ describe("when merging two objects and a source object contains a $select operat
         expect(result).toMatchSnapshot();
     });
 
-    test("and a $select.path matching multiple elements is set and $select.multiple is true it should return an array with all matches", function () {
+    test("and a $select.query matching multiple elements is set and $select.multiple is true it should return an array with all matches", function () {
 
         const object1 = {
             "a": [
@@ -81,7 +81,7 @@ describe("when merging two objects and a source object contains a $select operat
         const object2 = {
             "a": {
                 "$select": {
-                    "path": "$[*]",
+                    "query": "$[*]",
                     "multiple": true
                 }
             }
@@ -104,7 +104,7 @@ describe("when merging two objects and a source object contains a $select operat
             "a": {
                 "$select": {
                     "from": "target",
-                    "pointer": "/"
+                    "path": "/"
                 }
             }
         };
@@ -126,7 +126,7 @@ describe("when merging two objects and a source object contains a $select operat
             "a": {
                 "$select": {
                     "from": "targetRoot",
-                    "pointer": "/"
+                    "path": "/"
                 }
             }
         };
@@ -148,7 +148,7 @@ describe("when merging two objects and a source object contains a $select operat
             "a": {
                 "$select": {
                     "from": "source",
-                    "pointer": "/"
+                    "path": "/"
                 }
             }
         };
@@ -170,7 +170,7 @@ describe("when merging two objects and a source object contains a $select operat
             "a": {
                 "$select": {
                     "from": "sourceRoot",
-                    "pointer": "/"
+                    "path": "/"
                 }
             }
         };
@@ -196,7 +196,7 @@ describe("when merging two objects and a source object contains a $select operat
                             "$replace": "replaced"
                         }
                     },
-                    "pointer": "/"
+                    "path": "/"
                 }
             }
         };
