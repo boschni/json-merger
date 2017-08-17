@@ -34,7 +34,7 @@ describe("when merging two objects and a source property has an $expression indi
                 }
             };
 
-            jsonMerger.fromObject(object, testConfig());
+            jsonMerger.mergeObject(object, testConfig());
 
             expect("this code").toBe("unreachable");
 
@@ -50,9 +50,7 @@ describe("when merging two objects and a source property has an $expression indi
         const object1 = {
             "a": {
                 "aa": {
-                    "$replace": {
-                        "with": "original"
-                    }
+                    "$replace": "original"
                 }
             }
         };
@@ -73,9 +71,7 @@ describe("when merging two objects and a source property has an $expression indi
         const object1 = {
             "a": {
                 "aa": {
-                    "$replace": {
-                        "with": "original"
-                    }
+                    "$replace": "original"
                 }
             }
         };
@@ -137,9 +133,7 @@ describe("when merging two objects and a source property has an $expression indi
             "$merge": {
                 "source": {
                     "a": {
-                        "$replace": {
-                            "with": "original"
-                        }
+                        "$replace": "original"
                     }
                 },
                 "with": {
@@ -150,7 +144,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -169,7 +163,7 @@ describe("when merging two objects and a source property has an $expression indi
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });

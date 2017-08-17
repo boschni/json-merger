@@ -22,7 +22,7 @@ describe("when processing an object containing an $import operation it", functio
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromObject(object, testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -31,9 +31,7 @@ describe("when processing an object containing an $import operation it", functio
 
         const files = {
             "a.json": {
-                "$replace": {
-                    "with": "processed"
-                }
+                "$replace": "processed"
             }
         };
 
@@ -45,7 +43,7 @@ describe("when processing an object containing an $import operation it", functio
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromObject(object, testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -56,9 +54,7 @@ describe("when processing an object containing an $import operation it", functio
             "a.json": {
                 "b": {
                     "bb": {
-                        "$replace": {
-                            "with": "processed"
-                        }
+                        "$replace": "processed"
                     }
                 }
             }
@@ -72,12 +68,12 @@ describe("when processing an object containing an $import operation it", functio
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromObject(object, testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
 
-    test("should resolve to undefined if the file does not exist and options.throwOnInvalidRef is false", function () {
+    test("should resolve to undefined if the file does not exist and options.errorOnInvalidImport is false", function () {
 
         const object = {
             "a": {
@@ -85,14 +81,14 @@ describe("when processing an object containing an $import operation it", functio
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig({
-            throwOnInvalidRef: false
+        const result = jsonMerger.mergeObject(object, testConfig({
+            errorOnInvalidImport: false
         }));
 
         expect(result).toMatchSnapshot();
     });
 
-    test("should resolve to undefined if the file does exist but the pointer does not and options.throwOnInvalidRef is false", function () {
+    test("should resolve to undefined if the file does exist but the pointer does not and options.errorOnInvalidImport is false", function () {
 
         const files = {
             "a.json": {
@@ -108,14 +104,14 @@ describe("when processing an object containing an $import operation it", functio
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromObject(object, testConfig({
-            throwOnInvalidRef: false
+        const result = jsonMerger.mergeObject(object, testConfig({
+            errorOnInvalidImport: false
         }));
 
         expect(result).toMatchSnapshot();
     });
 
-    test("should throw if the file does not exist and options.throwOnInvalidRef is true", function () {
+    test("should throw if the file does not exist and options.errorOnInvalidImport is true", function () {
 
         try {
 
@@ -125,8 +121,8 @@ describe("when processing an object containing an $import operation it", functio
                 }
             };
 
-            jsonMerger.fromObject(object, testConfig({
-                throwOnInvalidRef: true
+            jsonMerger.mergeObject(object, testConfig({
+                errorOnInvalidImport: true
             }));
 
             expect("this code").toBe("unreachable");
@@ -138,7 +134,7 @@ describe("when processing an object containing an $import operation it", functio
         }
     });
 
-    test("should throw with a nested processing stack trace if the files do exist but the pointer does not exist and options.throwOnInvalidRef is true", function () {
+    test("should throw with a nested processing stack trace if the files do exist but the pointer does not exist and options.errorOnInvalidImport is true", function () {
 
         try {
 
@@ -161,8 +157,8 @@ describe("when processing an object containing an $import operation it", functio
 
             fs.__setJsonMockFiles(files);
 
-            jsonMerger.fromObject(object, testConfig({
-                throwOnInvalidRef: true
+            jsonMerger.mergeObject(object, testConfig({
+                errorOnInvalidImport: true
             }));
 
             expect("this code").toBe("unreachable");
@@ -181,9 +177,7 @@ describe("when processing an object containing an $import operation it", functio
             const files = {
                 "a.json": {
                     "$replace": {
-                        "with": {
-                            "bb": "replaced"
-                        }
+                        "bb": "replaced"
                     }
                 }
             };
@@ -214,9 +208,7 @@ describe("when processing an object containing an $import operation it", functio
 
             const files = {
                 "a.json": {
-                    "$replace": {
-                        "with": 100
-                    }
+                    "$replace": 100
                 }
             };
 
@@ -231,7 +223,7 @@ describe("when processing an object containing an $import operation it", functio
 
             fs.__setJsonMockFiles(files);
 
-            const result = jsonMerger.fromObject(object, testConfig());
+            const result = jsonMerger.mergeObject(object, testConfig());
 
             expect(result).toMatchSnapshot();
         });
@@ -241,9 +233,7 @@ describe("when processing an object containing an $import operation it", functio
             const files = {
                 "a.json": {
                     "$replace": {
-                        "with": {
-                            "b": "replaced"
-                        }
+                        "b": "replaced"
                     }
                 }
             };
@@ -274,7 +264,7 @@ describe("when processing an object containing an $import operation it", functio
             expect(result).toMatchSnapshot();
         });
 
-        test("should resolve to undefined if the file does not exist and options.throwOnInvalidRef is false", function () {
+        test("should resolve to undefined if the file does not exist and options.errorOnInvalidImport is false", function () {
 
             const object = {
                 "a": {
@@ -287,14 +277,14 @@ describe("when processing an object containing an $import operation it", functio
                 }
             };
 
-            const result = jsonMerger.fromObject(object, testConfig({
-                throwOnInvalidRef: false
+            const result = jsonMerger.mergeObject(object, testConfig({
+                errorOnInvalidImport: false
             }));
 
             expect(result).toMatchSnapshot();
         });
 
-        test("should resolve to undefined if the file does exist but the pointer does not and options.throwOnInvalidRef is false", function () {
+        test("should resolve to undefined if the file does exist but the pointer does not and options.errorOnInvalidImport is false", function () {
 
             const files = {
                 "a.json": {
@@ -313,14 +303,14 @@ describe("when processing an object containing an $import operation it", functio
 
             fs.__setJsonMockFiles(files);
 
-            const result = jsonMerger.fromObject(object, testConfig({
-                throwOnInvalidRef: false
+            const result = jsonMerger.mergeObject(object, testConfig({
+                errorOnInvalidImport: false
             }));
 
             expect(result).toMatchSnapshot();
         });
 
-        test("should throw if the file does not exist and options.throwOnInvalidRef is true", function () {
+        test("should throw if the file does not exist and options.errorOnInvalidImport is true", function () {
 
             try {
 
@@ -333,8 +323,8 @@ describe("when processing an object containing an $import operation it", functio
                     }
                 };
 
-                jsonMerger.fromObject(object, testConfig({
-                    throwOnInvalidRef: true
+                jsonMerger.mergeObject(object, testConfig({
+                    errorOnInvalidImport: true
                 }));
 
                 expect("this code").toBe("unreachable");
@@ -346,7 +336,7 @@ describe("when processing an object containing an $import operation it", functio
             }
         });
 
-        test("should throw with a nested processing stack trace if the files do exist but the pointer does not exist and options.throwOnInvalidRef is true", function () {
+        test("should throw with a nested processing stack trace if the files do exist but the pointer does not exist and options.errorOnInvalidImport is true", function () {
 
             try {
 
@@ -372,8 +362,8 @@ describe("when processing an object containing an $import operation it", functio
 
                 fs.__setJsonMockFiles(files);
 
-                jsonMerger.fromObject(object, testConfig({
-                    throwOnInvalidRef: true
+                jsonMerger.mergeObject(object, testConfig({
+                    errorOnInvalidImport: true
                 }));
 
                 expect("this code").toBe("unreachable");

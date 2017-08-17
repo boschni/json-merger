@@ -193,9 +193,7 @@ describe("when merging two objects and a source object contains a $select operat
                 "$select": {
                     "from": {
                         "b": {
-                            "$replace": {
-                                "with": "replaced"
-                            }
+                            "$replace": "replaced"
                         }
                     },
                     "pointer": "/"

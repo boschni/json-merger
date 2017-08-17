@@ -208,9 +208,7 @@ describe("when merging two arrays and a source array item has an $insert indicat
             "a": [
                 {
                     "$append": {
-                        "value": {
-                            "bb": "append"
-                        }
+                        "bb": "append"
                     }
                 },
                 {
@@ -243,9 +241,7 @@ describe("when merging two arrays and a source array item has an $insert indicat
             "a": [
                 {
                     "$prepend": {
-                        "value": {
-                            "bb": "prepend"
-                        }
+                        "bb": "prepend"
                     }
                 },
                 {

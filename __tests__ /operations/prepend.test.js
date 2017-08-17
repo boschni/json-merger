@@ -17,9 +17,7 @@ describe("when merging two arrays and the source item has $prepend", function ()
             "a": [
                 {
                     "$prepend": {
-                        "value": {
-                            "bb": "prepend"
-                        }
+                        "bb": "prepend"
                     }
                 }
             ]
@@ -44,10 +42,8 @@ describe("when merging two arrays and the source item has $prepend", function ()
             "a": [
                 {
                     "$prepend": {
-                        "value": {
-                            "$comment": "this should be stripped",
-                            "bb": "prepend"
-                        }
+                        "$comment": "this should be stripped",
+                        "bb": "prepend"
                     }
                 }
             ]
@@ -72,16 +68,12 @@ describe("when merging two arrays and the source item has $prepend", function ()
             "a": [
                 {
                     "$prepend": {
-                        "value": {
-                            "bb": "prepend 1"
-                        }
+                        "bb": "prepend 1"
                     }
                 },
                 {
                     "$prepend": {
-                        "value": {
-                            "cc": "prepend 2"
-                        }
+                        "cc": "prepend 2"
                     }
                 }
             ]
@@ -104,9 +96,7 @@ test("$prepend on a non array item should do nothing and be stripped", function 
     const object2 = {
         "2b": {
             "$prepend": {
-                "value": {
-                    "2bb": 2
-                }
+                "2bb": 2
             }
         }
     };

@@ -46,31 +46,36 @@ export default class Merger {
         Object.keys(files).forEach(path => this.addFile(path, files[path]));
     }
 
-    fromObject(object: object) {
+    mergeObject(object: object, config?: Config) {
         const sources = [{type: SourceType.Object, object} as Source];
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
-    mergeObjects(objects: object[]) {
+    mergeObjects(objects: object[], config?: Config) {
         const sources = objects.map(object => ({type: SourceType.Object, object} as Source));
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
-    fromFile(ref: string) {
+    mergeFile(ref: string, config?: Config) {
         const sources = [{type: SourceType.Ref, ref} as Source];
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
-    mergeFiles(refs: string[]) {
+    mergeFiles(refs: string[], config?: Config) {
         const sources = refs.map(ref => ({type: SourceType.Ref, ref} as Source));
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
     /**************************************************************************
      * Merge sources
      **************************************************************************/
 
-    private _mergeSources(sources: Source[]): any {
+    private _mergeSources(sources: Source[], config?: Config): any {
+        // Set config if given
+        if (config) {
+            this.setConfig(config);
+        }
+
         // Init result
         let result: any = undefined;
 
@@ -122,8 +127,8 @@ export default class Merger {
         try {
             content = fs.readFileSync(pathInContext, "utf8");
         } catch (e) {
-            if (this.config.throwOnInvalidRef) {
-                throw new Error(`The file "${pathInContext}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+            if (this.config.errorOnInvalidImport) {
+                throw new Error(`The file "${pathInContext}" does not exist. Set options.errorOnInvalidImport to false to suppress this message`);
             }
         }
 
@@ -197,8 +202,8 @@ export default class Merger {
 
         const result = jsonPtr.get(target, pointer);
 
-        if (result === undefined && this.config.throwOnInvalidRef) {
-            throw new Error(`The ref "${pointer}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+        if (result === undefined && this.config.errorOnInvalidImport) {
+            throw new Error(`The ref "${pointer}" does not exist. Set options.errorOnInvalidImport to false to suppress this message`);
         }
 
         return result;
@@ -211,8 +216,8 @@ export default class Merger {
 
         const result = jsonpath.query(target, path);
 
-        if (result === undefined && this.config.throwOnInvalidRef) {
-            throw new Error(`The json path "${path}" does not exist. Set options.throwOnInvalidRef to false to suppress this message`);
+        if (result === undefined && this.config.errorOnInvalidImport) {
+            throw new Error(`The json path "${path}" does not exist. Set options.errorOnInvalidImport to false to suppress this message`);
         }
 
         return result;
@@ -292,7 +297,7 @@ export default class Merger {
 
         // Handle $replace
         else if (operation.type === OperationType.Replace) {
-            result = this._processUnknown(operation.value.with, undefined, "with");
+            result = this._processUnknown(operation.value, undefined, "with");
         }
 
         // Handle $import
@@ -454,13 +459,13 @@ export default class Merger {
 
             // Handle $append
             if (operation && operation.type === OperationType.Append) {
-                const {value} = operation.value;
+                const {value} = operation;
                 appends.push({sourceItemIndex, value});
             }
 
             // Handle $prepend
             else if (operation && operation.type === OperationType.Prepend) {
-                const {value} = operation.value;
+                const {value} = operation;
                 prepends.push({sourceItemIndex, value});
             }
 
@@ -485,7 +490,7 @@ export default class Merger {
 
             // Handle $replace
             else if (operation && operation.type === OperationType.Replace) {
-                const {"with": value} = operation.value;
+                const {value} = operation;
                 replaces.push({sourceItemIndex, targetItemIndex, value});
             }
 

@@ -15,7 +15,7 @@ export default class Context {
     constructor(config: NormalizedConfig) {
         this.config = config;
         this.operationTypeValues = this._getOperationTypeValues();
-        this.operationTypeIndicatorMap = this._getOperationTypeIndicatorMap(this.config.indicatorPrefix);
+        this.operationTypeIndicatorMap = this._getOperationTypeIndicatorMap(this.config.operationPrefix);
         this.indicatorOperationTypeMap = this._getIndicatorOperationTypeMap(this.operationTypeIndicatorMap);
     }
 
@@ -179,23 +179,17 @@ export interface MergeOperation extends OperationBase<MergeOperation> {
 
 export interface ReplaceOperation extends OperationBase<ReplaceOperation> {
     type: OperationType.Replace;
-    value: {
-        "with": any; // the value to replace the target with
-    };
+    value: any; // the value to replace the target with
 }
 
 export interface AppendOperation extends OperationBase<AppendOperation> {
     type: OperationType.Append;
-    value: {
-        "value": any; // the value to append
-    };
+    value: any; // the value to append
 }
 
 export interface PrependOperation extends OperationBase<PrependOperation> {
     type: OperationType.Prepend;
-    value: {
-        "value": any; // the value to prepend
-    };
+    value: any; // the value to prepend
 }
 
 export interface InsertOperation extends OperationBase<InsertOperation> {

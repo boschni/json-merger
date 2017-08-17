@@ -1,23 +1,19 @@
 const jsonMerger = require("../dist");
 const {testConfig} = require("./__helpers__");
 
-describe(".fromObject() should process the object and return", function () {
+describe(".mergeObject() should process the object and return", function () {
 
-    test("the processed object if config.indicatorPrefix is @", function () {
+    test("the processed object if config.operationPrefix is @", function () {
 
         const object = {
             "a": {
-                "@replace": {
-                    "with": 1
-                },
+                "@replace": 1,
             },
-            "$replace": {
-                "with": 2
-            }
+            "$replace": 2
         };
 
-        const result = jsonMerger.fromObject(object, testConfig({
-            indicatorPrefix: "@"
+        const result = jsonMerger.mergeObject(object, testConfig({
+            operationPrefix: "@"
         }));
 
         expect(result).toMatchSnapshot();
@@ -27,13 +23,11 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "$replace": {
-                    "with": 1
-                }
+                "$replace": 1
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig({
+        const result = jsonMerger.mergeObject(object, testConfig({
             stringify: false
         }));
 
@@ -44,13 +38,11 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "$replace": {
-                    "with": 1
-                }
+                "$replace": 1
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig({
+        const result = jsonMerger.mergeObject(object, testConfig({
             stringify: true
         }));
 
@@ -61,13 +53,11 @@ describe(".fromObject() should process the object and return", function () {
 
         const object = {
             "a": {
-                "$replace": {
-                    "with": 1
-                }
+                "$replace": 1
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig({
+        const result = jsonMerger.mergeObject(object, testConfig({
             stringify: "pretty"
         }));
 

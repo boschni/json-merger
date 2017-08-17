@@ -4,23 +4,21 @@ const {testConfig} = require("./__helpers__");
 jest.mock("fs");
 const fs = require("fs");
 
-describe(".fromFile()", function () {
+describe(".mergeFile()", function () {
 
     test("should process a file if it exists and return the processed object if config.stringify is false", function () {
 
         const files = {
             "a.json": {
                 "a": {
-                    "$replace": {
-                        "with": 10
-                    }
+                    "$replace": 10
                 }
             }
         };
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromFile("a.json", testConfig({
+        const result = jsonMerger.mergeFile("a.json", testConfig({
             stringify: false
         }));
 
@@ -32,16 +30,14 @@ describe(".fromFile()", function () {
         const files = {
             "/root/a.json": {
                 "a": {
-                    "$replace": {
-                        "with": 10
-                    }
+                    "$replace": 10
                 }
             }
         };
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromFile("/root/a.json");
+        const result = jsonMerger.mergeFile("/root/a.json");
 
         expect(result).toMatchSnapshot();
     });
@@ -51,37 +47,35 @@ describe(".fromFile()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$replace": {
-                        "with": 10
-                    }
+                    "$replace": 10
                 }
             }
         };
 
         fs.__setJsonMockFiles(files);
 
-        const result = jsonMerger.fromFile("a.json", testConfig({
+        const result = jsonMerger.mergeFile("a.json", testConfig({
             stringify: "pretty"
         }));
 
         expect(result).toMatchSnapshot();
     });
 
-    test("should return undefined if the file does not exist and config.throwOnInvalidRef is false", function () {
+    test("should return undefined if the file does not exist and config.errorOnInvalidImport is false", function () {
 
-        const result = jsonMerger.fromFile("nonExisting.json", testConfig({
-            throwOnInvalidRef: false
+        const result = jsonMerger.mergeFile("nonExisting.json", testConfig({
+            errorOnInvalidImport: false
         }));
 
         expect(result).toBe(undefined);
     });
 
-    test("should throw if the file does not exist and config.throwOnInvalidRef is true", function () {
+    test("should throw if the file does not exist and config.errorOnInvalidImport is true", function () {
 
         try {
 
-            jsonMerger.fromFile("nonExisting.json", testConfig({
-                throwOnInvalidRef: true
+            jsonMerger.mergeFile("nonExisting.json", testConfig({
+                errorOnInvalidImport: true
             }));
 
             expect("this code").toBe("unreachable");
@@ -96,8 +90,7 @@ describe(".fromFile()", function () {
         let yaml = `
         a:
           aa:
-            $replace:
-              with: replaced
+            $replace: replaced
         `;
 
         const files = {
@@ -106,7 +99,7 @@ describe(".fromFile()", function () {
 
         fs.__setJsonMockFiles(files, false);
 
-        const result = jsonMerger.fromFile("a.yaml", testConfig());
+        const result = jsonMerger.mergeFile("a.yaml", testConfig());
 
         expect(result).toMatchSnapshot();
     });

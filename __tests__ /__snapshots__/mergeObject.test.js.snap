@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.mergeObject() should process the object and return a JSON string if config.stringify is true 1`] = `"{\\"a\\":1}"`;
+
+exports[`.mergeObject() should process the object and return a pretty JSON string if config.stringify is 'pretty' 1`] = `
+"{
+	\\"a\\": 1
+}"
+`;
+
+exports[`.mergeObject() should process the object and return the processed object if config.operationPrefix is @ 1`] = `
+"{
+	\\"a\\": 1,
+	\\"$replace\\": {
+		\\"with\\": 2
+	}
+}"
+`;
+
+exports[`.mergeObject() should process the object and return the processed object if config.stringify is false 1`] = `
+Object {
+  "a": 1,
+}
+`;

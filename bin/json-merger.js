@@ -11,15 +11,15 @@ program
     .usage("[options] <file ...>")
     .option("-p, --pretty", "pretty-print the output json")
     .option("-o, --output [file]", "the output file. Defaults to stdout")
-    .option("-t, --throw-on-invalid-ref", "throw if a reference does not exist. Defaults to true")
-    .option("-i, --indicator-prefix [prefix]", "the indicator prefix. Defaults to $")
+    .option("-i, --operation-prefix [prefix]", "the operation prefix. Defaults to $")
+    .option("--error-on-invalid-import", "throw an error if an import does not exist. Defaults to true")
     .parse(process.argv);
 
 // construct config
 var config = {
-    indicatorPrefix: program.indicatorPrefix,
+    operationPrefix: program.operationPrefix,
     stringify: program.pretty ? "pretty" : true,
-    throwOnInvalidRef: program.throwOnInvalidRef
+    errorOnInvalidImport: program.errorOnInvalidImport
 };
 
 // merge the file(s)

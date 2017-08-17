@@ -42,9 +42,7 @@ describe("when merging two objects and a source property has a $merge indicator"
                 "$merge": {
                     "source": {
                         "ba": {
-                            "$replace": {
-                                "with": "source"
-                            }
+                            "$replace": "source"
                         }
                     },
                     "with": {
@@ -75,9 +73,7 @@ describe("when merging two objects and a source property has a $merge indicator"
                     },
                     "with": {
                         "bb": {
-                            "$replace": {
-                                "with": "with"
-                            }
+                            "$replace": "with"
                         }
                     }
                 }
@@ -101,9 +97,7 @@ describe("when merging two objects and a source property has a $merge indicator"
             "a": {
                 "$merge": {
                     "source": {
-                        "$$replace": {
-                            "with": "source"
-                        }
+                        "$$replace": "source"
                     },
                     "with": {
                         "bb": "with"

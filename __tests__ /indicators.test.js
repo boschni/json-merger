@@ -3,7 +3,7 @@ const {testConfig} = require("./__helpers__/index");
 
 describe("when merging two objects", function () {
 
-    test("it should merge non-operation properties starting with the indicator prefix", function () {
+    test("it should merge non-operation properties starting with the operation prefix", function () {
 
         const object1 = {
             "a": {
@@ -32,9 +32,7 @@ describe("when merging two objects", function () {
 
         const object2 = {
             "a": {
-                "$$replace": {
-                    "with": "not replaced"
-                }
+                "$$replace": "not replaced"
             }
         };
 
@@ -54,11 +52,7 @@ describe("when merging two objects", function () {
         const object2 = {
             "a": {
                 "$$replace": {
-                    "with": {
-                        "$replace": {
-                            "with": "not replaced"
-                        }
-                    }
+                    "$replace": "not replaced"
                 }
             }
         };

@@ -14,9 +14,7 @@ describe("when merging two objects and a source property has a $replace indicato
         const object2 = {
             "a": {
                 "$replace": {
-                    "with": {
-                        "bb": "replaced"
-                    }
+                    "bb": "replaced"
                 }
             }
         };
@@ -37,12 +35,10 @@ describe("when merging two objects and a source property has a $replace indicato
         const object2 = {
             "a": {
                 "$replace": {
-                    "with": {
-                        "$merge": {
-                            "source": "notImportant",
-                            "with": {
-                                "bb": "replaced"
-                            }
+                    "$merge": {
+                        "source": "notImportant",
+                        "with": {
+                            "bb": "replaced"
                         }
                     }
                 }
@@ -75,12 +71,10 @@ describe("when merging two arrays and a source array item has a $replace indicat
                 {},
                 {
                     "$replace": {
-                        "with": {
-                            "$merge": {
-                                "source": "notImportant",
-                                "with": {
-                                    "b2": "replaced"
-                                }
+                        "$merge": {
+                            "source": "notImportant",
+                            "with": {
+                                "b2": "replaced"
                             }
                         }
                     }

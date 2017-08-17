@@ -11,16 +11,12 @@ describe(".mergeFiles()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$replace": {
-                        "with": 10
-                    }
+                    "$replace": 10
                 }
             },
             "b.json": {
                 "b": {
-                    "$replace": {
-                        "with": 20
-                    }
+                    "$replace": 20
                 }
             }
         };
@@ -61,9 +57,7 @@ describe(".mergeFiles()", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$replace": {
-                        "with": 10
-                    }
+                    "$replace": 10
                 }
             }
         };
@@ -77,21 +71,21 @@ describe(".mergeFiles()", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("should return undefined if the file does not exist and config.throwOnInvalidRef is false", function () {
+    test("should return undefined if the file does not exist and config.errorOnInvalidImport is false", function () {
 
         const result = jsonMerger.mergeFiles(["nonExisting.json"], testConfig({
-            throwOnInvalidRef: false
+            errorOnInvalidImport: false
         }));
 
         expect(result).toBe(undefined);
     });
 
-    test("should throw if the file does not exist and config.throwOnInvalidRef is true", function () {
+    test("should throw if the file does not exist and config.errorOnInvalidImport is true", function () {
 
         try {
 
             jsonMerger.mergeFiles(["nonExisting.json"], testConfig({
-                throwOnInvalidRef: true
+                errorOnInvalidImport: true
             }));
 
             expect("this code").toBe("unreachable");

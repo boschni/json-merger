@@ -17,9 +17,7 @@ describe("when merging two arrays and a source item has $append", function () {
             "a": [
                 {
                     "$append": {
-                        "value": {
-                            "bb": "append"
-                        }
+                        "bb": "append"
                     }
                 }
             ]
@@ -44,10 +42,8 @@ describe("when merging two arrays and a source item has $append", function () {
             "a": [
                 {
                     "$append": {
-                        "value": {
-                            "$comment": "this should be stripped",
-                            "bb": "append"
-                        }
+                        "$comment": "this should be stripped",
+                        "bb": "append"
                     }
                 }
             ]
@@ -72,16 +68,12 @@ describe("when merging two arrays and a source item has $append", function () {
             "a": [
                 {
                     "$append": {
-                        "value": {
-                            "bb": "append 1"
-                        }
+                        "bb": "append 1"
                     }
                 },
                 {
                     "$append": {
-                        "value": {
-                            "cc": "append 2"
-                        }
+                        "cc": "append 2"
                     }
                 }
             ]
@@ -104,9 +96,7 @@ test("$append on a non array item should do nothing and be stripped", function (
     const object2 = {
         "2b": {
             "$append": {
-                "value": {
-                    "2bb": 2
-                }
+                "2bb": 2
             }
         }
     };

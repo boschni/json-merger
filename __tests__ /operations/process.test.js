@@ -14,9 +14,7 @@ describe("when merging two objects and a source property has a $process indicato
         const object2 = {
             "a": {
                 "$process": {
-                    "$$replace": {
-                        "with": "replaced"
-                    }
+                    "$$replace": "replaced"
                 }
             }
         };
@@ -43,7 +41,7 @@ describe("when merging two objects and a source property has a $process indicato
             }
         };
 
-        const result = jsonMerger.fromObject(object, testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });

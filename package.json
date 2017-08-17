@@ -1,10 +1,10 @@
 {
   "name": "json-merger",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Merge JSON (or YAML) files and objects with indicators like $import $remove $replace $merge etc",
   "main": "dist/index.js",
   "bin": {
-    "json-merger": "./bin/json-merger-cli.js"
+    "json-merger": "./bin/json-merger.js"
   },
   "files": [
     "bin",
@@ -40,6 +40,9 @@
     "select"
   ],
   "author": "Niek Bosch <just.niek@gmail.com>",
+  "contributors": [
+    "Andreas Louv <andreas@louv.dk>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/boschni/json-merger/issues"

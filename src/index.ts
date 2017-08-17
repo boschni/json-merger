@@ -1,9 +1,9 @@
 import Merger from "./Merger";
 import {Config} from "./config";
 
-export function fromObject(object: object, config?: Config) {
+export function mergeObject(object: object, config?: Config) {
     const merger = new Merger(config);
-    return merger.fromObject(object);
+    return merger.mergeObject(object);
 }
 
 export function mergeObjects(objects: object[], config?: Config) {
@@ -11,9 +11,9 @@ export function mergeObjects(objects: object[], config?: Config) {
     return merger.mergeObjects(objects);
 }
 
-export function fromFile(file: string, config?: Config) {
+export function mergeFile(file: string, config?: Config) {
     const merger = new Merger(config);
-    return merger.fromFile(file);
+    return merger.mergeFile(file);
 }
 
 export function mergeFiles(files: string[], config?: Config) {

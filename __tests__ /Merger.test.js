@@ -21,13 +21,13 @@ describe("Merger()", function () {
         fs.__setJsonMockFiles(files);
 
         const merger = new Merger(testConfig());
-        const result1 = merger.fromFile("a.json");
-        const result2 = merger.fromFile("a.json");
+        const result1 = merger.mergeFile("a.json");
+        const result2 = merger.mergeFile("a.json");
 
         expect(result1).toBe(result2);
     });
 
-    test("should cache previously loaded files when calling Merger.fromFile()", function () {
+    test("should cache previously loaded files when calling Merger.mergeFile()", function () {
 
         const files = {
             "a.json": {
@@ -43,8 +43,8 @@ describe("Merger()", function () {
         fs.__setJsonMockFiles(files);
 
         const merger = new Merger(testConfig());
-        merger.fromFile("a.json");
-        merger.fromFile("a.json");
+        merger.mergeFile("a.json");
+        merger.mergeFile("a.json");
 
         expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     });
@@ -73,7 +73,7 @@ describe("Merger()", function () {
         fs.__setJsonMockFiles(files);
 
         const merger = new Merger(testConfig());
-        merger.fromFile("a.json");
+        merger.mergeFile("a.json");
 
         expect(fs.readFileSync).toHaveBeenCalledTimes(2);
     });
