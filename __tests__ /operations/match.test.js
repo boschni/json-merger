@@ -18,7 +18,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "index": 1,
-                        "then": {
+                        "value": {
                             "$remove": true
                         }
                     }
@@ -46,7 +46,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "index": "-",
-                        "then": {
+                        "value": {
                             "$remove": true
                         }
                     }
@@ -74,7 +74,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "query": "$[1]",
-                        "then": {
+                        "value": {
                             "$remove": true
                         }
                     }
@@ -102,7 +102,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "path": "/1",
-                        "then": {
+                        "value": {
                             "$remove": true
                         }
                     }
@@ -130,7 +130,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "index": 99,
-                        "then": {
+                        "value": {
                             "$remove": true
                         }
                     }
@@ -158,7 +158,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "query": "$[99]",
-                        "then": {
+                        "value": {
                             "$remove": true
                         }
                     }
@@ -189,7 +189,7 @@ describe("when merging two arrays and a source array item has a $match indicator
                 {
                     "$match": {
                         "index": 1,
-                        "then": {
+                        "value": {
                             "$comment": "Should be stripped",
                             "b2": "merged"
                         }

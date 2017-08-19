@@ -25,7 +25,9 @@ Table of Contents:
   * [`$remove`](#remove)
   * [`$replace`](#replace)
   * [`$select`](#select)
-  * [`$append`, `$prepend`, `$insert`](#append-prepend-insert)
+  * [`$append`](#append)
+  * [`$prepend`](#prepend)
+  * [`$insert`](#insert)
   * [`$match`](#match)
   * [`$move`](#move)
   * [`$expression`](#expression)
@@ -190,12 +192,43 @@ The object syntax is also supported in an array.
 }
 ```
 
+### `$merge`
 
-### `$remove`
+Use the `$merge` operation to merge objects and arrays.
 
-Use the `$remove` operation to remove a property or array item.
+**a.json**
 
-#### Remove an object property
+```json
+{
+  "$merge": {
+    "source": {
+      "a": {
+        "aa": "some value"
+      }
+    },
+    "with": {
+      "a": {
+        "bb": "some other value"
+      }
+    }
+  }
+}
+```
+
+**Merger.mergeFile(["a.json"])**
+
+```json
+{
+  "a": {
+    "aa": "some value",
+    "bb": "some other value"
+  }
+}
+```
+
+#### Merging with other files
+
+The `$merge` operation is often used in conjunction with the `$import` operation to merge with other files from out the JSON itself.
 
 **a.json**
 
@@ -206,8 +239,8 @@ Use the `$remove` operation to remove a property or array item.
       "$import": "b.json"
     },
     "with": {
-      "prop2": {
-        "$remove": true
+      "a": {
+        "bb": "some other value"
       }
     }
   }
@@ -215,6 +248,33 @@ Use the `$remove` operation to remove a property or array item.
 ```
 
 **b.json**
+
+```json
+{
+  "a": {
+    "aa": "some value"
+  }
+}
+```
+
+**Merger.mergeFile(["a.json"])**
+
+```json
+{
+  "a": {
+    "aa": "some value",
+    "bb": "some other value"
+  }
+}
+```
+
+### `$remove`
+
+Use the `$remove` operation to remove properties and array items.
+
+#### Remove object properties
+
+**a.json**
 
 ```json
 {
@@ -227,7 +287,17 @@ Use the `$remove` operation to remove a property or array item.
 }
 ```
 
-**Merger.mergeFile("a.json")**
+**b.json**
+
+```json
+{
+  "prop2": {
+    "$remove": true
+  }
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
 
 ```json
 {
@@ -237,31 +307,9 @@ Use the `$remove` operation to remove a property or array item.
 }
 ```
 
-#### Remove an array item
+#### Remove array items
 
 **a.json**
-
-```json
-{
-  "$merge": {
-    "source": {
-      "$import": "b.json"
-    },
-    "with": {
-      "someArray": [
-        {
-          "$remove": true
-        },
-        {
-          "$remove": true
-        }
-      ]
-    }
-  }
-}
-```
-
-**b.json**
 
 ```json
 {
@@ -269,11 +317,480 @@ Use the `$remove` operation to remove a property or array item.
 }
 ```
 
-**Merger.mergeFile("a.json")**
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$remove": true
+    },
+    {
+      "$remove": true
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
 
 ```json
 {
   "someArray": [3]
+}
+```
+
+### `$append`
+
+Use the `$append` operation to append an item to an array.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$append": 4
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 2, 3, 4]
+}
+```
+
+### `$prepend`
+
+Use the `$prepend` operation to prepend an item to an array.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$prepend": 4
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [4, 1, 2, 3]
+}
+```
+
+### `$insert`
+
+Use the `$insert` operation to insert an item to an array.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$insert": {
+        "index": 1,
+        "value": 4
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 4, 2, 3]
+}
+```
+
+#### Insert as last item
+
+Set `$import.index` to `-` to insert an item at the end of the array.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$insert": {
+        "index": "-",
+        "value": 4
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 2, 3, 4]
+}
+```
+
+#### Insert before the last item
+
+A negative `$import.index` can be used, indicating an offset from the end of the array. 
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$insert": {
+        "index": -1,
+        "value": 4
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 2, 4, 3]
+}
+```
+
+### `$match`
+
+Use the `$match` operation to search for a specific array item and merge with that item.
+
+#### Match by index
+
+Use `$match.index` to match an array item by index.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$match": {
+        "index": 1,
+        "value": 4
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 4, 3]
+}
+```
+
+#### Match by JSON pointer
+
+Use `$match.path` to match an array item with a JSON pointer.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$match": {
+        "path": "/1",
+        "value": 4
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 4, 3]
+}
+```
+
+#### Match by JSON path
+
+Use `$match.query` to match an array item with a [JSON path](https://www.npmjs.com/package/jsonpath) query.
+The following example will search for an array item containing the value `2` and merge it with the value `4`.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$match": {
+        "query": "$[?(@ == 2)]",
+        "value": 4
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [1, 4, 3]
+}
+```
+
+### `$move`
+
+Use the `$move` operation to move an array item.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$move": {
+        "index": 1
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [2, 1, 3]
+}
+```
+
+#### Move a matched array item
+
+Use the `$match` operation in conjunction with the `$move` operation to move a specific array item.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$match": {
+        "index": 0,
+        "value": {
+          "$move": {
+            "index": 1
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [2, 1, 3]
+}
+```
+
+#### Move a matched array item to the end
+
+Use `-` as `$move.index` value to move an array item to the end.
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$match": {
+        "index": 0,
+        "value": {
+          "$move": {
+            "index": "-"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [2, 3, 1]
+}
+```
+
+#### Move and merge a matched array item
+
+Use `$move.value` to not only move the item but also merge it with a value.
+
+**a.json**
+
+```json
+{
+  "someArray": [
+    {
+      "a": 1
+    },
+    {
+      "a": 2
+    },
+    {
+      "a": 3
+    }
+  ]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$match": {
+        "query": "$[?(@.a == 3)]",
+        "value": {
+          "$move": {
+            "index": 0,
+            "value": {
+              "b": 3
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+**Merger.mergeFiles(["a.json", "b.json"])**
+
+```json
+{
+  "someArray": [
+    {
+      "a": 3,
+      "b": 3
+    },
+    {
+      "a": 1
+    },
+    {
+      "a": 2
+    }
+  ]
 }
 ```
 

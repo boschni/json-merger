@@ -225,7 +225,7 @@ export interface MatchOperationValue {
     "index"?: number | "-"; // the index to match against, use '-' to match on the last item
     "path"?: string; // the json pointer to match against
     "query"?: string; // the json path to match against
-    "then": any; // the operation or value to use if a match is found
+    "value": any; // the operation or value to use if a match is found
 }
 
 export interface SelectOperation extends OperationBase<SelectOperation> {

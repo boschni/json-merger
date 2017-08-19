@@ -466,9 +466,9 @@ export default class Merger {
                 // Set matched target
                 targetItem = target[targetItemIndex];
 
-                // Map source item to $match.then
-                sourceItem = operation.value.then;
-                operation = this.context.getOperation(operation.value.then);
+                // Map source item to $match.value
+                sourceItem = operation.value.value;
+                operation = this.context.getOperation(sourceItem);
             }
 
             // Handle $append
