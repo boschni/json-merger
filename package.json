@@ -1,6 +1,6 @@
 {
   "name": "json-merger",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Merge JSON (or YAML) files and objects with indicators like $import $remove $replace $merge etc",
   "main": "dist/index.js",
   "bin": {
