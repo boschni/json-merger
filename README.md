@@ -285,6 +285,12 @@ The object syntax is also supported in an array.
 
 Use the `$merge` operation to merge objects and arrays.
 
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json");
+```
+
 **a.json**
 
 ```json
@@ -304,12 +310,6 @@ Use the `$merge` operation to merge objects and arrays.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFile("a.json");
-```
-
 **result**
 
 ```json
@@ -324,6 +324,12 @@ var result = jsonMerger.mergeFile("a.json");
 #### Merging with other files
 
 The `$merge` operation is often used in conjunction with the `$import` operation to merge with other files from out the JSON itself.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json");
+```
 
 **a.json**
 
@@ -352,12 +358,6 @@ The `$merge` operation is often used in conjunction with the `$import` operation
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFile("a.json");
-```
-
 **result**
 
 ```json
@@ -374,6 +374,12 @@ var result = jsonMerger.mergeFile("a.json");
 Use the `$remove` operation to remove properties and array items.
 
 #### Remove object properties
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -398,12 +404,6 @@ Use the `$remove` operation to remove properties and array items.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -415,6 +415,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ```
 
 #### Remove array items
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -439,12 +445,6 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -456,6 +456,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ### `$append`
 
 Use the `$append` operation to append an item to an array.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -477,12 +483,6 @@ Use the `$append` operation to append an item to an array.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -494,6 +494,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ### `$prepend`
 
 Use the `$prepend` operation to prepend an item to an array.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -515,12 +521,6 @@ Use the `$prepend` operation to prepend an item to an array.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -532,6 +532,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ### `$insert`
 
 Use the `$insert` operation to insert an item to an array.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -556,12 +562,6 @@ Use the `$insert` operation to insert an item to an array.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -573,6 +573,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 #### Insert as last item
 
 Set `$import.index` to `-` to insert an item at the end of the array.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -597,12 +603,6 @@ Set `$import.index` to `-` to insert an item at the end of the array.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -614,6 +614,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 #### Insert before the last item
 
 A negative `$import.index` can be used, indicating an offset from the end of the array. 
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -638,12 +644,6 @@ A negative `$import.index` can be used, indicating an offset from the end of the
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -659,6 +659,12 @@ Use the `$match` operation to search for a specific array item and merge with th
 #### Match by index
 
 Use `$match.index` to match an array item by index.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -683,12 +689,6 @@ Use `$match.index` to match an array item by index.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -700,6 +700,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 #### Match by JSON pointer
 
 Use `$match.path` to match an array item with a JSON pointer.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -724,12 +730,6 @@ Use `$match.path` to match an array item with a JSON pointer.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -742,6 +742,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 
 Use `$match.query` to match an array item with a [JSON path](https://www.npmjs.com/package/jsonpath) query.
 The following example will search for an array item containing the value `2` and merge it with the value `4`.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -766,12 +772,6 @@ The following example will search for an array item containing the value `2` and
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -783,6 +783,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ### `$move`
 
 Use the `$move` operation to move an array item.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -806,12 +812,6 @@ Use the `$move` operation to move an array item.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -823,6 +823,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 #### Move a matched array item
 
 Use the `$match` operation in conjunction with the `$move` operation to move a specific array item.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -851,12 +857,6 @@ Use the `$match` operation in conjunction with the `$move` operation to move a s
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -868,6 +868,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 #### Move a matched array item to the end
 
 Use `-` as `$move.index` value to move an array item to the end.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -896,12 +902,6 @@ Use `-` as `$move.index` value to move an array item to the end.
 }
 ```
 
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
 **result**
 
 ```json
@@ -913,6 +913,12 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 #### Move and merge a matched array item
 
 Use `$move.value` to not only move the item but also merge it with a value.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
 
 **a.json**
 
@@ -952,12 +958,6 @@ Use `$move.value` to not only move the item but also merge it with a value.
     }
   ]
 }
-```
-
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ```
 
 **result**
