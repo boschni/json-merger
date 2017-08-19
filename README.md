@@ -39,7 +39,9 @@ API
 
 ### `.mergeFile(file: string, config?: Config)`
 
-```js
+**javascript**
+
+```javascript
 var jsonMerger = require("json-merger");
 var result = jsonMerger.mergeFile("a.json");
 ```
@@ -95,6 +97,8 @@ var result = jsonMerger.mergeFile("a.json");
 
 ### `.mergeFiles(files: string[], config?: Config)`
 
+**javascript**
+
 ```javascript
 var jsonMerger = require("json-merger");
 var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
@@ -126,6 +130,8 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ```
 
 ### `.mergeObject(object: object, config?: Config)`
+
+**javascript**
 
 ```javascript
 var jsonMerger = require('json-merger');
@@ -298,7 +304,13 @@ Use the `$merge` operation to merge objects and arrays.
 }
 ```
 
-**Merger.mergeFile(["a.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json");
+```
+
+**result**
 
 ```json
 {
@@ -340,7 +352,13 @@ The `$merge` operation is often used in conjunction with the `$import` operation
 }
 ```
 
-**Merger.mergeFile(["a.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json");
+```
+
+**result**
 
 ```json
 {
@@ -380,7 +398,13 @@ Use the `$remove` operation to remove properties and array items.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -415,7 +439,13 @@ Use the `$remove` operation to remove properties and array items.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -447,7 +477,13 @@ Use the `$append` operation to append an item to an array.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -479,7 +515,13 @@ Use the `$prepend` operation to prepend an item to an array.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -514,7 +556,13 @@ Use the `$insert` operation to insert an item to an array.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -549,7 +597,13 @@ Set `$import.index` to `-` to insert an item at the end of the array.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -584,7 +638,13 @@ A negative `$import.index` can be used, indicating an offset from the end of the
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -623,7 +683,13 @@ Use `$match.index` to match an array item by index.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -658,7 +724,13 @@ Use `$match.path` to match an array item with a JSON pointer.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -694,7 +766,13 @@ The following example will search for an array item containing the value `2` and
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -728,7 +806,13 @@ Use the `$move` operation to move an array item.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -767,7 +851,13 @@ Use the `$match` operation in conjunction with the `$move` operation to move a s
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -806,7 +896,13 @@ Use `-` as `$move.index` value to move an array item to the end.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
@@ -858,7 +954,13 @@ Use `$move.value` to not only move the item but also merge it with a value.
 }
 ```
 
-**Merger.mergeFiles(["a.json", "b.json"])**
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**result**
 
 ```json
 {
