@@ -1,24 +1,23 @@
 # json-merger
 Merge JSON (or YAML) files and objects with operations like $import $remove $replace $merge and more.
 
+WORK IN PROGRESS, expect the API to change until 1.0.0.
+
 Table of Contents:
 ------------------
-* [Merger](#merger)
-* [`.mergeFile("a.json", config?)`](#merge-file)
-* [`.mergeFiles(["a.json", "b.json"], config?)`](#merge-files)
-* [`.mergeObject(object, config?)`](#merge-object)
-* [`.mergeObjects([object1, object2], config?)`](#merge-objects)
-* [`.addFile("b.json", content)`](#add-file)
-* [`.addFiles([{path, content}])`](#add-file)
-* [`.addFileSerializer(regex, serializeFn)`](#add-file)
-* [`.addFileDeserializer(regex, deserializeFn)`](#add-file)
+* [API](#api)
+  * [`Merger`](#merger)
+  * [`.mergeFile(file: string, config?: Config)`](#mergefilefilestringconfigconfig)
+  * [`.mergeFiles(files: string[], config?: Config)`](#mergefilesfilesstringconfigconfig)
+  * [`.mergeObject(object: object, config?: Config)`](#mergeobjectobjectobjectconfigconfig)
+  * [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjectsobjectconfigconfig)
 * [Config](#config)
-  * [cwd: string](#config-cwd)
-  * [files: FileMap](#config-files)
-  * [stringify: boolean](#config-stringify)
-  * [operationPrefix: string](#config-operation-prefix)
-  * [errorOnInvalidImport: boolean](#config-error-on-invalid-import)
-  * [errorOnInvalidSelect: boolean](#config-error-on-invalid-select)
+  * [`cwd: string`](#cwdstring)
+  * [`files: FileMap`](#filesfilemap)
+  * [`stringify: boolean`](#stringifyboolean)
+  * [`operationPrefix: string`](#operationprefixstring)
+  * [`errorOnInvalidImport: boolean`](#erroroninvalidimportboolean)
+  * [`errorOnInvalidSelect: boolean`](#erroroninvalidselectboolean)
 * [Operations](#operations)
   * [`$import`](#import)
   * [`$merge`](#merge)
@@ -35,13 +34,16 @@ Table of Contents:
   * [`$comment`](#comment)
 * [Command line interface `json-merger`](#command-line-interface-json-merger)
 
-Apply operations such as [`$insert`](#append-prepend-insert), [`$match`](#match) and [`$replace`](#replace) to tell the processor how to merge the files.
+API
+---
 
-`.mergeFile("file.json")`
-------------------------
+### `.mergeFile(file: string, config?: Config)`
 
-    var jsonMerger = require("json-merger");
-    var result = jsonMerger.mergeFile("a.json");
+```js
+var jsonMerger = require("json-merger");
+
+var result = jsonMerger.mergeFile("a.json");
+```
 
 **a.json:**
 
@@ -78,7 +80,7 @@ Apply operations such as [`$insert`](#append-prepend-insert), [`$match`](#match)
 }
 ```
 
-Result:
+**result**
 
 ```json
 {
@@ -92,8 +94,40 @@ Result:
 }
 ```
 
-`.mergeObject(object)`
-------------------------
+### `.mergeFiles(files: string[], config?: Config)`
+
+```javascript
+var jsonMerger = require("json-merger");
+
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json:**
+
+```json
+{
+  "a": "some value"
+}
+```
+
+**b.json:**
+
+```json
+{
+  "b": "some other value"
+}
+```
+
+**result**
+
+```json
+{
+  "a": "some value",
+  "b": "some other value"
+}
+```
+
+### `.mergeObject(object: object, config?: Config)`
 
 ```javascript
 var jsonMerger = require('json-merger');
@@ -118,7 +152,7 @@ var result = jsonMerger.mergeObject(object);
 }
 ```
 
-Result:
+**result**
 
 ```json
 {
@@ -131,10 +165,61 @@ Result:
 }
 ```
 
---------
+### `.mergeObjects(objects: object[], config?: Config)`
 
-Operations:
------------
+```javascript
+var jsonMerger = require("json-merger");
+
+var object1 = {
+  a: [1, 1, 1, 1]
+};
+
+var object2 = {
+  a: [2, 2]
+};
+
+var result = jsonMerger.mergeObjects([object1, object2]);
+```
+
+**result**
+
+```json
+{
+  "a": [2, 2, 1, 1]
+}
+```
+
+Config
+------
+
+```typescript
+interface Config {
+    cwd: string;
+    files: FileMap;
+    operationPrefix: string;
+    stringify: boolean | "pretty";
+    errorOnInvalidImport: boolean;
+}
+```
+
+### `cwd: string`
+The current working directory when importing files. Defaults to process.cwd().
+
+### `files: FileMap`
+Object containing paths and the resulting objects that can be imported.
+
+### `operationPrefix: string`
+Use this property to override the prefix to indicate a property is an operation like $import.
+The default prefix is `$` but it is possible to change this to for example `@import`.
+
+### `stringify: boolean | "pretty"`
+Set this property to `true` to stringify the JSON result. Set the property to `"pretty"` if the output should be pretty printed.
+
+### `errorOnInvalidImport: boolean`
+Set this property to `false` to disable throwing errors when an imported file does not exist.
+
+Operations
+----------
 
 ### `$import`
 
