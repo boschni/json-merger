@@ -453,6 +453,108 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
+### `$replace`
+
+Use the `$replace` operation to replace properties and array items.
+
+#### Replace object properties
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "prop1": {
+    "prop1a": "some value"
+  },
+  "prop2": {
+    "prop2a": "some other value"
+  }
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop2": {
+    "$replace": {
+      "prop2b": "replaced value"
+    }
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop1": {
+    "prop1a": "some value"
+  },
+  "prop2": {
+    "prop2b": "replaced value"
+  }
+}
+```
+
+#### Replace array items
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [
+    {
+      "a": 1
+    },
+    {
+      "b": 2
+    }
+  ]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$replace": {
+        "c": 3
+      }
+    }
+  ]
+}
+```
+
+**result**
+
+```json
+{
+  "someArray": [
+    {
+      "c": 3
+    },
+    {
+      "b": 2
+    }
+  ]
+}
+```
+
 ### `$append`
 
 Use the `$append` operation to append an item to an array.
