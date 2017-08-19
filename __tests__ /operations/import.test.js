@@ -182,7 +182,7 @@ describe("when processing an object containing an $import operation it", functio
 
             const object = {
                 "$import": {
-                    "file": "a.json",
+                    "path": "a.json",
                     "process": false
                 }
             };
@@ -213,7 +213,7 @@ describe("when processing an object containing an $import operation it", functio
             const object2 = {
                 "a": {
                     "$import": {
-                        "file": "a.json",
+                        "path": "a.json",
                         "process": false
                     }
                 }
@@ -237,7 +237,7 @@ describe("when processing an object containing an $import operation it", functio
             const object = {
                 "a": {
                     "$import": {
-                        "file": "a.json#/$replace",
+                        "path": "a.json#/$replace",
                         "process": false
                     }
                 }
@@ -272,7 +272,7 @@ describe("when processing an object containing an $import operation it", functio
                 "a": [
                     {
                         "$import": {
-                            "file": "a.json",
+                            "path": "a.json",
                             "process": false
                         }
                     }
@@ -292,7 +292,7 @@ describe("when processing an object containing an $import operation it", functio
                 "a": {
                     "aa": {
                         "$import": {
-                            "file": "non_existing.json",
+                            "path": "non_existing.json",
                             "process": false
                         }
                     }
@@ -317,7 +317,7 @@ describe("when processing an object containing an $import operation it", functio
             const object = {
                 "a": {
                     "$import": {
-                        "file": "a.json#/a/nonExisting",
+                        "path": "a.json#/a/nonExisting",
                         "process": false
                     }
                 }
@@ -339,7 +339,7 @@ describe("when processing an object containing an $import operation it", functio
                 const object = {
                     "a": {
                         "$import": {
-                            "file": "non_existing.json",
+                            "path": "non_existing.json",
                             "process": false
                         }
                     }
@@ -376,7 +376,7 @@ describe("when processing an object containing an $import operation it", functio
                 const object = {
                     "a": {
                         "$import": {
-                            "file": "a.json#/a/b/nonExisting",
+                            "path": "a.json#/a/b/nonExisting",
                             "process": false
                         }
                     }
@@ -463,11 +463,11 @@ describe("when processing an object containing an $import operation it", functio
                 "a": {
                     "$import": [
                         {
-                            "file": "b.json",
+                            "path": "b.json",
                             "process": false
                         },
                         {
-                            "file": "c.json",
+                            "path": "c.json",
                             "process": false
                         }
                     ]

@@ -162,12 +162,12 @@ When defined as an array, `$import` will merge the files in order and return the
 
 Import will process the file before importing by default.
 Meaning all operations in `a.json` will be applied before returning the result.
-Use `$import.process` to disable this behavior, when `false` it will return the unprocessed value.
+Set `$import.process` to false to disable this behavior. When `false` it will return the unprocessed value.
 
 ```json
 {
   "$import": {
-    "file": "a.json",
+    "path": "a.json",
     "process": false
   }
 }
@@ -179,11 +179,11 @@ The object syntax is also supported in an array.
 {
   "$import": [
     {
-      "file": "a.json",
+      "path": "a.json",
       "process": false
     },
     {
-      "file": "b.json",
+      "path": "b.json",
       "process": false
     }
   ]

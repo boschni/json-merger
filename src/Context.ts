@@ -152,7 +152,7 @@ export interface ImportOperation extends OperationBase<ImportOperation> {
 
 export type ImportOperationValue = string // the path to the file to import
     | {
-    "file": string; // the path to the file to import
+    "path": string; // the path to the file to import
     "process": boolean; // indicates if the file should be processed
 };
 

@@ -313,12 +313,12 @@ export default class Merger {
                 } else {
                     // Should the file reference be processed or not?
                     if (source.process === false) {
-                        const file = this._loadFileByRef(source.file);
+                        const file = this._loadFileByRef(source.path);
                         this.context.disableOperations();
                         target = this._processSourceObject(file, target);
                         this.context.enableOperations();
                     } else {
-                        target = this._processFileByRef(source.file, target);
+                        target = this._processFileByRef(source.path, target);
                     }
                 }
                 return target;
