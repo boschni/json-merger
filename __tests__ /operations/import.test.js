@@ -176,6 +176,28 @@ describe("when processing an object containing an $import operation it", functio
 
             const files = {
                 "a.json": {
+                    "$replace": 100
+                }
+            };
+
+            const object = {
+                "$import": {
+                    "file": "a.json",
+                    "process": false
+                }
+            };
+
+            fs.__setJsonMockFiles(files);
+
+            const result = jsonMerger.mergeObject(object, testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("should resolve to the unprocessed file but the operations will be applied when merging with an other object", function () {
+
+            const files = {
+                "a.json": {
                     "$replace": {
                         "bb": "replaced"
                     }
@@ -373,6 +395,90 @@ describe("when processing an object containing an $import operation it", functio
                 expect(e.message).toMatch(`at #/a/$import`);
                 expect(e.message).toMatch(/The ref "\/a\/b\/nonExisting" does not exist/);
             }
+        });
+    });
+
+    describe("and $import is an array containing multiple imports", function () {
+
+        test("should resolve to the processed files and merge them in the order they are defined before returning the result", function () {
+
+            const files = {
+                "a.json": {
+                    "a": {
+                        "aa": {
+                            "$replace": "processed a.a.aa"
+                        }
+                    },
+                    "b": {
+                        "bb": {
+                            "$replace": "processed a.b.bb"
+                        }
+                    }
+                },
+                "b.json": {
+                    "a": {
+                        "bb": "added by b.json"
+                    },
+                    "b": {
+                        "$replace": "replaced by b.json"
+                    }
+                }
+            };
+
+            const object = {
+                "a": {
+                    "$import": ["a.json", "b.json"]
+                }
+            };
+
+            fs.__setJsonMockFiles(files);
+
+            const result = jsonMerger.mergeObject(object, testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("should resolve to the unprocessed files and merge them in the order they are defined before returning the result", function () {
+
+            const files = {
+                "b.json": {
+                    "$replace": {
+                        "bb": "replaced"
+                    }
+                },
+                "c.json": {
+                    "$replace": {
+                        "cc": "replaced"
+                    }
+                }
+            };
+
+            const object1 = {
+                "a": {
+                    "aa": "original"
+                }
+            };
+
+            const object2 = {
+                "a": {
+                    "$import": [
+                        {
+                            "file": "b.json",
+                            "process": false
+                        },
+                        {
+                            "file": "c.json",
+                            "process": false
+                        }
+                    ]
+                }
+            };
+
+            fs.__setJsonMockFiles(files);
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
         });
     });
 });

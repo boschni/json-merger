@@ -6,7 +6,7 @@ import * as jsonPtr from "json-ptr";
 import * as yaml from "js-yaml";
 import {normalize as normalizeConfig, Config, NormalizedConfig} from "./config";
 import {isObject} from "./utils";
-import Context, {Operation, OperationType} from "./Context";
+import Context, {ImportOperationValue, Operation, OperationType} from "./Context";
 import MergerError from "./MergerError";
 
 export default class Merger {
@@ -302,22 +302,36 @@ export default class Merger {
 
         // Handle $import
         else if (operation.type === OperationType.Import) {
-            let importResult;
+            const sources: ImportOperationValue[] = Array.isArray(operation.value) ? operation.value : [operation.value];
 
-            if (typeof operation.value === "string") {
-                // Process file reference
-                importResult = this._processFileByRef(operation.value);
-            } else {
-                // Should the file reference be processed or not?
-                if (operation.value.process === false) {
-                    importResult = this._loadFileByRef(operation.value.file);
+            // Process and merge sources
+            const importResult = sources.reduce((target: any, source) => {
+
+                if (typeof source === "string") {
+                    // Process file reference
+                    target = this._processFileByRef(source, target);
                 } else {
-                    importResult = this._processFileByRef(operation.value.file);
+                    // Should the file reference be processed or not?
+                    if (source.process === false) {
+                        const file = this._loadFileByRef(source.file);
+                        this.context.disableOperations();
+                        target = this._processSourceObject(file, target);
+                        this.context.enableOperations();
+                    } else {
+                        target = this._processFileByRef(source.file, target);
+                    }
                 }
-            }
+                return target;
+            }, undefined);
 
             // Merge with the target
+            if (target === undefined) {
+                this.context.disableOperations();
+            }
             result = this._processSourceObject(importResult, target);
+            if (target === undefined) {
+                this.context.enableOperations();
+            }
         }
 
         // Handle $merge

@@ -147,12 +147,14 @@ export interface OperationBase<T> {
 
 export interface ImportOperation extends OperationBase<ImportOperation> {
     type: OperationType.Import;
-    value: string // the path to the file to import
-        | {
-        "file": string; // the path to the file to import
-        "process": boolean; // indicates if the file should be processed
-    };
+    value: ImportOperationValue | ImportOperationValue[];
 }
+
+export type ImportOperationValue = string // the path to the file to import
+    | {
+    "file": string; // the path to the file to import
+    "process": boolean; // indicates if the file should be processed
+};
 
 export interface RemoveOperation extends OperationBase<RemoveOperation> {
     type: OperationType.Remove;
@@ -171,10 +173,12 @@ export interface ExpressionOperation extends OperationBase<ExpressionOperation> 
 
 export interface MergeOperation extends OperationBase<MergeOperation> {
     type: OperationType.Merge;
-    value: {
-        "source": any; // the value to merge
-        "with": any; // the value to merge with
-    };
+    value: MergeOperationValue;
+}
+
+export interface MergeOperationValue {
+    "source": any; // the value to merge
+    "with": any; // the value to merge with
 }
 
 export interface ReplaceOperation extends OperationBase<ReplaceOperation> {
@@ -194,38 +198,46 @@ export interface PrependOperation extends OperationBase<PrependOperation> {
 
 export interface InsertOperation extends OperationBase<InsertOperation> {
     type: OperationType.Insert;
-    value: {
-        "index": number | "-"; // the index to insert at, use '-' to append
-        "value": any; // the value to insert
-    };
+    value: InsertOperationValue;
+}
+
+export interface InsertOperationValue {
+    "index": number | "-"; // the index to insert at, use '-' to append
+    "value": any; // the value to insert
 }
 
 export interface MoveOperation extends OperationBase<MoveOperation> {
     type: OperationType.Move;
-    value: {
-        "index": number | "-"; // the index to move to, use '-' to append
-        "value"?: any; // the optional value to merge the target item with
-    };
+    value: MoveOperationValue;
+}
+
+export interface MoveOperationValue {
+    "index": number | "-"; // the index to move to, use '-' to append
+    "value"?: any; // the optional value to merge the target item with
 }
 
 export interface MatchOperation extends OperationBase<MatchOperation> {
     type: OperationType.Match;
-    value: {
-        "index"?: number | "-"; // the index to match against, use '-' to match on the last item
-        "path"?: string; // the json pointer to match against
-        "query"?: string; // the json path to match against
-        "then": any; // the operation or value to use if a match is found
-    };
+    value: MatchOperationValue;
+}
+
+export interface MatchOperationValue {
+    "index"?: number | "-"; // the index to match against, use '-' to match on the last item
+    "path"?: string; // the json pointer to match against
+    "query"?: string; // the json path to match against
+    "then": any; // the operation or value to use if a match is found
 }
 
 export interface SelectOperation extends OperationBase<SelectOperation> {
     type: OperationType.Select;
-    value: {
-        "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any; // select context
-        "multiple"?: boolean; // expect multiple results?
-        "path"?: string; // json pointer
-        "query"?: string; // json path
-    };
+    value: SelectOperationValue;
+}
+
+export interface SelectOperationValue {
+    "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any; // select context
+    "multiple"?: boolean; // expect multiple results?
+    "path"?: string; // json pointer
+    "query"?: string; // json path
 }
 
 export type Operation = AppendOperation
