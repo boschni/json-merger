@@ -7,17 +7,17 @@ Table of Contents:
 ------------------
 * [API](#api)
   * [`Merger`](#merger)
-  * [`.mergeFile(file: string, config?: Config)`](#mergefilefilestringconfigconfig)
-  * [`.mergeFiles(files: string[], config?: Config)`](#mergefilesfilesstringconfigconfig)
-  * [`.mergeObject(object: object, config?: Config)`](#mergeobjectobjectobjectconfigconfig)
-  * [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjectsobjectconfigconfig)
+  * [`.mergeFile(file: string, config?: Config)`](#mergefilefile-string-config-config)
+  * [`.mergeFiles(files: string[], config?: Config)`](#mergefilesfiles-string-config-config)
+  * [`.mergeObject(object: object, config?: Config)`](#mergeobjectobject-object-config-config)
+  * [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjects-object-config-config)
 * [Config](#config)
-  * [`cwd: string`](#cwdstring)
-  * [`files: FileMap`](#filesfilemap)
-  * [`stringify: boolean`](#stringifyboolean)
-  * [`operationPrefix: string`](#operationprefixstring)
-  * [`errorOnInvalidImport: boolean`](#erroroninvalidimportboolean)
-  * [`errorOnInvalidSelect: boolean`](#erroroninvalidselectboolean)
+  * [`cwd: string`](#cwd-string)
+  * [`files: FileMap`](#files-filemap)
+  * [`stringify: boolean`](#stringify-boolean)
+  * [`operationPrefix: string`](#operationprefix-string)
+  * [`errorOnInvalidImport: boolean`](#erroroninvalidimport-boolean)
+  * [`errorOnInvalidSelect: boolean`](#erroroninvalidselect-boolean)
 * [Operations](#operations)
   * [`$import`](#import)
   * [`$merge`](#merge)
@@ -41,7 +41,6 @@ API
 
 ```js
 var jsonMerger = require("json-merger");
-
 var result = jsonMerger.mergeFile("a.json");
 ```
 
@@ -98,7 +97,6 @@ var result = jsonMerger.mergeFile("a.json");
 
 ```javascript
 var jsonMerger = require("json-merger");
-
 var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ```
 
