@@ -15,7 +15,7 @@ describe("when merging two objects and a source object contains a $select operat
         const object2 = {
             "a": {
                 "$select": {
-                    "path": "/1"
+                    "path": "/a/1"
                 }
             }
         };
@@ -37,7 +37,7 @@ describe("when merging two objects and a source object contains a $select operat
         const object2 = {
             "a": {
                 "$select": {
-                    "query": "$[1]"
+                    "query": "$.a[1]"
                 }
             }
         };
@@ -50,16 +50,16 @@ describe("when merging two objects and a source object contains a $select operat
     test("and a $select.query matching multiple elements is set but $select.multiple is not set it should return the first value", function () {
 
         const object1 = {
-            "a": [
-                "should be selected",
-                "should not be selected"
+            "targetProp": [
+                "should be the value of sourceProp",
+                "object1/targetProp/1"
             ]
         };
 
         const object2 = {
-            "a": {
+            "sourceProp": {
                 "$select": {
-                    "query": "$[*]"
+                    "query": "$.targetProp[*]"
                 }
             }
         };
@@ -72,16 +72,22 @@ describe("when merging two objects and a source object contains a $select operat
     test("and a $select.query matching multiple elements is set and $select.multiple is true it should return an array with all matches", function () {
 
         const object1 = {
-            "a": [
+            "targetProp": [
                 "should be selected",
                 "should also be selected"
+            ],
+            "sharedProp": [
+                "should be merged",
+                "should be merged",
+                "should be merged and visible"
             ]
         };
 
         const object2 = {
-            "a": {
+            "sharedProp": {
                 "$select": {
-                    "query": "$[*]",
+                    "from": "target",
+                    "query": "$.targetProp[*]",
                     "multiple": true
                 }
             }
@@ -95,16 +101,14 @@ describe("when merging two objects and a source object contains a $select operat
     test("and $select.from is set to 'target' it should select from the target", function () {
 
         const object1 = {
-            "a": [
-                "target"
-            ]
+            "targetProp": "should be the value of sharedProp",
+            "sharedProp": "object1.sharedProp"
         };
 
         const object2 = {
-            "a": {
+            "sharedProp": {
                 "$select": {
-                    "from": "target",
-                    "path": "/"
+                    "path": "/targetProp"
                 }
             }
         };
@@ -114,18 +118,39 @@ describe("when merging two objects and a source object contains a $select operat
         expect(result).toMatchSnapshot();
     });
 
-    test("and $select.from is set to 'targetRoot' it should select from the target root", function () {
+    test("and $select.from is set to 'currentTarget' it should select from the current target", function () {
 
         const object1 = {
-            "a": [
-                "target"
-            ]
+            "targetProp": "should be the value of sharedProp",
+            "sharedProp": "object1.sharedProp"
         };
 
         const object2 = {
-            "a": {
+            "sharedProp": {
                 "$select": {
-                    "from": "targetRoot",
+                    "from": "currentTarget",
+                    "path": "/targetProp"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $select.from is set to 'currentTargetProperty' it should select from the current target property", function () {
+
+        const object1 = {
+            "targetProp": "object1.targetProp",
+            "sharedProp": "should be the value of sharedProp"
+        };
+
+        const object2 = {
+            "sourceProp": "object2.sourceProp",
+            "sharedProp": {
+                "$select": {
+                    "from": "currentTargetProperty",
                     "path": "/"
                 }
             }
@@ -139,16 +164,16 @@ describe("when merging two objects and a source object contains a $select operat
     test("and $select.from is set to 'source' it should select from the source", function () {
 
         const object1 = {
-            "a": [
-                "target"
-            ]
+            "targetProp": "object1.targetProp",
+            "sharedProp": "object1.sharedProp"
         };
 
         const object2 = {
-            "a": {
+            "sourceProp": "should be the value of sharedProp",
+            "sharedProp": {
                 "$select": {
                     "from": "source",
-                    "path": "/"
+                    "path": "/sourceProp"
                 }
             }
         };
@@ -158,19 +183,40 @@ describe("when merging two objects and a source object contains a $select operat
         expect(result).toMatchSnapshot();
     });
 
-    test("and $select.from is set to 'sourceRoot' it should select from the source root", function () {
+    test("and $select.from is set to 'currentSource' it should select from the current source", function () {
 
         const object1 = {
-            "a": [
-                "target"
-            ]
+            "targetProp": "object1.targetProp",
+            "sharedProp": "object1.sharedProp"
         };
 
         const object2 = {
-            "a": {
+            "sourceProp": "should be the value of sharedProp",
+            "sharedProp": {
                 "$select": {
-                    "from": "sourceRoot",
-                    "path": "/"
+                    "from": "currentSource",
+                    "path": "/sourceProp"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $select.from is set to 'currentSourceProperty' it should select from the current source property", function () {
+
+        const object1 = {
+            "targetProp": "object1.targetProp",
+            "sharedProp": "object1.sharedProp"
+        };
+
+        const object2 = {
+            "sharedProp": {
+                "$select": {
+                    "from": "currentSourceProperty",
+                    "path": "/$select/path"
                 }
             }
         };
@@ -183,18 +229,15 @@ describe("when merging two objects and a source object contains a $select operat
     test("and $select.from is set to a different value it should process the $select.from value and select from the result", function () {
 
         const object1 = {
-            "a": [
-                "target"
-            ]
+            "targetProp": "object1.targetProp",
+            "sharedProp": "object1.sharedProp"
         };
 
         const object2 = {
-            "a": {
+            "sharedProp": {
                 "$select": {
                     "from": {
-                        "b": {
-                            "$replace": "replaced"
-                        }
+                        "$replace": "should be the value of sharedProp"
                     },
                     "path": "/"
                 }
@@ -204,5 +247,206 @@ describe("when merging two objects and a source object contains a $select operat
         const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
         expect(result).toMatchSnapshot();
+    });
+
+    describe("and the source object is within a $merge.with operation", function () {
+
+        test("and $select.from is set to 'target' it should select from the target", function () {
+
+            const object1 = {
+                "targetProp": "should be the value of mergeSharedProp",
+                "sharedProp": "object1.sharedProp"
+            };
+
+            const object2 = {
+                "sourceProp": "object2.sourceProperty",
+                "sharedProp": {
+                    "$merge": {
+                        "source": {
+                            "mergeSourceProp": "$merge.source.mergeSourceProp",
+                            "mergeSharedProp": "$merge.source.mergeSharedProp"
+                        },
+                        "with": {
+                            "mergeWithProp": "$merge.with.mergeWithProp",
+                            "mergeSharedProp": {
+                                "$select": {
+                                    "from": "target",
+                                    "path": "/targetProp"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("and $select.from is set to 'currentTarget' it should select from the current target", function () {
+
+            const object1 = {
+                "targetProp": "object1.targetProp",
+                "sharedProp": "object1.sharedProp"
+            };
+
+            const object2 = {
+                "sourceProp": "object2.sourceProperty",
+                "sharedProp": {
+                    "$merge": {
+                        "source": {
+                            "mergeSourceProp": "should be the value of mergeSharedProp",
+                            "mergeSharedProp": "$merge.source.mergeSharedProp"
+                        },
+                        "with": {
+                            "mergeWithProp": "$merge.with.mergeWithProp",
+                            "mergeSharedProp": {
+                                "$select": {
+                                    "from": "currentTarget",
+                                    "path": "/mergeSourceProp"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("and $select.from is set to 'currentTargetProperty' it should select from the current target property", function () {
+
+            const object1 = {
+                "targetProp": "object1.targetProp",
+                "sharedProp": "object1.sharedProp"
+            };
+
+            const object2 = {
+                "sourceProp": "object2.sourceProperty",
+                "sharedProp": {
+                    "$merge": {
+                        "source": {
+                            "mergeSourceProp": "$merge.source.mergeSourceProp",
+                            "mergeSharedProp": "should be the value of mergeSharedProp"
+                        },
+                        "with": {
+                            "mergeWithProp": "$merge.with.mergeWithProp",
+                            "mergeSharedProp": {
+                                "$select": {
+                                    "from": "currentTargetProperty",
+                                    "path": "/"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("and $select.from is set to 'source' it should select from the source", function () {
+
+            const object1 = {
+                "targetProp": "object1.targetProp",
+                "sharedProp": "object1.sharedProp"
+            };
+
+            const object2 = {
+                "sourceProp": "should be the value of mergeSharedProp",
+                "sharedProp": {
+                    "$merge": {
+                        "source": {
+                            "mergeSourceProp": "$merge.source.mergeSourceProp",
+                            "mergeSharedProp": "$merge.source.mergeSharedProp"
+                        },
+                        "with": {
+                            "mergeWithProp": "$merge.with.mergeWithProp",
+                            "mergeSharedProp": {
+                                "$select": {
+                                    "from": "source",
+                                    "path": "/sourceProp"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("and $select.from is set to 'currentSource' it should select from the current source", function () {
+
+            const object1 = {
+                "targetProp": "object1.targetProp",
+                "sharedProp": "object1.sharedProp"
+            };
+
+            const object2 = {
+                "sourceProp": "object2.sourceProperty",
+                "sharedProp": {
+                    "$merge": {
+                        "source": {
+                            "mergeSourceProp": "$merge.source.mergeSourceProp",
+                            "mergeSharedProp": "$merge.source.mergeSharedProp"
+                        },
+                        "with": {
+                            "mergeWithProp": "should be the value of mergeSharedProp",
+                            "mergeSharedProp": {
+                                "$select": {
+                                    "from": "currentSource",
+                                    "path": "/mergeWithProp"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
+
+        test("and $select.from is set to 'currentSourceProperty' it should select from the current source property", function () {
+
+            const object1 = {
+                "targetProp": "object1.targetProp",
+                "sharedProp": "object1.sharedProp"
+            };
+
+            const object2 = {
+                "sourceProp": "object2.sourceProperty",
+                "sharedProp": {
+                    "$merge": {
+                        "source": {
+                            "mergeSourceProp": "$merge.source.mergeSourceProp",
+                            "mergeSharedProp": "$merge.source.mergeSharedProp"
+                        },
+                        "with": {
+                            "mergeWithProp": "$merge.with.mergeWithProp",
+                            "mergeSharedProp": {
+                                "$select": {
+                                    "from": "currentSourceProperty",
+                                    "path": "/$select/path"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+            expect(result).toMatchSnapshot();
+        });
     });
 });

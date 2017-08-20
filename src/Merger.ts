@@ -297,7 +297,7 @@ export default class Merger {
 
         // Handle $replace
         else if (operation.type === OperationType.Replace) {
-            result = this._processUnknown(operation.value, undefined, "with");
+            result = this._processUnknown(operation.value);
         }
 
         // Handle $import
@@ -354,34 +354,43 @@ export default class Merger {
 
         // Handle $select
         else if (operation.type === OperationType.Select) {
-            let selectValue;
+            let selectContext;
 
             // Determine the select context
             if (operation.value.from === "target") {
-                selectValue = target;
+                selectContext = this.context.currentSource.target;
+            } else if (operation.value.from === "currentTarget") {
+                selectContext = this.context.currentSource.currentTarget;
+            } else if (operation.value.from === "currentTargetProperty") {
+                selectContext = target;
             } else if (operation.value.from === "source") {
-                selectValue = operation.source;
-            } else if (operation.value.from === "targetRoot") {
-                selectValue = this.context.currentSource.targetRoot;
-            } else if (operation.value.from === "sourceRoot") {
-                selectValue = this.context.currentSource.sourceRoot;
+                selectContext = this.context.currentSource.source;
+            } else if (operation.value.from === "currentSource") {
+                selectContext = this.context.currentSource.currentSource;
+            } else if (operation.value.from === "currentSourceProperty") {
+                selectContext = operation.source;
             } else if (operation.value.from !== undefined) {
                 this.context.enterProperty("from");
-                selectValue = this._processSourceObject(operation.value.from);
+                selectContext = this._processSourceObject(operation.value.from);
                 this.context.leaveProperty();
             } else {
-                selectValue = target;
+                selectContext = this.context.currentSource.target;
             }
+
+            let selectValue;
 
             // Select based on JSON pointer or JSON path
             if (operation.value.path !== undefined) {
-                result = this._resolveJsonPointer(selectValue, operation.value.path);
+                selectValue = this._resolveJsonPointer(selectContext, operation.value.path);
             } else if (operation.value.query !== undefined) {
-                result = this._resolveJsonPath(selectValue, operation.value.query);
+                selectValue = this._resolveJsonPath(selectContext, operation.value.query);
                 if (operation.value.multiple !== true) {
-                    result = result[0];
+                    selectValue = selectValue[0];
                 }
             }
+
+            // Merge with the target
+            result = this._processSourceObject(selectValue, target);
         }
 
         // Handle $expression
@@ -389,9 +398,9 @@ export default class Merger {
             // Create eval context
             const evalContext = {
                 $source: operation.source,
-                $sourceRoot: this.context.currentSource.sourceRoot,
+                $sourceRoot: this.context.currentSource.currentSource,
                 $target: target,
-                $targetRoot: this.context.currentSource.targetRoot
+                $targetRoot: this.context.currentSource.currentTarget
             };
 
             // Evaluate the expression

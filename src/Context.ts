@@ -81,13 +81,23 @@ export default class Context {
         return path.resolve(cwd, filePath);
     }
 
-    enterSource(filePath?: string, sourceRoot?: any, targetRoot?: any) {
-        if (this.currentSource) {
-            filePath = filePath !== undefined ? filePath : this.currentSource.filePath;
-            targetRoot = targetRoot !== undefined ? targetRoot : this.currentSource.targetRoot;
-            sourceRoot = sourceRoot !== undefined ? sourceRoot : this.currentSource.sourceRoot;
+    enterSource(filePath?: string, source?: any, target?: any) {
+        const newSource: Partial<Source> = {
+            path: []
+        };
+
+        newSource.currentSource = source;
+        newSource.currentTarget = target;
+
+        if (filePath === undefined && this.currentSource) {
+            newSource.source = this.currentSource.source;
+            newSource.target = this.currentSource.target;
+        } else {
+            newSource.source = newSource.currentSource;
+            newSource.target = newSource.currentTarget;
         }
-        this.currentSource = {filePath, path: [], targetRoot, sourceRoot};
+
+        this.currentSource = newSource as Source;
         this.sourceStack.push(this.currentSource);
     }
 
@@ -234,7 +244,13 @@ export interface SelectOperation extends OperationBase<SelectOperation> {
 }
 
 export interface SelectOperationValue {
-    "from"?: "target" | "targetRoot" | "source" | "sourceRoot" | any; // select context
+    "from"?: "target"
+        | "currentTarget"
+        | "currentTargetProperty"
+        | "source"
+        | "currentSource"
+        | "currentSourceProperty"
+        | any; // select context
     "multiple"?: boolean; // expect multiple results?
     "path"?: string; // json pointer
     "query"?: string; // json path
@@ -256,6 +272,8 @@ export type Operation = AppendOperation
 export interface Source {
     filePath: string;
     path: Array<string | number>;
-    sourceRoot: any;
-    targetRoot: any;
+    target: any; // the file target
+    source: any; // the file source
+    currentSource: any; // the current source
+    currentTarget: any; // the current target
 }
