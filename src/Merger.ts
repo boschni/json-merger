@@ -357,18 +357,18 @@ export default class Merger {
             let selectContext;
 
             // Determine the select context
-            if (operation.value.from === "target") {
-                selectContext = this.context.currentSource.target;
+            if (operation.value.from === "currentSource") {
+                selectContext = this.context.currentSource.currentSource;
+            } else if (operation.value.from === "currentSourceProperty") {
+                selectContext = operation.source;
             } else if (operation.value.from === "currentTarget") {
                 selectContext = this.context.currentSource.currentTarget;
             } else if (operation.value.from === "currentTargetProperty") {
                 selectContext = target;
             } else if (operation.value.from === "source") {
                 selectContext = this.context.currentSource.source;
-            } else if (operation.value.from === "currentSource") {
-                selectContext = this.context.currentSource.currentSource;
-            } else if (operation.value.from === "currentSourceProperty") {
-                selectContext = operation.source;
+            } else if (operation.value.from === "target") {
+                selectContext = this.context.currentSource.target;
             } else if (operation.value.from !== undefined) {
                 this.context.enterProperty("from");
                 selectContext = this._processSourceObject(operation.value.from);
@@ -397,10 +397,12 @@ export default class Merger {
         else if (operation.type === OperationType.Expression) {
             // Create eval context
             const evalContext = {
-                $source: operation.source,
-                $sourceRoot: this.context.currentSource.currentSource,
-                $target: target,
-                $targetRoot: this.context.currentSource.currentTarget
+                $currentSource: this.context.currentSource.currentSource,
+                $currentSourceProperty: operation.source,
+                $currentTarget: this.context.currentSource.currentTarget,
+                $currentTargetProperty: target,
+                $source: this.context.currentSource.source,
+                $target: this.context.currentSource.target
             };
 
             // Evaluate the expression

@@ -38,7 +38,7 @@ describe(".mergeFiles()", function () {
             },
             "b.json": {
                 "a": {
-                    "$expression": "$target + 10"
+                    "$expression": "$currentTargetProperty + 10"
                 }
             }
         };

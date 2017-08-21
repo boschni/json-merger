@@ -24,14 +24,14 @@ describe("when merging two objects and a source property has a $process indicato
         expect(result).toMatchSnapshot();
     });
 
-    test("it should use the $process property result as $sourceRoot when processing/merging with the target", function () {
+    test("it should use the $process property result as $currentSource when processing/merging with the target", function () {
 
         const object = {
             "$process": {
                 "$merge": {
                     "source": {
                         "a": {
-                            "$$expression": "$sourceRoot.b"
+                            "$$expression": "$currentSource.b"
                         }
                     },
                     "with": {

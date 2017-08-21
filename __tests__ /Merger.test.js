@@ -86,7 +86,7 @@ describe("Merger()", function () {
             },
             "b.json": {
                 "a": {
-                    "$expression": "$target + 10"
+                    "$expression": "$currentTargetProperty + 10"
                 }
             }
         };
@@ -111,7 +111,7 @@ describe("Merger()", function () {
             const files = {
                 "b.json": {
                     "a": {
-                        "$expression": "$target + 10"
+                        "$expression": "$currentTargetProperty + 10"
                     }
                 }
             };
@@ -136,7 +136,7 @@ describe("Merger()", function () {
             const files = {
                 "b.json": {
                     "a": {
-                        "$expression": "$target + 10"
+                        "$expression": "$currentTargetProperty + 10"
                     }
                 }
             };
@@ -161,7 +161,7 @@ describe("Merger()", function () {
             const files = {
                 "b.json": {
                     "a": {
-                        "$expression": "$target + 10"
+                        "$expression": "$currentTargetProperty + 10"
                     }
                 }
             };

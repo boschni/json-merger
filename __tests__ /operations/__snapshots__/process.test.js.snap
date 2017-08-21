@@ -6,7 +6,7 @@ exports[`when merging two objects and a source property has a $process indicator
 }"
 `;
 
-exports[`when merging two objects and a source property has a $process indicator it should use the $process property result as $sourceRoot when processing/merging with the target 1`] = `
+exports[`when merging two objects and a source property has a $process indicator it should use the $process property result as $currentSource when processing/merging with the target 1`] = `
 "{
 	\\"a\\": \\"bValue\\",
 	\\"b\\": \\"bValue\\"

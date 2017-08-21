@@ -38,7 +38,7 @@ exports[`when merging two objects and a source object contains a $select operati
 }"
 `;
 
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'target' it should select from the target root 1`] = `
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'target' it should select from the target 1`] = `
 "{
 	\\"targetProp\\": \\"should be the value of sharedProp\\",
 	\\"sharedProp\\": \\"should be the value of sharedProp\\"
