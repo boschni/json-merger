@@ -16,8 +16,8 @@ Table of Contents:
   * [`files: FileMap`](#files-filemap)
   * [`stringify: boolean`](#stringify-boolean)
   * [`operationPrefix: string`](#operationprefix-string)
-  * [`errorOnInvalidImport: boolean`](#erroroninvalidimport-boolean)
-  * [`errorOnInvalidSelect: boolean`](#erroroninvalidselect-boolean)
+  * [`errorOnFileNotFound: boolean`](#erroronfilenotfound-boolean)
+  * [`errorOnRefNotFound: boolean`](#erroronrefnotfound-boolean)
 * [Operations](#operations)
   * [`$import`](#import)
   * [`$merge`](#merge)
@@ -33,6 +33,7 @@ Table of Contents:
   * [`$process`](#process)
   * [`$comment`](#comment)
 * [Command line interface `json-merger`](#command-line-interface-json-merger)
+* [Roadmap](#roadmap)
 
 API
 ---
@@ -202,7 +203,8 @@ interface Config {
     files: FileMap;
     operationPrefix: string;
     stringify: boolean | "pretty";
-    errorOnInvalidImport: boolean;
+    errorOnFileNotFound: boolean;
+    errorOnRefNotFound: boolean;
 }
 ```
 
@@ -219,8 +221,11 @@ The default prefix is `$` but it is possible to change this to for example `@imp
 ### `stringify: boolean | "pretty"`
 Set this property to `true` to stringify the JSON result. Set the property to `"pretty"` if the output should be pretty printed.
 
-### `errorOnInvalidImport: boolean`
+### `errorOnFileNotFound: boolean`
 Set this property to `false` to disable throwing errors when an imported file does not exist.
+
+### `errorOnRefNotFound: boolean`
+Set this property to `false` to disable throwing errors when an JSON pointer or JSON path resolves to undefined.
 
 Operations
 ----------
@@ -1081,6 +1086,305 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
+### `$select`
+
+Use the `$select` operation to select one or multiple values.
+
+### Select value by JSON pointer
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("b.json");
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop": {
+    "$select": {
+      "from": {
+        "$import": "a.json"
+      },
+      "path": "/someArray/0"
+    }
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 1
+}
+```
+
+### Select value by JSON path
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("b.json");
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop": {
+    "$select": {
+      "from": {
+        "$import": "a.json"
+      },
+      "query": "$[*]"
+    }
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 1
+}
+```
+
+### Select multiple values by JSON path
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("b.json");
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop": {
+    "$select": {
+      "from": {
+        "$import": "a.json"
+      },
+      "query": "$[?(@ < 3)]",
+      "multiple": true
+    }
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": [1, 2]
+}
+```
+
+### Select from a context
+
+The `$select.from` property can also be used to select from a context.
+The available contexts are `target`, `currentTarget`, `currentTargetProperty`, `source`, `currentSource` and `currentSourceProperty`.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```js
+{
+  "prop1": {
+    "$select": {
+      "from": "target", // refers to undefined because a.json has no target
+      "path": "/"
+    }
+  },
+  "prop2": {
+    "$select": {
+      "from": "currentTarget", // refers to undefined because a.json has no target
+      "path": "/"
+    }
+  },
+  "prop3": {
+    "$select": {
+      "from": "currentTargetProperty", // refers to undefined because a.json has no target
+      "path": "/"
+    }
+  },
+  "prop4": {
+    "$select": {
+      "from": "source", // refers to the unprocessed a.json
+      "path": "/"
+    }
+  },
+  "prop5": {
+    "$select": {
+      "from": "currentSource", // refers to the unprocessed a.json
+      "path": "/"
+    }
+  },
+  "prop6": {
+    "$select": {
+      "from": "currentSourceProperty", // refers to the unprocessed a.json#/prop6
+      "path": "/"
+    }
+  }
+}
+```
+
+**b.json**
+
+```js
+{
+  "prop1": {
+    "$select": {
+      "from": "target", // refers to the processed a.json
+      "path": "/"
+    }
+  },
+  "prop2": {
+    "$select": {
+      "from": "currentTarget", // refers to the processed a.json
+      "path": "/"
+    }
+  },
+  "prop3": {
+    "$select": {
+      "from": "currentTargetProperty", // refers to the processed a.json#/prop3
+      "path": "/"
+    }
+  },
+  "prop4": {
+    "$select": {
+      "from": "source", // refers to the unprocessed b.json
+      "path": "/"
+    }
+  },
+  "prop5": {
+    "$select": {
+      "from": "currentSource", // refers to the unprocessed b.json
+      "path": "/"
+    }
+  },
+  "prop6": {
+    "$select": {
+      "from": "currentSourceProperty", // refers to the unprocessed b.json#/prop6
+      "path": "/"
+    }
+  },
+  "prop7": {
+    "$merge": {
+      "source": {
+        "prop1": {
+          "$select": {
+            "from": "target", // refers to the processed a.json
+            "path": "/"
+          }
+        },
+        "prop2": {
+          "$select": {
+            "from": "currentTarget", // refers to undefined because b.json#/prop7/$merge/source has no target
+            "path": "/"
+          }
+        },
+        "prop3": {
+          "$select": {
+            "from": "currentTargetProperty", // refers to undefined because b.json#/prop7/$merge/source has no target
+            "path": "/"
+          }
+        },
+        "prop4": {
+          "$select": {
+            "from": "source", // refers to the unprocessed b.json
+            "path": "/"
+          }
+        },
+        "prop5": {
+          "$select": {
+            "from": "currentSource", // refers to the unprocessed b.json#/prop7/$merge/source
+            "path": "/"
+          }
+        },
+        "prop6": {
+          "$select": {
+            "from": "currentSourceProperty", // refers to the unprocessed b.json#/prop7/$merge/source/prop6
+            "path": "/"
+          }
+        }
+      },
+      "with": {
+        "prop1": {
+          "$select": {
+            "from": "target", // refers to the processed a.json
+            "path": "/"
+          }
+        },
+        "prop2": {
+          "$select": {
+            "from": "currentTarget", // refers to the processed b.json#/prop7/$merge/source
+            "path": "/"
+          }
+        },
+        "prop3": {
+          "$select": {
+            "from": "currentTargetProperty", // refers to the processed b.json#/prop7/$merge/source
+            "path": "/"
+          }
+        },
+        "prop4": {
+          "$select": {
+            "from": "source", // refers to the unprocessed b.json
+            "path": "/"
+          }
+        },
+        "prop5": {
+          "$select": {
+            "from": "currentSource", // refers to the unprocessed b.json#/prop7/$merge/with
+            "path": "/"
+          }
+        },
+        "prop6": {
+          "$select": {
+            "from": "currentSourceProperty", // refers to the unprocessed b.json#/prop7/$merge/with/prop6
+            "path": "/"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 --------
 
 Command line interface `json-merger`
@@ -1098,7 +1402,8 @@ You can use `json-merger` as a command line tool:
     -p, --pretty                     pretty-print the output json
     -o, --output [file]              the output file. Defaults to stdout
     -i, --operation-prefix [prefix]  the operation prefix. Defaults to $
-    --error-on-invalid-import        throw an error if an import does not exist. Defaults to true
+    --error-on-file-not-found        throw an error if a file is not found. Defaults to true
+    --error-on-ref-not-found         throw an error if a JSON pointer or JSON path is not found. Defaults to true
     -h, --help                       output usage information
 ```
 
@@ -1115,3 +1420,8 @@ Install `json-merger` globally to be able to use the command line interface.
 ```sh
 npm install -g json-merger
 ```
+
+Roadmap
+-------
+- Add configurable file resolvers to import files from different sources.
+- Add configurable (de)serializers to import and export different file formats.

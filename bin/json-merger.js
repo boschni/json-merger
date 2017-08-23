@@ -9,17 +9,19 @@ var packageJson = require("../package");
 program
     .version(packageJson.version)
     .usage("[options] <file ...>")
-    .option("-p, --pretty", "pretty-print the output json")
+    .option("-p, --pretty", "pretty-print the output json. Defaults to false")
     .option("-o, --output [file]", "the output file. Defaults to stdout")
     .option("-i, --operation-prefix [prefix]", "the operation prefix. Defaults to $")
-    .option("--error-on-invalid-import", "throw an error if an import does not exist. Defaults to true")
+    .option("--error-on-file-not-found", "throw an error if a file is not found. Defaults to true")
+    .option("--error-on-ref-not-found", "throw an error if a JSON pointer or JSON path is not found. Defaults to true")
     .parse(process.argv);
 
 // construct config
 var config = {
     operationPrefix: program.operationPrefix,
     stringify: program.pretty ? "pretty" : true,
-    errorOnInvalidImport: program.errorOnInvalidImport
+    errorOnFileNotFound: program.errorOnFileNotFound,
+    errorOnRefNotFound: program.errorOnRefNotFound
 };
 
 // merge the file(s)

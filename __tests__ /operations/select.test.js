@@ -98,6 +98,56 @@ describe("when merging two objects and a source object contains a $select operat
         expect(result).toMatchSnapshot();
     });
 
+    test("and $select.path refers to a non existing path it should throw if Config.errorOnRefNotFound is true", function () {
+
+        try {
+
+            const object = {
+                "a": {
+                    "$select": {
+                        "path": "/nonExisting/1"
+                    }
+                }
+            };
+
+            jsonMerger.mergeObject(object, testConfig({
+                errorOnRefNotFound: true
+            }));
+
+            expect("this code").toBe("unreachable");
+
+        } catch (e) {
+            expect(e.message).toMatch(`An error occurred while processing the property "$select"`);
+            expect(e.message).toMatch(`at #/a/$select`);
+            expect(e.message).toMatch(`The JSON pointer "/nonExisting/1" resolves to undefined`);
+        }
+    });
+
+    test("and $select.query refers to a non existing path it should throw if Config.errorOnRefNotFound is true", function () {
+
+        try {
+
+            const object = {
+                "a": {
+                    "$select": {
+                        "query": "$.nonExisting.1"
+                    }
+                }
+            };
+
+            jsonMerger.mergeObject(object, testConfig({
+                errorOnRefNotFound: true
+            }));
+
+            expect("this code").toBe("unreachable");
+
+        } catch (e) {
+            expect(e.message).toMatch(`An error occurred while processing the property "$select"`);
+            expect(e.message).toMatch(`at #/a/$select`);
+            expect(e.message).toMatch(`The JSON path "$.nonExisting.1" resolves to undefined`);
+        }
+    });
+
     test("and $select.from is set to 'target' it should select from the target", function () {
 
         const object1 = {
@@ -448,5 +498,62 @@ describe("when merging two objects and a source object contains a $select operat
 
             expect(result).toMatchSnapshot();
         });
+    });
+});
+
+describe("when merging one object and the object contains a $select operation", function () {
+
+    test("the 'target' should be undefined", function () {
+
+        const object = {
+            "a": {
+                "$select": {
+                    "from": "target",
+                    "path": "/"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObject(object, testConfig({
+            errorOnRefNotFound: false
+        }));
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("the 'currentTarget' should be undefined", function () {
+
+        const object = {
+            "a": {
+                "$select": {
+                    "from": "currentTarget",
+                    "path": "/"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObject(object, testConfig({
+            errorOnRefNotFound: false
+        }));
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("the 'currentTargetProperty' should be undefined", function () {
+
+        const object = {
+            "a": {
+                "$select": {
+                    "from": "currentTargetProperty",
+                    "path": "/"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObject(object, testConfig({
+            errorOnRefNotFound: false
+        }));
+
+        expect(result).toMatchSnapshot();
     });
 });

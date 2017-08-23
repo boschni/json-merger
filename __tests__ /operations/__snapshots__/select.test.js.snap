@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`when merging one object and the object contains a $select operation the 'currentTarget' should be undefined 1`] = `"{}"`;
+
+exports[`when merging one object and the object contains a $select operation the 'currentTargetProperty' should be undefined 1`] = `"{}"`;
+
+exports[`when merging one object and the object contains a $select operation the 'target' should be undefined 1`] = `"{}"`;
+
 exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'currentSource' it should select from the current source 1`] = `
 "{
 	\\"targetProp\\": \\"object1.targetProp\\",

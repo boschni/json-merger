@@ -71,21 +71,21 @@ describe(".mergeFiles()", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("should return undefined if the file does not exist and config.errorOnInvalidImport is false", function () {
+    test("should return undefined if the file does not exist and Config.errorOnFileNotFound is false", function () {
 
         const result = jsonMerger.mergeFiles(["nonExisting.json"], testConfig({
-            errorOnInvalidImport: false
+            errorOnFileNotFound: false
         }));
 
         expect(result).toBe(undefined);
     });
 
-    test("should throw if the file does not exist and config.errorOnInvalidImport is true", function () {
+    test("should throw if the file does not exist and Config.errorOnFileNotFound is true", function () {
 
         try {
 
             jsonMerger.mergeFiles(["nonExisting.json"], testConfig({
-                errorOnInvalidImport: true
+                errorOnFileNotFound: true
             }));
 
             expect("this code").toBe("unreachable");

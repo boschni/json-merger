@@ -127,8 +127,8 @@ export default class Merger {
         try {
             content = fs.readFileSync(pathInContext, "utf8");
         } catch (e) {
-            if (this.config.errorOnInvalidImport) {
-                throw new Error(`The file "${pathInContext}" does not exist. Set options.errorOnInvalidImport to false to suppress this message`);
+            if (this.config.errorOnFileNotFound) {
+                throw new Error(`The file "${pathInContext}" does not exist. Set Config.errorOnFileNotFound to false to suppress this message`);
             }
         }
 
@@ -154,8 +154,11 @@ export default class Merger {
 
     private _loadFileByRef(ref: string) {
         const [path, pointer] = ref.split("#");
-        const result = this._loadFile(path);
-        return this._resolveJsonPointer(result, pointer)
+        let result = this._loadFile(path);
+        if (pointer !== undefined) {
+            result = this._resolveJsonPointer(result, pointer);
+        }
+        return result;
     }
 
     private _processFile(path: string, target?: any): any {
@@ -187,37 +190,40 @@ export default class Merger {
 
     private _processFileByRef(ref: string, target?: any) {
         const [path, pointer] = ref.split("#");
-        const result = this._processFile(path, target);
-        return this._resolveJsonPointer(result, pointer);
+        let result = this._processFile(path, target);
+        if (pointer !== undefined) {
+            result = this._resolveJsonPointer(result, pointer);
+        }
+        return result;
     }
 
     private _resolveJsonPointer(target: object, pointer?: string): any {
-        if (pointer === undefined) {
-            return target;
+        let result;
+
+        if (pointer === undefined || pointer === "/") {
+            result = target;
+        } else {
+            result = jsonPtr.get(target, pointer);
         }
 
-        if (pointer === "/") {
-            return target;
-        }
-
-        const result = jsonPtr.get(target, pointer);
-
-        if (result === undefined && this.config.errorOnInvalidImport) {
-            throw new Error(`The ref "${pointer}" does not exist. Set options.errorOnInvalidImport to false to suppress this message`);
+        if (result === undefined && this.config.errorOnRefNotFound) {
+            throw new Error(`The JSON pointer "${pointer}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`);
         }
 
         return result;
     }
 
     private _resolveJsonPath(target: object, path?: string): any {
+        let result;
+
         if (path === undefined) {
-            return target;
+            result = target;
+        } else if (isObject(target) || Array.isArray(target)) {
+            result = jsonpath.query(target, path);
         }
 
-        const result = jsonpath.query(target, path);
-
-        if (result === undefined && this.config.errorOnInvalidImport) {
-            throw new Error(`The json path "${path}" does not exist. Set options.errorOnInvalidImport to false to suppress this message`);
+        if (result === undefined && this.config.errorOnRefNotFound) {
+            throw new Error(`The JSON path "${path}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`);
         }
 
         return result;

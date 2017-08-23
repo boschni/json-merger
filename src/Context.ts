@@ -244,7 +244,7 @@ export interface SelectOperation extends OperationBase<SelectOperation> {
 }
 
 export interface SelectOperationValue {
-    "from"?: "target"
+    "from"?:"target"
         | "currentTarget"
         | "currentTargetProperty"
         | "source"
