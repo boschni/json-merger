@@ -229,4 +229,30 @@ describe("when merging two objects and a source property has an $expression oper
 
         expect(result).toMatchSnapshot();
     });
+
+    test("and an $expression.input property it should process the property and use the result as $input variable", function () {
+
+        const object1 = {
+            "a": {
+                "aa": 1
+            }
+        };
+
+        const object2 = {
+            "a": {
+                "aa": {
+                    "$expression": {
+                        "expression": "$currentTargetProperty + $input",
+                        "input": {
+                            "$replace": 2
+                        }
+                    }
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });

@@ -176,11 +176,6 @@ export interface ProcessOperation extends OperationBase<ProcessOperation> {
     value: any; // the value to process
 }
 
-export interface ExpressionOperation extends OperationBase<ExpressionOperation> {
-    type: OperationType.Expression;
-    value: string; // the expression
-}
-
 export interface MergeOperation extends OperationBase<MergeOperation> {
     type: OperationType.Merge;
     value: MergeOperationValue;
@@ -244,7 +239,7 @@ export interface SelectOperation extends OperationBase<SelectOperation> {
 }
 
 export interface SelectOperationValue {
-    "from"?:"target"
+    "from"?: "target"
         | "currentTarget"
         | "currentTargetProperty"
         | "source"
@@ -255,6 +250,17 @@ export interface SelectOperationValue {
     "path"?: string; // json pointer
     "query"?: string; // json path
 }
+
+export interface ExpressionOperation extends OperationBase<ExpressionOperation> {
+    type: OperationType.Expression;
+    value: ExpressionOperationValue;
+}
+
+export type ExpressionOperationValue = string // the expression
+    | {
+    "expression": string; // the expression
+    "input": any; // value of the $input variable
+};
 
 export type Operation = AppendOperation
     | ExpressionOperation

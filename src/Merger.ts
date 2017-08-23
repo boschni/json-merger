@@ -401,18 +401,36 @@ export default class Merger {
 
         // Handle $expression
         else if (operation.type === OperationType.Expression) {
+            let input: any;
+            let expression: string;
+
+            // Get expression and input variable
+            if (typeof operation.value === "string") {
+                expression = operation.value;
+            } else {
+                expression = operation.value.expression;
+
+                // process input if set
+                if (operation.value.input) {
+                    this.context.enterProperty("input");
+                    input = this._processSourceObject(operation.value.input);
+                    this.context.leaveProperty();
+                }
+            }
+
             // Create eval context
             const evalContext = {
                 $currentSource: this.context.currentSource.currentSource,
                 $currentSourceProperty: operation.source,
                 $currentTarget: this.context.currentSource.currentTarget,
                 $currentTargetProperty: target,
+                $input: input,
                 $source: this.context.currentSource.source,
                 $target: this.context.currentSource.target
             };
 
             // Evaluate the expression
-            result = safeEval(operation.value, evalContext);
+            result = safeEval(expression, evalContext);
         }
 
         // Handle $process

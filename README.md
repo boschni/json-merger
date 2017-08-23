@@ -1385,6 +1385,111 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
+### `$expression`
+
+Use the `$expression` operation to calculate a value with the help of a JavaScript expression.
+The expression has access to the standard built-in JavaScript objects and a few variables called `$input`, `$target`, `$currentTarget`, `$currentTargetProperty`, `$source`, `$currentSource` and `$currentSourceProperty`.
+These are context variables. The `$select` operation has documentation about the different [contexts](#selectfromacontext).
+
+### Calculate a value
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json");
+```
+
+**a.json**
+
+```json
+{
+  "prop": {
+    "$expression": "1 + 2"
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 3
+}
+```
+
+### Calculate a value using a context
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "prop": 1
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop": {
+    "$expression": "$currentTargetProperty + 2"
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 3
+}
+```
+
+### Calculate a value using input
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("b.json");
+```
+
+**a.json**
+
+```json
+{
+  "add": 2
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop": {
+    "$expression": {
+      "expression": "1 + $input",
+      "input": {
+        "$import": "a.json#/add"
+      }
+    }
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 3
+}
+```
+
 --------
 
 Command line interface `json-merger`
