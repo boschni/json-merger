@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var program = require("commander");
-var fs = require("fs");
+var fs = require("fs-extra");
 var jsonMerger = require("../dist");
 var packageJson = require("../package");
 
@@ -29,7 +29,7 @@ var output = jsonMerger.mergeFiles(program.args, config);
 
 // write to file or stdout
 if (program.output) {
-    fs.writeFileSync(program.output, output);
+    fs.outputFileSync(program.output, output);
 } else {
     console.log(output);
 }
