@@ -1389,7 +1389,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 
 Use the `$expression` operation to calculate a value with the help of a JavaScript expression.
 The expression has access to the standard built-in JavaScript objects and a few variables called `$input`, `$target`, `$currentTarget`, `$currentTargetProperty`, `$source`, `$currentSource` and `$currentSourceProperty`.
-These are context variables. The `$select` operation has documentation about the different [contexts](#selectfromacontext).
+These are context variables. The `$select` operation has documentation about the different [contexts](#select-from-a-context).
 
 ### Calculate a value
 
