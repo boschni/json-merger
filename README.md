@@ -32,6 +32,7 @@ Table of Contents:
   * [`$expression`](#expression)
   * [`$process`](#process)
   * [`$comment`](#comment)
+* [Scopes](#scopes)
 * [Command line interface `json-merger`](#command-line-interface-json-merger)
 * [Roadmap](#roadmap)
 
@@ -1222,190 +1223,12 @@ var result = jsonMerger.mergeFile("b.json");
 }
 ```
 
-### Select from a context
-
-The `$select.from` property can also be used to select from a context.
-The available contexts are `target`, `currentTarget`, `currentTargetProperty`, `source`, `currentSource` and `currentSourceProperty`.
-
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
-**a.json**
-
-```js
-{
-  "prop1": {
-    "$select": {
-      "from": "target", // refers to undefined because a.json has no target
-      "path": "/"
-    }
-  },
-  "prop2": {
-    "$select": {
-      "from": "currentTarget", // refers to undefined because a.json has no target
-      "path": "/"
-    }
-  },
-  "prop3": {
-    "$select": {
-      "from": "currentTargetProperty", // refers to undefined because a.json has no target
-      "path": "/"
-    }
-  },
-  "prop4": {
-    "$select": {
-      "from": "source", // refers to the unprocessed a.json
-      "path": "/"
-    }
-  },
-  "prop5": {
-    "$select": {
-      "from": "currentSource", // refers to the unprocessed a.json
-      "path": "/"
-    }
-  },
-  "prop6": {
-    "$select": {
-      "from": "currentSourceProperty", // refers to the unprocessed a.json#/prop6
-      "path": "/"
-    }
-  }
-}
-```
-
-**b.json**
-
-```js
-{
-  "prop1": {
-    "$select": {
-      "from": "target", // refers to the processed a.json
-      "path": "/"
-    }
-  },
-  "prop2": {
-    "$select": {
-      "from": "currentTarget", // refers to the processed a.json
-      "path": "/"
-    }
-  },
-  "prop3": {
-    "$select": {
-      "from": "currentTargetProperty", // refers to the processed a.json#/prop3
-      "path": "/"
-    }
-  },
-  "prop4": {
-    "$select": {
-      "from": "source", // refers to the unprocessed b.json
-      "path": "/"
-    }
-  },
-  "prop5": {
-    "$select": {
-      "from": "currentSource", // refers to the unprocessed b.json
-      "path": "/"
-    }
-  },
-  "prop6": {
-    "$select": {
-      "from": "currentSourceProperty", // refers to the unprocessed b.json#/prop6
-      "path": "/"
-    }
-  },
-  "prop7": {
-    "$merge": {
-      "source": {
-        "prop1": {
-          "$select": {
-            "from": "target", // refers to the processed a.json
-            "path": "/"
-          }
-        },
-        "prop2": {
-          "$select": {
-            "from": "currentTarget", // refers to undefined because b.json#/prop7/$merge/source has no target
-            "path": "/"
-          }
-        },
-        "prop3": {
-          "$select": {
-            "from": "currentTargetProperty", // refers to undefined because b.json#/prop7/$merge/source has no target
-            "path": "/"
-          }
-        },
-        "prop4": {
-          "$select": {
-            "from": "source", // refers to the unprocessed b.json
-            "path": "/"
-          }
-        },
-        "prop5": {
-          "$select": {
-            "from": "currentSource", // refers to the unprocessed b.json#/prop7/$merge/source
-            "path": "/"
-          }
-        },
-        "prop6": {
-          "$select": {
-            "from": "currentSourceProperty", // refers to the unprocessed b.json#/prop7/$merge/source/prop6
-            "path": "/"
-          }
-        }
-      },
-      "with": {
-        "prop1": {
-          "$select": {
-            "from": "target", // refers to the processed a.json
-            "path": "/"
-          }
-        },
-        "prop2": {
-          "$select": {
-            "from": "currentTarget", // refers to the processed b.json#/prop7/$merge/source
-            "path": "/"
-          }
-        },
-        "prop3": {
-          "$select": {
-            "from": "currentTargetProperty", // refers to the processed b.json#/prop7/$merge/source
-            "path": "/"
-          }
-        },
-        "prop4": {
-          "$select": {
-            "from": "source", // refers to the unprocessed b.json
-            "path": "/"
-          }
-        },
-        "prop5": {
-          "$select": {
-            "from": "currentSource", // refers to the unprocessed b.json#/prop7/$merge/with
-            "path": "/"
-          }
-        },
-        "prop6": {
-          "$select": {
-            "from": "currentSourceProperty", // refers to the unprocessed b.json#/prop7/$merge/with/prop6
-            "path": "/"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
 ### `$expression`
 
 Use the `$expression` operation to calculate a value with the help of a JavaScript expression.
-The expression has access to the standard built-in JavaScript objects and a few variables called `$params`, `$input`, `$target`, `$currentTarget`, `$currentTargetProperty`, `$source`, `$currentSource` and `$currentSourceProperty`.
-These are context variables. The `$select` operation has documentation about the different [contexts](#select-from-a-context).
+The expression has access to the standard built-in JavaScript objects, the current [scope](#scopes) and optionally an `$input` variable.
 
-### Calculate a value
+#### Calculate a value
 
 **javascript**
 
@@ -1431,41 +1254,7 @@ var result = jsonMerger.mergeFile("a.json");
 }
 ```
 
-### Calculate a value using a context
-
-**javascript**
-
-```javascript
-var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
-```
-
-**a.json**
-
-```json
-{
-  "prop": 1
-}
-```
-
-**b.json**
-
-```json
-{
-  "prop": {
-    "$expression": "$currentTargetProperty + 2"
-  }
-}
-```
-
-**result**
-
-```json
-{
-  "prop": 3
-}
-```
-
-### Calculate a value using input
+#### Calculate a value using `$expression.input`
 
 **javascript**
 
@@ -1504,7 +1293,41 @@ var result = jsonMerger.mergeFile("b.json");
 }
 ```
 
-### Calculate a value using params
+#### Calculate a value using the scope $targetProperty
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "prop": 1
+}
+```
+
+**b.json**
+
+```json
+{
+  "prop": {
+    "$expression": "$targetProperty + 2"
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 3
+}
+```
+
+#### Calculate a value using the scope $params
 
 **javascript**
 
@@ -1533,6 +1356,164 @@ var result = jsonMerger.mergeFile("a.json", {
 ```json
 {
   "prop": 3
+}
+```
+
+## Scopes
+
+Scopes are created while processing operation properties.
+If for example a `$merge.with` is being processed then the merger will create a new scope for the `$merge.with` property.
+Or if a `$repeat.value` property is being processed a new scope is created for the `$repeat.value` property.
+
+A scope always has a `$source` property but not necessarily a `$target` property.
+
+When we are merging object A with object B, then the `$target` property in the scope of object A is `undefined` because object A is not merged with anything.
+It does have a `$source` property referring to object A itself.
+Object B on the other hand has the processed object A as `$target` because object B is being merged with object A.
+The `$source` property in the scope of object B refers to object B.
+
+If object B had defined a `$merge` operation, then the merger would create a new scope for the `$merge.source` property and a new scope for the `$merge.with` property.
+
+The `$target` within the `$merge.source` scope would be `undefined` because `$merge.source` is not merged with anything.
+The `$target` within the `$merge.with` scope is the processed `$merge.source` because `$merge.with` is being merged with `$merge.source`.
+The result of the `$merge` operation will eventually be merged with object A.
+
+When in the `$merge.source` scope it is possible to get to the root (object B) scope using the `$root` property or to a parent scope using the `$parent` property.
+
+```typescript
+interface Scope {
+    $params?: any; // $params properties in current scope
+    $parent?: Scope; // reference to parent scope
+    $repeat?: ScopeRepeat; // $repeat properties in current scope
+    $root: Scope; // reference to root scope
+    $source: any; // reference to the source object
+    $target?: any; // reference to the target object
+}
+```
+
+#### Example
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```js
+// this is the root scope
+{
+  "prop1": {
+    "$expression": "$target" // refers to undefined because a.json has no target
+  },
+  "prop2": {
+    "$expression": "$targetProperty" // refers to undefined because a.json has no target
+  },
+  "prop3": {
+    "$expression": "$source" // refers to the unprocessed a.json
+  },
+  "prop4": {
+    "$expression": "$sourceProperty" // refers to the unprocessed a.json#/prop4
+  },
+  "prop5": {
+    "$expression": "$root.$target" // refers to undefined because a.json has no target
+  },
+  "prop6": {
+    "$expression": "$root.$source" // refers to the unprocessed a.json
+  },
+  "prop7": {
+    "$expression": "$parent" // refers to undefined because the current scope has no parent scope
+  },
+}
+```
+
+**b.json**
+
+```js
+// this is the root scope
+{
+  "prop1": {
+    "$expression": "$target" // refers to the processed a.json
+  },
+  "prop2": {
+    "$expression": "$targetProperty" // refers to the processed a.json#/prop2
+  },
+  "prop3": {
+    "$expression": "$source" // refers to the unprocessed b.json
+  },
+  "prop4": {
+    "$expression": "$sourceProperty" // refers to the unprocessed b.json#/prop4
+  },
+  "prop5": {
+    "$merge": {
+      "source": { // $merge.source creates a new scope
+        "prop1": {
+          "$expression": "$target" // refers to undefined because b.json#/prop5/$merge/source has no target
+        },
+        "prop2": {
+          "$expression": "$targetProperty" // refers to undefined because b.json#/prop5/$merge/source has no target
+        },
+        "prop3": {
+          "$expression": "$source" // refers to the unprocessed b.json#/prop5/$merge/source
+        },
+        "prop4": {
+          "$expression": "$sourceProperty" // refers to the unprocessed b.json#/prop5/$merge/source/prop4
+        }
+        "prop5": {
+          "$expression": "$root.$target" // refers to the processed a.json
+        }
+        "prop6": {
+          "$expression": "$root.$source" // refers to the unprocessed b.json
+        },
+        "prop7": {
+          "$expression": "$parent.$target" // refers to the processed a.json
+        }
+        "prop8": {
+          "$expression": "$parent.$source" // refers to the unprocessed b.json
+        }
+      },
+      "with": { // $merge.with creates a new scope
+        "prop1": {
+          "$expression": "$target" // refers to the processed b.json#/prop5/$merge/source
+        },
+        "prop2": {
+          "$expression": "$targetProperty" // refers to the processed b.json#/prop5/$merge/source/prop2
+        },
+        "prop3": {
+          "$expression": "$source" // refers to the unprocessed b.json#/prop5/$merge/with
+        },
+        "prop4": {
+          "$expression": "$sourceProperty" // refers to the unprocessed b.json#/prop5/$merge/with/prop4
+        },
+        "prop5": {
+          "$expression": "$root.$target" // refers to the processed a.json
+        },
+        "prop6": {
+          "$expression": "$root.source" // refers to the unprocessed b.json
+        },
+        "prop7": {
+          "$expression": "$parent.$target" // refers to the processed a.json
+        },
+        "prop8": {
+          "$expression": "$parent.source" // refers to the unprocessed b.json
+        }
+      }
+    }
+  },
+  "prop6": {
+    "$repeat": {
+      "range": "0-1",
+      "value": { // $repeat.value creates a new scope with a $repeat property on it
+        "$repeat": {
+          "range": "0-1",
+          "value": { // $repeat.value creates a new scope with a $repeat property on it
+            "$expression": "'This is item ' + $parent.$repeat.index + '.' + $repeat.index"
+          }
+        }
+      }
+    }
+  }
 }
 ```
 

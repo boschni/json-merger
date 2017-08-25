@@ -45,7 +45,7 @@ describe("when merging two objects and a source property has an $expression oper
         }
     });
 
-    test("then the expression should have a local property named '$target' referring to the processed target", function () {
+    test("then the expression should use the current scope object as context", function () {
 
         const object1 = {
             "a": {
@@ -66,7 +66,7 @@ describe("when merging two objects and a source property has an $expression oper
         expect(result).toMatchSnapshot();
     });
 
-    test("then the expression should have a local property named '$currentTarget' referring to the processed current target", function () {
+    test("then the expression should have a local property named '$targetProperty' referring to the processed current target property", function () {
 
         const object1 = {
             "a": {
@@ -78,7 +78,7 @@ describe("when merging two objects and a source property has an $expression oper
 
         const object2 = {
             "a": {
-                "$expression": "$currentTarget.a.aa === 'original' ? 'should be the value of a' : 'wrong'"
+                "$expression": "$targetProperty.aa === 'original' ? 'should be the value of a' : 'wrong'"
             }
         };
 
@@ -87,28 +87,7 @@ describe("when merging two objects and a source property has an $expression oper
         expect(result).toMatchSnapshot();
     });
 
-    test("then the expression should have a local property named '$currentTargetProperty' referring to the processed current target property", function () {
-
-        const object1 = {
-            "a": {
-                "aa": {
-                    "$replace": "original"
-                }
-            }
-        };
-
-        const object2 = {
-            "a": {
-                "$expression": "$currentTargetProperty.aa === 'original' ? 'should be the value of a' : 'wrong'"
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("then the expression should have a local property named '$source' referring to the unprocessed source", function () {
+    test("then the expression should have a local property named '$sourceProperty' referring to the unprocessed current source property", function () {
 
         const object1 = {
             "a": {}
@@ -116,111 +95,9 @@ describe("when merging two objects and a source property has an $expression oper
 
         const object2 = {
             "a": {
-                "$expression": "$source.a.$comment.content === 'original' ? 'should be the value of a' : 'wrong'",
+                "$expression": "$sourceProperty.$comment.content === 'original' ? 'should be the value of a' : 'wrong'",
                 "$comment": {
                     "content": "original"
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("then the expression should have a local property named '$currentSource' referring to the unprocessed current source", function () {
-
-        const object1 = {
-            "a": {}
-        };
-
-        const object2 = {
-            "a": {
-                "$expression": "$currentSource.a.$comment.content === 'original' ? 'should be the value of a' : 'wrong'",
-                "$comment": {
-                    "content": "original"
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("then the expression should have a local property named '$currentSourceProperty' referring to the unprocessed current source property", function () {
-
-        const object1 = {
-            "a": {}
-        };
-
-        const object2 = {
-            "a": {
-                "$expression": "$currentSourceProperty.$comment.content === 'original' ? 'should be the value of a' : 'wrong'",
-                "$comment": {
-                    "content": "original"
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("and a $merge operation then the expression should have a local property named '$currentTarget' referring to the processed $merge.source property", function () {
-
-        const object = {
-            "$merge": {
-                "source": {
-                    "b": {
-                        "$replace": "original"
-                    }
-                },
-                "with": {
-                    "a": {
-                        "$expression": "$currentTarget.b === 'original' ? 'should be the value of a' : 'wrong'"
-                    }
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObject(object, testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("and a $merge operation then the expression should have a local property named '$currentSource' referring to the processed $merge.with property", function () {
-
-        const object = {
-            "$merge": {
-                "source": {},
-                "with": {
-                    "hasSomeProp": {
-                        "$expression": "$currentSource.someProp === 10 ? 'should be the value of a' : 'wrong'"
-                    },
-                    "someProp": 10
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObject(object, testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("then the expression should have a access to the JavaScript engine APIs", function () {
-
-        const object1 = {
-            "a": {
-                "aa": "original"
-            }
-        };
-
-        const object2 = {
-            "a": {
-                "aa": {
-                    "$expression": "new Date(2017, 1, 1).getFullYear()"
                 }
             }
         };
@@ -242,11 +119,32 @@ describe("when merging two objects and a source property has an $expression oper
             "a": {
                 "aa": {
                     "$expression": {
-                        "expression": "$currentTargetProperty + $input",
+                        "expression": "$targetProperty + $input",
                         "input": {
                             "$replace": 2
                         }
                     }
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("then the expression should have a access to the JavaScript engine APIs", function () {
+
+        const object1 = {
+            "a": {
+                "aa": "original"
+            }
+        };
+
+        const object2 = {
+            "a": {
+                "aa": {
+                    "$expression": "new Date(2017, 1, 1).getFullYear()"
                 }
             }
         };

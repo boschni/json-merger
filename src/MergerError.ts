@@ -19,17 +19,17 @@ export default class MergerError extends Error {
 
     private _createMessage(context: Context) {
         let message = "";
-        if (context.currentSource) {
-            const lastProp = context.currentSource.path[context.currentSource.path.length - 1];
+        if (context.currentScope) {
+            const lastProp = context.currentScope.$propertyPath[context.currentScope.$propertyPath.length - 1];
             message = `An error occurred while processing the property "${lastProp}"\n`;
         }
         return message;
     }
 
     private _createProcessingStackTrace(context: Context) {
-        return context.sourceStack.reverse().reduce((trace, source) => {
-            const pathEncoded = jsonPtr.encodePointer(source.path);
-            const file = source.filePath === undefined ? "" : source.filePath;
+        return context.scopes.reverse().reduce((trace, source) => {
+            const pathEncoded = jsonPtr.encodePointer(source.$propertyPath);
+            const file = source.$sourceFilePath === undefined ? "" : source.$sourceFilePath;
             return `${trace}    at ${file}#${pathEncoded}\n`;
         }, "");
     }

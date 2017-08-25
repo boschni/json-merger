@@ -69,6 +69,14 @@ exports[`when processing an object containing an $import operation it and $impor
 }"
 `;
 
+exports[`when processing an object containing an $import operation it should resolve the file path relative to the current file 1`] = `
+"{
+	\\"a\\": {
+		\\"b\\": \\"this should be the value of /a/b\\"
+	}
+}"
+`;
+
 exports[`when processing an object containing an $import operation it should resolve to a property in the processed file if also a json pointer is given 1`] = `
 "{
 	\\"a\\": \\"processed\\"

@@ -3,8 +3,8 @@ import {NormalizedConfig} from "./config";
 
 export default class Context {
 
-    currentSource?: Source;
-    sourceStack: Source[] = [];
+    currentScope?: Scope;
+    scopes: Scope[] = [];
 
     private config: NormalizedConfig;
     private operationTypeValues: number[];
@@ -76,50 +76,51 @@ export default class Context {
     }
 
     resolveFilePath(filePath: string): string {
-        const currentFilePath = this.currentSource !== undefined && this.currentSource.filePath;
+        const currentFilePath = this.currentScope !== undefined && this.currentScope.$sourceFilePath;
         const cwd = typeof currentFilePath === "string" ? path.dirname(currentFilePath) : this.config.cwd;
         return path.resolve(cwd, filePath);
     }
 
-    enterSource(filePath?: string, source?: any, target?: any, params?: any) {
-        const newSource: Partial<Source> = {
-            path: []
-        };
+    enterScope(source?: any, target?: any, locals?: ScopeLocals, sourceFilePath?: string) {
+        // create a copy of the current scope or create a new object
+        let scope: Partial<Scope> = this.currentScope ? {...this.currentScope} : {};
 
-        newSource.currentSource = source;
-        newSource.currentTarget = target;
+        // set references
+        scope.$root = this.scopes.length ? this.scopes[0] : scope as Scope;
+        scope.$parent = this.currentScope;
+        scope.$source = source;
+        scope.$target = target;
 
-        if (filePath === undefined && this.currentSource) {
-            newSource.source = this.currentSource.source;
-            newSource.target = this.currentSource.target;
-        } else {
-            newSource.source = newSource.currentSource;
-            newSource.target = newSource.currentTarget;
+        // create a new scope property path
+        scope.$propertyPath = [];
+
+        // set the source file path if given
+        if (sourceFilePath !== undefined) {
+            scope.$sourceFilePath = sourceFilePath;
         }
 
-        if (params === undefined && this.currentSource) {
-            newSource.params = this.currentSource.params;
-        } else {
-            newSource.params = params;
+        // override locals if given
+        if (locals) {
+            scope = {...scope, ...locals};
         }
 
-        this.currentSource = newSource as Source;
-        this.sourceStack.push(this.currentSource);
+        this.currentScope = scope as Scope;
+        this.scopes.push(this.currentScope);
     }
 
-    leaveSource() {
-        this.sourceStack.pop();
-        this.currentSource = this.sourceStack[this.sourceStack.length - 1];
+    leaveScope() {
+        this.scopes.pop();
+        this.currentScope = this.scopes[this.scopes.length - 1];
     }
 
     enterProperty(propertyName?: string | number) {
         if (propertyName !== undefined) {
-            this.currentSource.path.push(propertyName);
+            this.currentScope.$propertyPath.push(propertyName);
         }
     }
 
     leaveProperty() {
-        this.currentSource.path.pop();
+        this.currentScope.$propertyPath.pop();
     }
 }
 
@@ -138,6 +139,7 @@ export enum OperationType {
     Prepend,
     Process,
     Remove,
+    Repeat,
     Replace,
     Select
 }
@@ -246,13 +248,7 @@ export interface SelectOperation extends OperationBase<SelectOperation> {
 }
 
 export interface SelectOperationValue {
-    "from"?: "target"
-        | "currentTarget"
-        | "currentTargetProperty"
-        | "source"
-        | "currentSource"
-        | "currentSourceProperty"
-        | any; // select context
+    "from"?: any; // select context
     "multiple"?: boolean; // expect multiple results?
     "path"?: string; // json pointer
     "query"?: string; // json path
@@ -269,6 +265,19 @@ export type ExpressionOperationValue = string // the expression
     "input"?: any; // value of the $input variable
 };
 
+export interface RepeatOperation extends OperationBase<RepeatOperation> {
+    type: OperationType.Repeat;
+    value: RepeatOperationValue;
+}
+
+export interface RepeatOperationValue {
+    "from"?: number; // index start
+    "range"?: string; // the range in format "1 2-10 11-100, 200-300, 400"
+    "until"?: number; // index end
+    "value": any; // the value to repeat
+    "values": object | any[]; // the values to repeat the value with
+}
+
 export type Operation = AppendOperation
     | ExpressionOperation
     | ImportOperation
@@ -279,15 +288,26 @@ export type Operation = AppendOperation
     | PrependOperation
     | ProcessOperation
     | RemoveOperation
+    | RepeatOperation
     | ReplaceOperation
     | SelectOperation;
 
-export interface Source {
-    currentSource: any;
-    currentTarget: any;
-    filePath: string;
-    params: any;
-    path: Array<string | number>; // the current property path
-    source: any;
-    target: any;
+export interface ScopeLocals {
+    $params?: any; // $params properties in current scope
+    $repeat?: ScopeRepeat; // $repeat properties in current scope
+}
+
+export interface ScopeRepeat {
+    index: number;
+    key: number | string;
+    value: any;
+}
+
+export interface Scope extends ScopeLocals {
+    $parent?: Scope; // reference to parent scope
+    $propertyPath: Array<string | number>; // the current scope property path
+    $root: Scope; // reference to root scope
+    $source: any; // reference to the source object
+    $sourceFilePath?: string; // optional source file path
+    $target?: any; // reference to the target object
 }

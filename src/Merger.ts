@@ -4,9 +4,10 @@ import * as jsonpath from "jsonpath";
 import * as safeEval from "safe-eval";
 import * as jsonPtr from "json-ptr";
 import * as yaml from "js-yaml";
+import range = require("lodash.range");
 import {normalize as normalizeConfig, Config, NormalizedConfig} from "./config";
 import {isObject} from "./utils";
-import Context, {ImportOperationValue, Operation, OperationType} from "./Context";
+import Context, {ImportOperationValue, Operation, OperationType, ScopeLocals} from "./Context";
 import MergerError from "./MergerError";
 
 export default class Merger {
@@ -86,14 +87,18 @@ export default class Merger {
             // Process and merge sources
             result = sources.reduce((target: any, job) => {
 
+                const locals: ScopeLocals = {
+                    $params: this.config.params
+                };
+
                 // Is the source an object?
                 if (job.type === SourceType.Object) {
-                    return this._processSourceObject(job.object, target, this.config.params);
+                    return this._processSourceObject(job.object, target, locals);
                 }
 
                 // Or is the source a ref?
                 else if (job.type === SourceType.Ref) {
-                    return this._processFileByRef(job.ref, target, this.config.params);
+                    return this._processFileByRef(job.ref, target, locals);
                 }
             }, result);
         } catch (e) {
@@ -161,7 +166,7 @@ export default class Merger {
         return result;
     }
 
-    private _processFile(path: string, target?: any, params?: any): any {
+    private _processFile(path: string, target?: any, locals?: ScopeLocals): any {
         // Resolve file path
         const pathInContext = this.context.resolveFilePath(path);
 
@@ -178,9 +183,9 @@ export default class Merger {
         const source = this._loadFile(pathInContext);
 
         // Process source
-        this.context.enterSource(pathInContext, source, target, params);
+        this.context.enterScope(source, target, locals, pathInContext);
         const result = this._processUnknown(source, target);
-        this.context.leaveSource();
+        this.context.leaveScope();
 
         // Add to processed file cache
         this.processedFileCache.push({path: pathInContext, target, result});
@@ -188,9 +193,9 @@ export default class Merger {
         return result;
     }
 
-    private _processFileByRef(ref: string, target?: any, params? :any) {
+    private _processFileByRef(ref: string, target?: any, locals?: ScopeLocals) {
         const [path, pointer] = ref.split("#");
-        let result = this._processFile(path, target, params);
+        let result = this._processFile(path, target, locals);
         if (pointer !== undefined) {
             result = this._resolveJsonPointer(result, pointer);
         }
@@ -233,10 +238,10 @@ export default class Merger {
      * Processing
      **************************************************************************/
 
-    private _processSourceObject(object: object, target?: any, params?: any): any {
-        this.context.enterSource(undefined, object, target, params);
+    private _processSourceObject(object: object, target?: any, locals?: ScopeLocals): any {
+        this.context.enterScope(object, target, locals);
         const result = this._processUnknown(object, target);
-        this.context.leaveSource();
+        this.context.leaveScope();
         return result;
     }
 
@@ -327,17 +332,17 @@ export default class Merger {
 
                     // the file needs to be processed
                     else {
-                        let params;
+                        let locals: ScopeLocals = {};
 
                         // process the params property if set
                         if (source.params !== undefined) {
                             this.context.enterProperty("params");
-                            params = this._processSourceObject(source.params);
+                            locals.$params = this._processSourceObject(source.params);
                             this.context.leaveProperty();
                         }
 
                         // process the file
-                        target = this._processFileByRef(source.path, target, params);
+                        target = this._processFileByRef(source.path, target, locals);
                     }
                 }
                 return target;
@@ -376,24 +381,12 @@ export default class Merger {
             let selectContext;
 
             // Determine the select context
-            if (operation.value.from === "currentSource") {
-                selectContext = this.context.currentSource.currentSource;
-            } else if (operation.value.from === "currentSourceProperty") {
-                selectContext = operation.source;
-            } else if (operation.value.from === "currentTarget") {
-                selectContext = this.context.currentSource.currentTarget;
-            } else if (operation.value.from === "currentTargetProperty") {
-                selectContext = target;
-            } else if (operation.value.from === "source") {
-                selectContext = this.context.currentSource.source;
-            } else if (operation.value.from === "target") {
-                selectContext = this.context.currentSource.target;
-            } else if (operation.value.from !== undefined) {
+            if (operation.value.from !== undefined) {
                 this.context.enterProperty("from");
                 selectContext = this._processSourceObject(operation.value.from);
                 this.context.leaveProperty();
             } else {
-                selectContext = this.context.currentSource.target;
+                selectContext = this.context.currentScope.$target;
             }
 
             let selectValue;
@@ -433,18 +426,81 @@ export default class Merger {
 
             // Create eval context
             const evalContext = {
-                $currentSource: this.context.currentSource.currentSource,
-                $currentSourceProperty: operation.source,
-                $currentTarget: this.context.currentSource.currentTarget,
-                $currentTargetProperty: target,
-                $input: input,
-                $params: this.context.currentSource.params,
-                $source: this.context.currentSource.source,
-                $target: this.context.currentSource.target
+                ...this.context.currentScope,
+                $sourceProperty: operation.source,
+                $targetProperty: target,
+                $input: input
             };
 
             // Evaluate the expression
             result = safeEval(expression, evalContext);
+        }
+
+        // Handle $repeat
+        else if (operation.type === OperationType.Repeat) {
+            let values: {key?: number | string, value: any}[] = [];
+
+            // create values with $repeat.from and $repeat.until?
+            if (typeof operation.value.from === "number" && typeof operation.value.until === "number") {
+                for (let index = operation.value.from; index <= operation.value.until; index++) {
+                    values.push({value: index});
+                }
+            }
+
+            // is $repeat.values set and an array?
+            else if (Array.isArray(operation.value.values)) {
+                values = operation.value.values.map((value) => ({value}));
+            }
+
+            // is $repeat.values set and an object?
+            else if (isObject(operation.value.values)) {
+                const obj = operation.value.values as any;
+                values = Object.keys(obj).map(key => ({key, value: obj[key]}));
+            }
+
+            // is $repeat.range set?
+            else if (typeof operation.value.range === "string") {
+                const ranges = operation.value.range
+                    // replace comma characters with a space
+                    .replace(/,/g, " ")
+
+                    // remove double spaces
+                    .replace(/\s+/g, " ")
+
+                    // split by space
+                    .split(" ");
+
+                ranges.forEach(r => {
+                    const split = r.split("-");
+                    const start = Number(split[0]);
+                    const end = Number(split[1]);
+                    if (end) {
+                        range(start, end + 1, 1).forEach(index => values.push({value: index}));
+                    } else {
+                        values.push({value: start});
+                    }
+                });
+            }
+
+            // generate the repeated array
+            const repeatResult = values.map((value, index) => {
+                // add $repeat variable to the scope
+                const locals: ScopeLocals = {
+                    $repeat: {
+                        index,
+                        key: value.key !== undefined ? value.key : index,
+                        value: value.value
+                    }
+                };
+
+                // Process the value property without a target
+                return this._processSourceObject(operation.value.value, undefined, locals);
+            });
+
+            // Process repeat result and use the original target as target but do not process operations
+            this.context.disableOperations();
+            result = this._processSourceObject(repeatResult, target);
+            this.context.enableOperations();
         }
 
         // Handle $process

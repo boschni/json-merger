@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.range is set it should use the property to repeat a range 1`] = `
+"{
+	\\"prop\\": [
+		\\"Item with index 0 key 0 and value 1\\",
+		\\"Item with index 1 key 1 and value 10\\",
+		\\"Item with index 2 key 2 and value 11\\",
+		\\"Item with index 3 key 3 and value 12\\",
+		\\"Item with index 4 key 4 and value 20\\",
+		\\"Item with index 5 key 5 and value 30\\",
+		\\"Item with index 6 key 6 and value 40\\",
+		\\"Item with index 7 key 7 and value 41\\",
+		\\"Item with index 8 key 8 and value 42\\",
+		\\"Item with index 9 key 9 and value 50\\",
+		\\"Item with index 10 key 10 and value 60\\",
+		\\"Item with index 11 key 11 and value 70\\",
+		\\"Item with index 12 key 12 and value 80\\",
+		\\"Item with index 13 key 13 and value 90\\",
+		\\"Item with index 14 key 14 and value 91\\",
+		\\"Item with index 15 key 15 and value 92\\",
+		\\"Item with index 16 key 16 and value 100\\",
+		\\"Item with index 17 key 17 and value 101\\",
+		\\"Item with index 18 key 18 and value 102\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.values is set to an array it should use the array to repeat a range 1`] = `
+"{
+	\\"prop\\": [
+		\\"Item with index 0 key 0 and value a\\",
+		\\"Item with index 1 key 1 and value b\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.values is set to an object it should use the property to repeat a range 1`] = `
+"{
+	\\"prop\\": [
+		\\"Item with index 0 key a and value value-of-a\\",
+		\\"Item with index 1 key b and value value-of-b\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation it should be possible to nest repeat operations and get both indexes from the scope 1`] = `
+"{
+	\\"prop\\": [
+		[
+			\\"This is item 0.0\\",
+			\\"This is item 0.1\\"
+		],
+		[
+			\\"This is item 1.0\\",
+			\\"This is item 1.1\\"
+		]
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation it should merge the result with the target 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be the value of the first item\\",
+		2,
+		3
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation it should repeat the value 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation it should set a $repeat local on the scope with the current index 1`] = `
+"{
+	\\"prop\\": [
+		\\"This is item with index 0\\",
+		\\"This is item with index 1\\",
+		\\"This is item with index 2\\",
+		\\"This is item with index 3\\",
+		\\"This is item with index 4\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation it should set a $repeat local on the scope with the current value 1`] = `
+"{
+	\\"prop\\": [
+		\\"Item with index 0 key 0 and value 1\\",
+		\\"Item with index 1 key 1 and value 2\\",
+		\\"Item with index 2 key 2 and value 3\\",
+		\\"Item with index 3 key 3 and value 4\\",
+		\\"Item with index 4 key 4 and value 5\\"
+	]
+}"
+`;

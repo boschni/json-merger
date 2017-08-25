@@ -1,51 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'currentSource' it should select from the current source 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\",
-	\\"sourceProp\\": \\"should be the value of sharedProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'currentSourceProperty' it should select from the current source property 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"/$select/path\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'currentTarget' it should select from the current target 1`] = `
-"{
-	\\"targetProp\\": \\"should be the value of sharedProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'currentTargetProperty' it should select from the current target property 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\",
-	\\"sourceProp\\": \\"object2.sourceProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'source' it should select from the source 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\",
-	\\"sourceProp\\": \\"should be the value of sharedProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'target' it should select from the target 1`] = `
-"{
-	\\"targetProp\\": \\"should be the value of sharedProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and $select.from is set to a different value it should process the $select.from value and select from the result 1`] = `
+exports[`when merging two objects and a source object contains a $select operation and $select.from is set it should process the $select.from value and select from the result 1`] = `
 "{
 	\\"targetProp\\": \\"object1.targetProp\\",
 	\\"sharedProp\\": \\"should be the value of sharedProp\\"

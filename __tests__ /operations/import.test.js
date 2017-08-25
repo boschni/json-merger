@@ -27,6 +27,33 @@ describe("when processing an object containing an $import operation it", functio
         expect(result).toMatchSnapshot();
     });
 
+    test("should resolve the file path relative to the current file", function () {
+
+        const files = {
+            "a.json": {
+                "$import": "sub/b.json"
+            },
+            "sub/b.json": {
+                "$import": "c.json"
+            },
+            "sub/c.json": {
+                "b": "this should be the value of /a/b"
+            }
+        };
+
+        const object = {
+            "a": {
+                "$import": "a.json"
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeObject(object, testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
     test("should resolve to the processed file", function () {
 
         const files = {

@@ -1,19 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`when merging two objects and a source property has an $expression operation and a $merge operation then the expression should have a local property named '$currentSource' referring to the processed $merge.with property 1`] = `
-"{
-	\\"hasSomeProp\\": \\"should be the value of a\\",
-	\\"someProp\\": 10
-}"
-`;
-
-exports[`when merging two objects and a source property has an $expression operation and a $merge operation then the expression should have a local property named '$currentTarget' referring to the processed $merge.source property 1`] = `
-"{
-	\\"b\\": \\"original\\",
-	\\"a\\": \\"should be the value of a\\"
-}"
-`;
-
 exports[`when merging two objects and a source property has an $expression operation and an $expression.input property it should process the property and use the result as $input variable 1`] = `
 "{
 	\\"a\\": {
@@ -38,37 +24,19 @@ exports[`when merging two objects and a source property has an $expression opera
 }"
 `;
 
-exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$currentSource' referring to the unprocessed current source 1`] = `
+exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$sourceProperty' referring to the unprocessed current source property 1`] = `
 "{
 	\\"a\\": \\"should be the value of a\\"
 }"
 `;
 
-exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$currentSourceProperty' referring to the unprocessed current source property 1`] = `
+exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$targetProperty' referring to the processed current target property 1`] = `
 "{
 	\\"a\\": \\"should be the value of a\\"
 }"
 `;
 
-exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$currentTarget' referring to the processed current target 1`] = `
-"{
-	\\"a\\": \\"should be the value of a\\"
-}"
-`;
-
-exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$currentTargetProperty' referring to the processed current target property 1`] = `
-"{
-	\\"a\\": \\"should be the value of a\\"
-}"
-`;
-
-exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$source' referring to the unprocessed source 1`] = `
-"{
-	\\"a\\": \\"should be the value of a\\"
-}"
-`;
-
-exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$target' referring to the processed target 1`] = `
+exports[`when merging two objects and a source property has an $expression operation then the expression should use the current scope object as context 1`] = `
 "{
 	\\"a\\": \\"should be the value of a\\"
 }"

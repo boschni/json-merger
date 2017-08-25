@@ -55,14 +55,16 @@
     "js-yaml": "^3.9.1",
     "json-ptr": "^1.0.1",
     "jsonpath": "^0.2.12",
+    "lodash.range": "^3.2.0",
     "safe-eval": "^0.3.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^3.9.0",
     "@types/jsonpath": "^0.2.0",
+    "@types/lodash.range": "^3.2.3",
     "@types/node": "^8.0.20",
     "jest": "^20.0.4",
     "rimraf": "^2.6.1",
-    "typescript": "^2.4.2"
+    "typescript": "^2.5.1"
   }
 }
