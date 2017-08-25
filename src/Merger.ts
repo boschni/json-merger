@@ -87,9 +87,15 @@ export default class Merger {
             // Process and merge sources
             result = sources.reduce((target: any, job) => {
 
-                const locals: ScopeLocals = {
-                    $params: this.config.params
-                };
+                // only create locals if params is defined because locals
+                // is used to check if a file is already processed (caching)
+                let locals: ScopeLocals;
+
+                if (this.config.params !== undefined) {
+                    locals = {
+                        $params: this.config.params
+                    };
+                }
 
                 // Is the source an object?
                 if (job.type === SourceType.Object) {
@@ -172,10 +178,10 @@ export default class Merger {
 
         // Check if a match is in the cache
         const processedFiles = this.processedFileCache
-            .filter(x => (x.path === pathInContext) && x.target === target);
+            .filter(x => x.path === pathInContext && x.target === target && x.locals === locals);
 
         // Return the match if found
-        if (processedFiles.length > 1) {
+        if (processedFiles.length > 0) {
             return processedFiles[0].result;
         }
 
@@ -188,7 +194,7 @@ export default class Merger {
         this.context.leaveScope();
 
         // Add to processed file cache
-        this.processedFileCache.push({path: pathInContext, target, result});
+        this.processedFileCache.push({path: pathInContext, target, result, locals});
 
         return result;
     }
@@ -332,12 +338,14 @@ export default class Merger {
 
                     // the file needs to be processed
                     else {
-                        let locals: ScopeLocals = {};
+                        let locals: ScopeLocals;
 
                         // process the params property if set
                         if (source.params !== undefined) {
                             this.context.enterProperty("params");
-                            locals.$params = this._processSourceObject(source.params);
+                            locals = {
+                                $params: this._processSourceObject(source.params)
+                            };
                             this.context.leaveProperty();
                         }
 
@@ -752,4 +760,5 @@ interface ProcessedFileCacheEntry {
     path: string;
     result: any;
     target: object;
+    locals?: object;
 }
