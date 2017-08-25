@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when config.operationPrefix is set it should only process keywords beginning with the config.operationPrefix 1`] = `
+"{
+	\\"a\\": \\"this should be the value of a\\",
+	\\"$replace\\": \\"this should be visible\\"
+}"
+`;

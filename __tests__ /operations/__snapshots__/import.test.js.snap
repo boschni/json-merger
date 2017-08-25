@@ -21,6 +21,16 @@ exports[`when processing an object containing an $import operation it and $impor
 }"
 `;
 
+exports[`when processing an object containing an $import operation it and $import.params is set it should process it and use the property as source params 1`] = `
+"{
+	\\"a\\": {
+		\\"params\\": {
+			\\"prop\\": \\"this should be in params\\"
+		}
+	}
+}"
+`;
+
 exports[`when processing an object containing an $import operation it and $import.process is set to false it and used in an source array item it should merge the $import result with the target 1`] = `
 "{
 	\\"a\\": [

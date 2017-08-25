@@ -1,11 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`when merging one object and the object contains a $select operation the 'currentTarget' should be undefined 1`] = `"{}"`;
-
-exports[`when merging one object and the object contains a $select operation the 'currentTargetProperty' should be undefined 1`] = `"{}"`;
-
-exports[`when merging one object and the object contains a $select operation the 'target' should be undefined 1`] = `"{}"`;
-
 exports[`when merging two objects and a source object contains a $select operation and $select.from is set to 'currentSource' it should select from the current source 1`] = `
 "{
 	\\"targetProp\\": \\"object1.targetProp\\",
@@ -91,77 +85,5 @@ exports[`when merging two objects and a source object contains a $select operati
 		\\"object1/targetProp/1\\"
 	],
 	\\"sourceProp\\": \\"should be the value of sourceProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and the source object is within a $merge.with operation and $select.from is set to 'currentSource' it should select from the current source 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"should be the value of mergeSharedProp\\"
-	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and the source object is within a $merge.with operation and $select.from is set to 'currentSourceProperty' it should select from the current source property 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"/$select/path\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
-	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and the source object is within a $merge.with operation and $select.from is set to 'currentTarget' it should select from the current target 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
-	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and the source object is within a $merge.with operation and $select.from is set to 'currentTargetProperty' it should select from the current target property 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
-	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and the source object is within a $merge.with operation and $select.from is set to 'source' it should select from the source 1`] = `
-"{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
-	},
-	\\"sourceProp\\": \\"should be the value of mergeSharedProp\\"
-}"
-`;
-
-exports[`when merging two objects and a source object contains a $select operation and the source object is within a $merge.with operation and $select.from is set to 'target' it should select from the target 1`] = `
-"{
-	\\"targetProp\\": \\"should be the value of mergeSharedProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
-	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
 }"
 `;

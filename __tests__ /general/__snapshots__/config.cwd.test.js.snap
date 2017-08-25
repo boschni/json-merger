@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when config.cwd is set it should try to load files relative to config.cwd 1`] = `
+"{
+	\\"object\\": \\"this should be the value of /object\\"
+}"
+`;

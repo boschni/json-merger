@@ -13,11 +13,11 @@ Table of Contents:
   * [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjects-object-config-config)
 * [Config](#config)
   * [`cwd: string`](#cwd-string)
-  * [`files: FileMap`](#files-filemap)
-  * [`stringify: boolean`](#stringify-boolean)
-  * [`operationPrefix: string`](#operationprefix-string)
   * [`errorOnFileNotFound: boolean`](#erroronfilenotfound-boolean)
   * [`errorOnRefNotFound: boolean`](#erroronrefnotfound-boolean)
+  * [`operationPrefix: string`](#operationprefix-string)
+  * [`params: object`](#params-object)
+  * [`stringify: boolean`](#stringify-boolean)
 * [Operations](#operations)
   * [`$import`](#import)
   * [`$merge`](#merge)
@@ -199,33 +199,33 @@ Config
 
 ```typescript
 interface Config {
-    cwd: string;
-    files: FileMap;
-    operationPrefix: string;
-    stringify: boolean | "pretty";
-    errorOnFileNotFound: boolean;
-    errorOnRefNotFound: boolean;
+    cwd?: string;
+    errorOnFileNotFound?: boolean;
+    errorOnRefNotFound?: boolean;
+    operationPrefix?: string;
+    params?: object;
+    stringify?: boolean | "pretty";
 }
 ```
 
 ### `cwd: string`
 The current working directory when importing files. Defaults to process.cwd().
 
-### `files: FileMap`
-Object containing paths and the resulting objects that can be imported.
-
-### `operationPrefix: string`
-Use this property to override the prefix to indicate a property is an operation like $import.
-The default prefix is `$` but it is possible to change this to for example `@import`.
-
-### `stringify: boolean | "pretty"`
-Set this property to `true` to stringify the JSON result. Set the property to `"pretty"` if the output should be pretty printed.
-
 ### `errorOnFileNotFound: boolean`
 Set this property to `false` to disable throwing errors when an imported file does not exist.
 
 ### `errorOnRefNotFound: boolean`
 Set this property to `false` to disable throwing errors when an JSON pointer or JSON path resolves to undefined.
+
+### `operationPrefix: string`
+Use this property to override the prefix to indicate a property is an operation like $import.
+The default prefix is `$` but it is possible to change this to for example `@import`.
+
+### `params: object`
+Object that will be available in [`$expression`](#expression) operations as `$params` variable.
+
+### `stringify: boolean | "pretty"`
+Set this property to `true` to stringify the JSON result. Set the property to `"pretty"` if the output should be pretty printed.
 
 Operations
 ----------
@@ -265,6 +265,20 @@ Set `$import.process` to false to disable this behavior. When `false` it will re
   "$import": {
     "path": "a.json",
     "process": false
+  }
+}
+```
+
+When importing a file it is also possible to provide a different `$params` object.
+Setting this property will override the `Config.params` property.
+
+```json
+{
+  "$import": {
+    "path": "a.json",
+    "params": {
+      "prop": "some value that will be available in a.json as $params.prop"
+    }
   }
 }
 ```
@@ -1388,7 +1402,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ### `$expression`
 
 Use the `$expression` operation to calculate a value with the help of a JavaScript expression.
-The expression has access to the standard built-in JavaScript objects and a few variables called `$input`, `$target`, `$currentTarget`, `$currentTargetProperty`, `$source`, `$currentSource` and `$currentSourceProperty`.
+The expression has access to the standard built-in JavaScript objects and a few variables called `$params`, `$input`, `$target`, `$currentTarget`, `$currentTargetProperty`, `$source`, `$currentSource` and `$currentSourceProperty`.
 These are context variables. The `$select` operation has documentation about the different [contexts](#select-from-a-context).
 
 ### Calculate a value
@@ -1477,6 +1491,38 @@ var result = jsonMerger.mergeFile("b.json");
       "input": {
         "$import": "a.json#/add"
       }
+    }
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 3
+}
+```
+
+### Calculate a value using params
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json", {
+  params: {
+    add: 2
+  }
+});
+```
+
+**a.json**
+
+```json
+{
+  "prop": {
+    "$expression": {
+      "expression": "1 + $params.add"
     }
   }
 }

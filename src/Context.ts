@@ -81,7 +81,7 @@ export default class Context {
         return path.resolve(cwd, filePath);
     }
 
-    enterSource(filePath?: string, source?: any, target?: any) {
+    enterSource(filePath?: string, source?: any, target?: any, params?: any) {
         const newSource: Partial<Source> = {
             path: []
         };
@@ -95,6 +95,12 @@ export default class Context {
         } else {
             newSource.source = newSource.currentSource;
             newSource.target = newSource.currentTarget;
+        }
+
+        if (params === undefined && this.currentSource) {
+            newSource.params = this.currentSource.params;
+        } else {
+            newSource.params = params;
         }
 
         this.currentSource = newSource as Source;
@@ -163,7 +169,8 @@ export interface ImportOperation extends OperationBase<ImportOperation> {
 export type ImportOperationValue = string // the path to the file to import
     | {
     "path": string; // the path to the file to import
-    "process": boolean; // indicates if the file should be processed
+    "process"?: boolean; // indicates if the file should be processed
+    "params"?: any; // the params to pass to the file
 };
 
 export interface RemoveOperation extends OperationBase<RemoveOperation> {
@@ -259,7 +266,7 @@ export interface ExpressionOperation extends OperationBase<ExpressionOperation> 
 export type ExpressionOperationValue = string // the expression
     | {
     "expression": string; // the expression
-    "input": any; // value of the $input variable
+    "input"?: any; // value of the $input variable
 };
 
 export type Operation = AppendOperation
@@ -276,10 +283,11 @@ export type Operation = AppendOperation
     | SelectOperation;
 
 export interface Source {
+    currentSource: any;
+    currentTarget: any;
     filePath: string;
-    path: Array<string | number>;
-    target: any; // the file target
-    source: any; // the file source
-    currentSource: any; // the current source
-    currentTarget: any; // the current target
+    params: any;
+    path: Array<string | number>; // the current property path
+    source: any;
+    target: any;
 }

@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when config.params is set it should be possible to override the $params property when using $import 1`] = `
+"{
+	\\"object1\\": {
+		\\"params\\": {
+			\\"prop\\": \\"this is the params object\\"
+		}
+	},
+	\\"object2\\": {
+		\\"params\\": {
+			\\"prop\\": \\"this is the import params object\\"
+		}
+	},
+	\\"object3\\": {
+		\\"params\\": {
+			\\"prop\\": \\"this is the params object\\"
+		}
+	}
+}"
+`;
+
+exports[`when config.params is set it should expose the property in the source as $params property 1`] = `
+"{
+	\\"object1Params\\": {
+		\\"prop\\": \\"this is the params object\\"
+	},
+	\\"object2Params\\": {
+		\\"prop\\": \\"this is the params object\\"
+	}
+}"
+`;

@@ -48,6 +48,36 @@ describe("when processing an object containing an $import operation it", functio
         expect(result).toMatchSnapshot();
     });
 
+    test("and $import.params is set it should process it and use the property as source params", function () {
+
+        const files = {
+            "a.json": {
+                "params": {
+                    "$expression": "$params"
+                }
+            }
+        };
+
+        const object = {
+            "a": {
+                "$import": {
+                    "path": "a.json",
+                    "params": {
+                        "$replace": {
+                            "prop": "this should be in params"
+                        }
+                    }
+                }
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeObject(object, testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
     test("should resolve to a property in the processed file if also a json pointer is given", function () {
 
         const files = {

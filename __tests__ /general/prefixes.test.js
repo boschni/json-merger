@@ -1,5 +1,5 @@
-const jsonMerger = require("../dist/index");
-const {testConfig} = require("./__helpers__/index");
+const jsonMerger = require("../../dist/index");
+const {testConfig} = require("../__helpers__/index");
 
 describe("when merging two objects", function () {
 
@@ -7,13 +7,13 @@ describe("when merging two objects", function () {
 
         const object1 = {
             "a": {
-                "aa": "original"
+                "aa": "this should be the value of /a/aa"
             }
         };
 
         const object2 = {
             "a": {
-                "$$noOperation": true
+                "$$noOperation": "this should be the value of /a/$$noOperation"
             }
         };
 
@@ -22,17 +22,17 @@ describe("when merging two objects", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("it should be possible to escape an indicator with an additional prefix character", function () {
+    test("it should be possible to escape a keyword with an additional prefix character", function () {
 
         const object1 = {
             "a": {
-                "aa": "original"
+                "aa": "this should be the value of /a/aa"
             }
         };
 
         const object2 = {
             "a": {
-                "$$replace": "not replaced"
+                "$$replace": "this should be the value of /a/$replace"
             }
         };
 
@@ -41,18 +41,18 @@ describe("when merging two objects", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("it should be possible to escape an indicator but the value should be processed", function () {
+    test("it should be possible to escape a keyword but the value should be processed", function () {
 
         const object1 = {
             "a": {
-                "aa": "original"
+                "aa": "this should be the value of /a/aa"
             }
         };
 
         const object2 = {
             "a": {
                 "$$replace": {
-                    "$replace": "not replaced"
+                    "$replace": "this should be the value of /a/$replace"
                 }
             }
         };

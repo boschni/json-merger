@@ -88,12 +88,12 @@ export default class Merger {
 
                 // Is the source an object?
                 if (job.type === SourceType.Object) {
-                    return this._processSourceObject(job.object, target);
+                    return this._processSourceObject(job.object, target, this.config.params);
                 }
 
                 // Or is the source a ref?
                 else if (job.type === SourceType.Ref) {
-                    return this._processFileByRef(job.ref, target);
+                    return this._processFileByRef(job.ref, target, this.config.params);
                 }
             }, result);
         } catch (e) {
@@ -161,7 +161,7 @@ export default class Merger {
         return result;
     }
 
-    private _processFile(path: string, target?: any): any {
+    private _processFile(path: string, target?: any, params?: any): any {
         // Resolve file path
         const pathInContext = this.context.resolveFilePath(path);
 
@@ -178,7 +178,7 @@ export default class Merger {
         const source = this._loadFile(pathInContext);
 
         // Process source
-        this.context.enterSource(pathInContext, source, target);
+        this.context.enterSource(pathInContext, source, target, params);
         const result = this._processUnknown(source, target);
         this.context.leaveSource();
 
@@ -188,9 +188,9 @@ export default class Merger {
         return result;
     }
 
-    private _processFileByRef(ref: string, target?: any) {
+    private _processFileByRef(ref: string, target?: any, params? :any) {
         const [path, pointer] = ref.split("#");
-        let result = this._processFile(path, target);
+        let result = this._processFile(path, target, params);
         if (pointer !== undefined) {
             result = this._resolveJsonPointer(result, pointer);
         }
@@ -233,8 +233,8 @@ export default class Merger {
      * Processing
      **************************************************************************/
 
-    private _processSourceObject(object: object, target?: any): any {
-        this.context.enterSource(undefined, object, target);
+    private _processSourceObject(object: object, target?: any, params?: any): any {
+        this.context.enterSource(undefined, object, target, params);
         const result = this._processUnknown(object, target);
         this.context.leaveSource();
         return result;
@@ -317,14 +317,27 @@ export default class Merger {
                     // Process file reference
                     target = this._processFileByRef(source, target);
                 } else {
-                    // Should the file reference be processed or not?
+                    // Should the file not be processed?
                     if (source.process === false) {
                         const file = this._loadFileByRef(source.path);
                         this.context.disableOperations();
                         target = this._processSourceObject(file, target);
                         this.context.enableOperations();
-                    } else {
-                        target = this._processFileByRef(source.path, target);
+                    }
+
+                    // the file needs to be processed
+                    else {
+                        let params;
+
+                        // process the params property if set
+                        if (source.params !== undefined) {
+                            this.context.enterProperty("params");
+                            params = this._processSourceObject(source.params);
+                            this.context.leaveProperty();
+                        }
+
+                        // process the file
+                        target = this._processFileByRef(source.path, target, params);
                     }
                 }
                 return target;
@@ -425,6 +438,7 @@ export default class Merger {
                 $currentTarget: this.context.currentSource.currentTarget,
                 $currentTargetProperty: target,
                 $input: input,
+                $params: this.context.currentSource.params,
                 $source: this.context.currentSource.source,
                 $target: this.context.currentSource.target
             };

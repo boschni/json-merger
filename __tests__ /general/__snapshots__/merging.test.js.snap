@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two arrays it should add items if the source array has more items 1`] = `
+"[
+	{
+		\\"1a\\": \\"1a\\",
+		\\"2a\\": \\"this property should be added to the first item\\"
+	},
+	{
+		\\"2b\\": \\"this object should be added to the array\\"
+	}
+]"
+`;
+
+exports[`when merging two arrays it should merge items on matching index 1`] = `
+"[
+	{
+		\\"1a\\": \\"1a\\",
+		\\"2a\\": \\"this property should be added to the first item\\"
+	},
+	{
+		\\"1b\\": \\"1b\\",
+		\\"2b\\": \\"this property should be added to the second item\\"
+	},
+	{
+		\\"1c\\": \\"1c\\"
+	}
+]"
+`;
+
+exports[`when merging two arrays it should not modify the array if the source array is empty 1`] = `
+"[
+	{
+		\\"1a\\": \\"this should be the only array item\\"
+	}
+]"
+`;
+
+exports[`when merging two objects it should add properties if they do not exist on the target 1`] = `
+"{
+	\\"object1\\": {
+		\\"prop\\": \\"/object1 should be on the result\\"
+	},
+	\\"object2\\": {
+		\\"prop\\": \\"and /object2 should be on the result\\"
+	}
+}"
+`;
+
+exports[`when merging two objects it should not mutate any of the input objects 1`] = `
+Array [
+  Object {
+    "object1": Object {
+      "prop": 1,
+    },
+  },
+  Object {
+    "object2": Object {
+      "prop": 2,
+    },
+  },
+]
+`;
+
+exports[`when merging two objects it should overwrite a primitive property value if the source property value is a primitive 1`] = `
+"{
+	\\"object\\": \\"/object should be overwritten with this value\\"
+}"
+`;
+
+exports[`when merging two objects it should overwrite a string property value if the source property value is an array 1`] = `
+"{
+	\\"object\\": [
+		\\"/object should be overwritten with this array\\"
+	]
+}"
+`;
+
+exports[`when merging two objects it should overwrite a string property value if the source property value is an object 1`] = `
+"{
+	\\"object\\": {
+		\\"prop\\": \\"/object should be overwritten with this value\\"
+	}
+}"
+`;
+
+exports[`when merging two objects it should overwrite an array property value if the source property value is a primitive 1`] = `
+"{
+	\\"object\\": \\"/object should be overwritten with this value\\"
+}"
+`;
+
+exports[`when merging two objects it should overwrite an object if the source is a primitive 1`] = `"\\"should be overwritten with this value\\""`;
+
+exports[`when merging two objects it should overwrite an object property value if the source property value is a primitive 1`] = `
+"{
+	\\"object\\": \\"/object should be overwritten with this value\\"
+}"
+`;
+
+exports[`when merging two objects it should overwrite an object property value if the source property value is an array 1`] = `
+"{
+	\\"object\\": [
+		\\"/object should be overwritten with this array\\"
+	]
+}"
+`;

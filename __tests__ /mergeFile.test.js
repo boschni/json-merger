@@ -6,13 +6,28 @@ const fs = require("fs");
 
 describe(".mergeFile()", function () {
 
-    test("should process a file if it exists and return the processed object if config.stringify is false", function () {
+    test("should process a file if it exists and return the result", function () {
 
         const files = {
             "a.json": {
                 "a": {
                     "$replace": 10
                 }
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeFile("a.json", testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("should use the config object", function () {
+
+        const files = {
+            "a.json": {
+                "a": "this should not be pretty printed"
             }
         };
 
@@ -38,25 +53,6 @@ describe(".mergeFile()", function () {
         fs.__setJsonMockFiles(files);
 
         const result = jsonMerger.mergeFile("/root/a.json");
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("should return a pretty JSON string if config.stringify is 'pretty'", function () {
-
-        const files = {
-            "a.json": {
-                "a": {
-                    "$replace": 10
-                }
-            }
-        };
-
-        fs.__setJsonMockFiles(files);
-
-        const result = jsonMerger.mergeFile("a.json", testConfig({
-            stringify: "pretty"
-        }));
 
         expect(result).toMatchSnapshot();
     });

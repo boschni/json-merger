@@ -1,64 +1,29 @@
 const jsonMerger = require("../dist");
 const {testConfig} = require("./__helpers__");
 
-describe(".mergeObject() should process the object and return", function () {
+describe(".mergeObject()", function () {
 
-    test("the processed object if config.operationPrefix is @", function () {
+    test("should process the object and return the result", function () {
 
         const object = {
             "a": {
-                "@replace": 1,
-            },
-            "$replace": 2
+                "$replace": "this should be the value of a",
+            }
         };
 
-        const result = jsonMerger.mergeObject(object, testConfig({
-            operationPrefix: "@"
-        }));
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
 
-    test("the processed object if config.stringify is false", function () {
+    test("should use the config object", function () {
 
         const object = {
-            "a": {
-                "$replace": 1
-            }
+            "a": "this should not be pretty printed"
         };
 
         const result = jsonMerger.mergeObject(object, testConfig({
             stringify: false
-        }));
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("a JSON string if config.stringify is true", function () {
-
-        const object = {
-            "a": {
-                "$replace": 1
-            }
-        };
-
-        const result = jsonMerger.mergeObject(object, testConfig({
-            stringify: true
-        }));
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("a pretty JSON string if config.stringify is 'pretty'", function () {
-
-        const object = {
-            "a": {
-                "$replace": 1
-            }
-        };
-
-        const result = jsonMerger.mergeObject(object, testConfig({
-            stringify: "pretty"
         }));
 
         expect(result).toMatchSnapshot();
