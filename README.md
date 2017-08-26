@@ -6,11 +6,11 @@ WORK IN PROGRESS, expect the API to change until 1.0.0.
 Table of Contents:
 ------------------
 * [API](#api)
-  * [`Merger`](#merger)
   * [`.mergeFile(file: string, config?: Config)`](#mergefilefile-string-config-config)
   * [`.mergeFiles(files: string[], config?: Config)`](#mergefilesfiles-string-config-config)
   * [`.mergeObject(object: object, config?: Config)`](#mergeobjectobject-object-config-config)
   * [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjects-object-config-config)
+  * [`Merger(config?: Config)`](#mergerconfig-config)
 * [Config](#config)
   * [`cwd: string`](#cwd-string)
   * [`errorOnFileNotFound: boolean`](#erroronfilenotfound-boolean)
@@ -174,6 +174,8 @@ var result = jsonMerger.mergeObject(object);
 
 ### `.mergeObjects(objects: object[], config?: Config)`
 
+**javascript**
+
 ```javascript
 var jsonMerger = require("json-merger");
 
@@ -194,6 +196,28 @@ var result = jsonMerger.mergeObjects([object1, object2]);
 {
   "a": [2, 2, 1, 1]
 }
+```
+
+### `Merger(config?: Config)`
+The actual `Merger` class is also exported. The other exports are just shortcut methods.
+
+Using one `Merger` instance has some performance advantages because it will cache previously loaded and processed files.
+
+**javascript**
+
+```javascript
+var Merger = require("json-merger").Merger;
+
+var merger = new Merger();
+
+// the first call will load and process "a.json"
+var result1 = merger.mergeFile("a.json");
+
+// the second call will return the cached result
+var result2 = merger.mergeFile("a.json");
+
+// clear the caches
+merger.clearCaches();
 ```
 
 Config

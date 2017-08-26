@@ -22,7 +22,7 @@ export default class Merger {
      **************************************************************************/
 
     constructor(config: Config) {
-        this.resetCaches();
+        this.clearCaches();
         this.setConfig(config);
     }
 
@@ -33,7 +33,7 @@ export default class Merger {
         }
     }
 
-    resetCaches() {
+    clearCaches() {
         this.fileCache = Object.create(null);
         this.processedFileCache = [];
     }
