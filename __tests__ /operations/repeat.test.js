@@ -3,7 +3,7 @@ const {testConfig} = require("../__helpers__");
 
 describe("when merging two objects and a source property has a $repeat operation", function () {
 
-    test("it should repeat the value", function () {
+    test("and only $repeat.from is set it should repeat $repeat.value one time", function () {
 
         const object1 = {
             "prop": []
@@ -13,7 +13,90 @@ describe("when merging two objects and a source property has a $repeat operation
             "prop": {
                 "$repeat": {
                     "from": 1,
-                    "until": 5,
+                    "value": "this should be visible one time"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $repeat.from is set and $repeat.to it should repeat $repeat.value up to but not including $repeat.to", function () {
+
+        const object1 = {
+            "prop": []
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 1,
+                    "to": 5,
+                    "value": "this should be visible four times"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $repeat.from is set and $repeat.to is set to the same value it should repeat nothing", function () {
+
+        const object1 = {
+            "prop": []
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 1,
+                    "to": 1,
+                    "value": "this should not be visible"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $repeat.from is set and $repeat.to is set to a lower value it should repeat backwards", function () {
+
+        const object1 = {
+            "prop": []
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 1,
+                    "to": -3,
+                    "value": "this should be visible four times"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $repeat.from is set and $repeat.through it should repeat $repeat.value up to including $repeat.through", function () {
+
+        const object1 = {
+            "prop": []
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 1,
+                    "through": 5,
                     "value": "this should be visible five times"
                 }
             }
@@ -24,32 +107,7 @@ describe("when merging two objects and a source property has a $repeat operation
         expect(result).toMatchSnapshot();
     });
 
-    test("it should merge the result with the target", function () {
-
-        const object1 = {
-            "prop": [
-                1,
-                2,
-                3
-            ]
-        };
-
-        const object2 = {
-            "prop": {
-                "$repeat": {
-                    "from": 1,
-                    "until": 1,
-                    "value": "this should be the value of the first item"
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
-
-    test("it should set a $repeat local on the scope with the current index", function () {
+    test("and $repeat.from is set and $repeat.through is set to the same value it should repeat $repeat.value ones", function () {
 
         const object1 = {
             "prop": []
@@ -59,10 +117,8 @@ describe("when merging two objects and a source property has a $repeat operation
             "prop": {
                 "$repeat": {
                     "from": 1,
-                    "until": 5,
-                    "value": {
-                        "$expression": "'This is item with index ' + $repeat.index"
-                    }
+                    "through": 1,
+                    "value": "this should be visible one time"
                 }
             }
         };
@@ -72,7 +128,7 @@ describe("when merging two objects and a source property has a $repeat operation
         expect(result).toMatchSnapshot();
     });
 
-    test("it should set a $repeat local on the scope with the current value", function () {
+    test("and $repeat.from is set and $repeat.through is set to a lower value it should repeat backwards", function () {
 
         const object1 = {
             "prop": []
@@ -82,10 +138,30 @@ describe("when merging two objects and a source property has a $repeat operation
             "prop": {
                 "$repeat": {
                     "from": 1,
-                    "until": 5,
-                    "value": {
-                        "$expression": "'Item with index ' + $repeat.index + ' key ' + $repeat.key + ' and value ' + $repeat.value"
-                    }
+                    "through": -3,
+                    "value": "this should be visible five times"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $repeat.step is set it should repeat with $repeat.step as interval", function () {
+
+        const object1 = {
+            "prop": []
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 5,
+                    "through": 10,
+                    "step": 5,
+                    "value": "this should be visible two times"
                 }
             }
         };
@@ -104,7 +180,7 @@ describe("when merging two objects and a source property has a $repeat operation
         const object2 = {
             "prop": {
                 "$repeat": {
-                    "range": "1, 10-12, 20 30, 40-42 50,60  70,,80,90-92,100-102",
+                    "range": "-5:-10:5 1, 10:12, 20 30, 40:42 50,60  70,,80,90:92,100:102",
                     "value": {
                         "$expression": "'Item with index ' + $repeat.index + ' key ' + $repeat.key + ' and value ' + $repeat.value"
                     }
@@ -117,7 +193,7 @@ describe("when merging two objects and a source property has a $repeat operation
         expect(result).toMatchSnapshot();
     });
 
-    test("and $repeat.values is set to an array it should use the array to repeat a range", function () {
+    test("and $repeat.in is set to an array it should use the array to repeat a range", function () {
 
         const object1 = {
             "prop": []
@@ -126,7 +202,7 @@ describe("when merging two objects and a source property has a $repeat operation
         const object2 = {
             "prop": {
                 "$repeat": {
-                    "values": ["a", "b"],
+                    "in": ["a", "b"],
                     "value": {
                         "$expression": "'Item with index ' + $repeat.index + ' key ' + $repeat.key + ' and value ' + $repeat.value"
                     }
@@ -139,7 +215,7 @@ describe("when merging two objects and a source property has a $repeat operation
         expect(result).toMatchSnapshot();
     });
 
-    test("and $repeat.values is set to an object it should use the property to repeat a range", function () {
+    test("and $repeat.in is set to an object it should use the property to repeat a range", function () {
 
         const object1 = {
             "prop": []
@@ -148,7 +224,7 @@ describe("when merging two objects and a source property has a $repeat operation
         const object2 = {
             "prop": {
                 "$repeat": {
-                    "values": {
+                    "in": {
                         "a": "value-of-a",
                         "b": "value-of-b"
                     },
@@ -174,15 +250,63 @@ describe("when merging two objects and a source property has a $repeat operation
             "prop": {
                 "$repeat": {
                     "from": 0,
-                    "until": 1,
+                    "through": 1,
                     "value": {
                         "$repeat": {
                             "from": 0,
-                            "until": 1,
+                            "through": 1,
                             "value": {
                                 "$expression": "'This is item ' + $parent.$repeat.index + '.' + $repeat.index"
                             }
                         }
+                    }
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("it should merge the result with the target", function () {
+
+        const object1 = {
+            "prop": [
+                1,
+                2,
+                3
+            ]
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 1,
+                    "through": 1,
+                    "value": "this should be the value of the first item"
+                }
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("it should set a $repeat variable on the scope with the current $repeat.index, $repeat,key and $repeat.value", function () {
+
+        const object1 = {
+            "prop": []
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 1,
+                    "through": 5,
+                    "value": {
+                        "$expression": "'Item with index ' + $repeat.index + ' key ' + $repeat.key + ' and value ' + $repeat.value"
                     }
                 }
             }

@@ -1,32 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`when merging two objects and a source property has a $repeat operation and $repeat.range is set it should use the property to repeat a range 1`] = `
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.from is set and $repeat.through is set to a lower value it should repeat backwards 1`] = `
 "{
 	\\"prop\\": [
-		\\"Item with index 0 key 0 and value 1\\",
-		\\"Item with index 1 key 1 and value 10\\",
-		\\"Item with index 2 key 2 and value 11\\",
-		\\"Item with index 3 key 3 and value 12\\",
-		\\"Item with index 4 key 4 and value 20\\",
-		\\"Item with index 5 key 5 and value 30\\",
-		\\"Item with index 6 key 6 and value 40\\",
-		\\"Item with index 7 key 7 and value 41\\",
-		\\"Item with index 8 key 8 and value 42\\",
-		\\"Item with index 9 key 9 and value 50\\",
-		\\"Item with index 10 key 10 and value 60\\",
-		\\"Item with index 11 key 11 and value 70\\",
-		\\"Item with index 12 key 12 and value 80\\",
-		\\"Item with index 13 key 13 and value 90\\",
-		\\"Item with index 14 key 14 and value 91\\",
-		\\"Item with index 15 key 15 and value 92\\",
-		\\"Item with index 16 key 16 and value 100\\",
-		\\"Item with index 17 key 17 and value 101\\",
-		\\"Item with index 18 key 18 and value 102\\"
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\"
 	]
 }"
 `;
 
-exports[`when merging two objects and a source property has a $repeat operation and $repeat.values is set to an array it should use the array to repeat a range 1`] = `
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.from is set and $repeat.through is set to the same value it should repeat $repeat.value ones 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible one time\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.from is set and $repeat.through it should repeat $repeat.value up to including $repeat.through 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\",
+		\\"this should be visible five times\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.from is set and $repeat.to is set to a lower value it should repeat backwards 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible four times\\",
+		\\"this should be visible four times\\",
+		\\"this should be visible four times\\",
+		\\"this should be visible four times\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.from is set and $repeat.to is set to the same value it should repeat nothing 1`] = `
+"{
+	\\"prop\\": []
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.from is set and $repeat.to it should repeat $repeat.value up to but not including $repeat.to 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible four times\\",
+		\\"this should be visible four times\\",
+		\\"this should be visible four times\\",
+		\\"this should be visible four times\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.in is set to an array it should use the array to repeat a range 1`] = `
 "{
 	\\"prop\\": [
 		\\"Item with index 0 key 0 and value a\\",
@@ -35,11 +69,56 @@ exports[`when merging two objects and a source property has a $repeat operation 
 }"
 `;
 
-exports[`when merging two objects and a source property has a $repeat operation and $repeat.values is set to an object it should use the property to repeat a range 1`] = `
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.in is set to an object it should use the property to repeat a range 1`] = `
 "{
 	\\"prop\\": [
 		\\"Item with index 0 key a and value value-of-a\\",
 		\\"Item with index 1 key b and value value-of-b\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.range is set it should use the property to repeat a range 1`] = `
+"{
+	\\"prop\\": [
+		\\"Item with index 0 key 0 and value -5\\",
+		\\"Item with index 1 key 1 and value -10\\",
+		\\"Item with index 2 key 2 and value 1\\",
+		\\"Item with index 3 key 3 and value 10\\",
+		\\"Item with index 4 key 4 and value 11\\",
+		\\"Item with index 5 key 5 and value 12\\",
+		\\"Item with index 6 key 6 and value 20\\",
+		\\"Item with index 7 key 7 and value 30\\",
+		\\"Item with index 8 key 8 and value 40\\",
+		\\"Item with index 9 key 9 and value 41\\",
+		\\"Item with index 10 key 10 and value 42\\",
+		\\"Item with index 11 key 11 and value 50\\",
+		\\"Item with index 12 key 12 and value 60\\",
+		\\"Item with index 13 key 13 and value 70\\",
+		\\"Item with index 14 key 14 and value 80\\",
+		\\"Item with index 15 key 15 and value 90\\",
+		\\"Item with index 16 key 16 and value 91\\",
+		\\"Item with index 17 key 17 and value 92\\",
+		\\"Item with index 18 key 18 and value 100\\",
+		\\"Item with index 19 key 19 and value 101\\",
+		\\"Item with index 20 key 20 and value 102\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and $repeat.step is set it should repeat with $repeat.step as interval 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible two times\\",
+		\\"this should be visible two times\\"
+	]
+}"
+`;
+
+exports[`when merging two objects and a source property has a $repeat operation and only $repeat.from is set it should repeat $repeat.value one time 1`] = `
+"{
+	\\"prop\\": [
+		\\"this should be visible one time\\"
 	]
 }"
 `;
@@ -69,31 +148,7 @@ exports[`when merging two objects and a source property has a $repeat operation 
 }"
 `;
 
-exports[`when merging two objects and a source property has a $repeat operation it should repeat the value 1`] = `
-"{
-	\\"prop\\": [
-		\\"this should be visible five times\\",
-		\\"this should be visible five times\\",
-		\\"this should be visible five times\\",
-		\\"this should be visible five times\\",
-		\\"this should be visible five times\\"
-	]
-}"
-`;
-
-exports[`when merging two objects and a source property has a $repeat operation it should set a $repeat local on the scope with the current index 1`] = `
-"{
-	\\"prop\\": [
-		\\"This is item with index 0\\",
-		\\"This is item with index 1\\",
-		\\"This is item with index 2\\",
-		\\"This is item with index 3\\",
-		\\"This is item with index 4\\"
-	]
-}"
-`;
-
-exports[`when merging two objects and a source property has a $repeat operation it should set a $repeat local on the scope with the current value 1`] = `
+exports[`when merging two objects and a source property has a $repeat operation it should set a $repeat variable on the scope with the current $repeat.index, $repeat,key and $repeat.value 1`] = `
 "{
 	\\"prop\\": [
 		\\"Item with index 0 key 0 and value 1\\",

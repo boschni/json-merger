@@ -29,6 +29,7 @@ Table of Contents:
   * [`$match`](#match)
   * [`$move`](#move)
   * [`$select`](#select)
+  * [`$repeat`](#repeat)
   * [`$expression`](#expression)
   * [`$process`](#process)
   * [`$comment`](#comment)
@@ -1223,6 +1224,179 @@ var result = jsonMerger.mergeFile("b.json");
 }
 ```
 
+### `$repeat`
+
+Use the `$repeat` operation to repeat a value.
+
+#### Repeat with `$repeat.to`
+
+**operation**
+```json
+{
+  "$repeat": {
+    "from": 1,
+    "to": 4,
+    "value": "repeat"
+  }
+}
+```
+
+**result**
+```json
+["repeat", "repeat", "repeat"]
+```
+
+#### Repeat with `$repeat.through`
+The current value is available on the scope as `$repeat.value` variable.
+
+**operation**
+```json
+{
+  "$repeat": {
+    "from": 1,
+    "through": 4,
+    "value": {
+      "$expression": "$repeat.value"
+    }
+  }
+}
+```
+
+**result**
+```json
+[1, 2, 3, 4]
+```
+
+#### Repeat with `$repeat.step`
+
+**operation**
+```json
+{
+  "$repeat": {
+    "from": 0,
+    "through": 10,
+    "step": 5,
+    "value": {
+      "$expression": "$repeat.value"
+    }
+  }
+}
+```
+
+**result**
+```json
+[0, 5, 10]
+```
+
+#### Repeat with `$repeat.range`
+
+**operation**
+```json
+{
+  "$repeat": {
+    "range": "0:-2, 10, 20:30:5",
+    "value": {
+      "$expression": "$repeat.value"
+    }
+  }
+}
+```
+
+**result**
+```json
+[0, -1, -2, 10, 20, 25, 30]
+```
+
+#### Repeat with `$repeat.in` as array
+
+**operation**
+```json
+{
+  "$repeat": {
+    "in": ["a", "b"],
+    "value": {
+      "$expression": "$repeat.value"
+    }
+  }
+}
+```
+
+**result**
+```json
+["a", "b"]
+```
+
+#### Repeat with `$repeat.in` as object
+The current key is available on the scope as `$repeat.key` variable.
+
+**operation**
+```json
+{
+  "$repeat": {
+    "in": {
+      "keyA": "valueA",
+      "keyB": "valueB"
+    },
+    "value": {
+      "$expression": "{key: $repeat.key, value: $repeat.value}"
+    }
+  }
+}
+```
+
+**result**
+```json
+[
+  {"key": "keyA", "value": "valueA"},
+  {"key": "keyB", "value": "valueB"}
+]
+```
+
+#### Getting the current index
+The current index is available on the scope as `$repeat.index` variable.
+
+**operation**
+```json
+{
+  "$repeat": {
+    "range": "1:2",
+    "value": {
+      "$expression": "$repeat.index"
+    }
+  }
+}
+```
+
+**result**
+```json
+[0, 1]
+```
+
+#### Nested repeat
+Use `$parent` to get to the parent scope containing the parent `$repeat`.
+
+**operation**
+```json
+{
+  "$repeat": {
+    "range": "0:1",
+    "value": {
+      "$repeat": {
+        "range": "0:1",
+        "value": {
+          "$expression": "$parent.$repeat.index + '.' + $repeat.index"
+        }
+      }
+    }
+  }
+}
+```
+
+**result**
+```json
+["0.0", "0.1", "1.0", "1.1"]
+```
+
 ### `$expression`
 
 Use the `$expression` operation to calculate a value with the help of a JavaScript expression.
@@ -1503,10 +1677,10 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
   },
   "prop6": {
     "$repeat": {
-      "range": "0-1",
+      "range": "0:1",
       "value": { // $repeat.value creates a new scope with a $repeat property on it
         "$repeat": {
-          "range": "0-1",
+          "range": "0:1",
           "value": { // $repeat.value creates a new scope with a $repeat property on it
             "$expression": "'This is item ' + $parent.$repeat.index + '.' + $repeat.index"
           }

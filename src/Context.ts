@@ -272,10 +272,12 @@ export interface RepeatOperation extends OperationBase<RepeatOperation> {
 
 export interface RepeatOperationValue {
     "from"?: number; // index start
-    "range"?: string; // the range in format "1 2-10 11-100, 200-300, 400"
-    "until"?: number; // index end
+    "in"?: object | any[]; // object or array to iterate over
+    "range"?: string; // the range in format "1 2:10 11:100, 200:300, 400"
+    "step"?: number; // step interval
+    "through"?: number; // including index end
+    "to"?: number; // excluding index end
     "value": any; // the value to repeat
-    "values": object | any[]; // the values to repeat the value with
 }
 
 export type Operation = AppendOperation

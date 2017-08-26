@@ -446,48 +446,68 @@ export default class Merger {
 
         // Handle $repeat
         else if (operation.type === OperationType.Repeat) {
+            let step = 1;
             let values: {key?: number | string, value: any}[] = [];
 
-            // create values with $repeat.from and $repeat.until?
-            if (typeof operation.value.from === "number" && typeof operation.value.until === "number") {
-                for (let index = operation.value.from; index <= operation.value.until; index++) {
-                    values.push({value: index});
+            // Handle $repeat.step
+            if (typeof operation.value.step === "number") {
+                step = operation.value.step;
+            }
+
+            // Handle $repeat.from
+            if (typeof operation.value.from === "number") {
+                let from = operation.value.from;
+                let to = from + 1;
+
+                if (typeof operation.value.to === "number") {
+                    to = operation.value.to;
+                } else if (typeof operation.value.through === "number") {
+                    to = operation.value.through;
+                    to = to > 0 ? to + 1 : to - 1;
                 }
+
+                const normStep = to < from ? -Math.abs(step) : Math.abs(step);
+                values = range(from, to, normStep).map(i => ({value: i}));
             }
 
-            // is $repeat.values set and an array?
-            else if (Array.isArray(operation.value.values)) {
-                values = operation.value.values.map((value) => ({value}));
-            }
-
-            // is $repeat.values set and an object?
-            else if (isObject(operation.value.values)) {
-                const obj = operation.value.values as any;
-                values = Object.keys(obj).map(key => ({key, value: obj[key]}));
-            }
-
-            // is $repeat.range set?
+            // Handle $repeat.range
             else if (typeof operation.value.range === "string") {
-                const ranges = operation.value.range
-                    // replace comma characters with a space
-                    .replace(/,/g, " ")
+                // replace comma's with spaces, remove double spaces and split by space
+                const items = operation.value.range.replace(/,/g, " ").replace(/\s+/g, " ").split(" ");
 
-                    // remove double spaces
-                    .replace(/\s+/g, " ")
+                items.forEach(item => {
+                    const split = item.split(":");
+                    let itemFrom = Number(split[0]);
+                    let itemTo = Number(split[1]);
+                    let itemStep = Number(split[2]);
 
-                    // split by space
-                    .split(" ");
-
-                ranges.forEach(r => {
-                    const split = r.split("-");
-                    const start = Number(split[0]);
-                    const end = Number(split[1]);
-                    if (end) {
-                        range(start, end + 1, 1).forEach(index => values.push({value: index}));
-                    } else {
-                        values.push({value: start});
+                    if (isNaN(itemFrom)) {
+                        return;
                     }
+
+                    if (isNaN(itemStep)) {
+                        itemStep = step;
+                    }
+
+                    if (isNaN(itemTo)) {
+                        itemTo = itemFrom;
+                    }
+
+                    itemTo = itemTo > 0 ? itemTo + 1 : itemTo - 1;
+                    itemStep = itemTo < itemFrom ? -Math.abs(itemStep) : Math.abs(itemStep);
+                    range(itemFrom, itemTo, itemStep).forEach(i => values.push({value: i}));
                 });
+            }
+
+            // Handle $repeat.in array
+            else if (Array.isArray(operation.value.in)) {
+                values = operation.value.in.map(value => ({value}));
+            }
+
+            // Handle $repeat.in object
+            else if (isObject(operation.value.in)) {
+                const obj = operation.value.in as any;
+                values = Object.keys(obj).map(key => ({key, value: obj[key]}));
             }
 
             // generate the repeated array
