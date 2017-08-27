@@ -97,9 +97,9 @@ export default class RepeatOperation extends Operation {
         });
 
         // Process repeat result and use the original target as target but do not process operations
-        this._processor.disableKeywordOperations();
+        this._processor.disableOperations();
         result = this._processor.processSource(repeatResult, target);
-        this._processor.enableKeywordOperations();
+        this._processor.enableOperations();
 
         return result;
     }

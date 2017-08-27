@@ -14,9 +14,9 @@ export default class MergeOperation extends Operation {
         const processedWithProperty = this._processor.processSourcePropertyInNewScope(source.with, "with", processedSourceProperty);
 
         // Process $merge result and use the original target as target but do not process operations
-        this._processor.disableKeywordOperations();
+        this._processor.disableOperations();
         const result = this._processor.processSourceInNewScope(processedWithProperty, target);
-        this._processor.enableKeywordOperations();
+        this._processor.enableOperations();
 
         return result;
     }

@@ -43,11 +43,11 @@ export default class Processor {
         operations.forEach(operation => this.addOperation(operation));
     }
 
-    enableKeywordOperations() {
+    enableOperations() {
         this._enabledOperations = this._operations;
     }
 
-    disableKeywordOperations() {
+    disableOperations() {
         this._enabledOperations = [];
     }
 

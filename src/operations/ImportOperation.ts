@@ -27,9 +27,9 @@ export default class ImportOperation extends Operation {
             // Import unprocessed?
             if (importValue.process === false) {
                 const object = this._processor.loadFileByRef(importValue.path);
-                this._processor.disableKeywordOperations();
+                this._processor.disableOperations();
                 const processResult = this._processor.processSourceInNewScope(object, result);
-                this._processor.enableKeywordOperations();
+                this._processor.enableOperations();
                 return processResult;
             }
 
@@ -49,14 +49,14 @@ export default class ImportOperation extends Operation {
         // Disable operations if we don't have a target
         // because the import result is already processed
         if (target === undefined) {
-            this._processor.disableKeywordOperations();
+            this._processor.disableOperations();
         }
 
         // Merge with the target
         const result = this._processor.processSourceInNewScope(importResult, target);
 
         if (target === undefined) {
-            this._processor.enableKeywordOperations();
+            this._processor.enableOperations();
         }
 
         return result;
