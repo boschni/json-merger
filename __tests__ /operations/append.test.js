@@ -42,8 +42,9 @@ describe("when merging two arrays and a source item has $append", function () {
             "a": [
                 {
                     "$append": {
-                        "$comment": "this should be stripped",
-                        "bb": "append"
+                        "bb": {
+                            "$replace": "append"
+                        }
                     }
                 }
             ]

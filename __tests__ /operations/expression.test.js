@@ -95,10 +95,7 @@ describe("when merging two objects and a source property has an $expression oper
 
         const object2 = {
             "a": {
-                "$expression": "$sourceProperty.$comment.content === 'original' ? 'should be the value of a' : 'wrong'",
-                "$comment": {
-                    "content": "original"
-                }
+                "$expression": "$sourceProperty.substr(0, 7) === '$source' ? 'should be the value of a' : 'wrong'",
             }
         };
 

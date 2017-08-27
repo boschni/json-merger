@@ -87,7 +87,7 @@ exports[`when merging two arrays and the source item has $move: 1 it should merg
 }"
 `;
 
-exports[`when merging two arrays and the source item has $move: 2 it should merge and insert the target array item matching the source array item index (not including insert items) at index 3 because an other item has been prepended 1`] = `
+exports[`when merging two arrays and the source item has $move: 2 it should merge and insert the result array item matching the source array item index (including insert items) at index 2 1`] = `
 "{
 	\\"a\\": [
 		{
@@ -97,10 +97,10 @@ exports[`when merging two arrays and the source item has $move: 2 it should merg
 			\\"a2\\": \\"string\\"
 		},
 		{
-			\\"a3\\": \\"string\\"
+			\\"a1\\": \\"move first target array item to index 2\\"
 		},
 		{
-			\\"a1\\": \\"move to index 3\\"
+			\\"a3\\": \\"string\\"
 		}
 	]
 }"

@@ -13,10 +13,10 @@ exports[`when merging two arrays and the source item has $prepend and an other i
 "{
 	\\"a\\": [
 		{
-			\\"bb\\": \\"prepend 1\\"
+			\\"cc\\": \\"prepend 2\\"
 		},
 		{
-			\\"cc\\": \\"prepend 2\\"
+			\\"bb\\": \\"prepend 1\\"
 		},
 		{
 			\\"aa\\": \\"string\\"

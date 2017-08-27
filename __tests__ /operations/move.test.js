@@ -102,7 +102,7 @@ describe("when merging two arrays and the source item has", function () {
         expect(result).toMatchSnapshot();
     });
 
-    test("$move: 2 it should merge and insert the target array item matching the source array item index (not including insert items) at index 3 because an other item has been prepended", function () {
+    test("$move: 2 it should merge and insert the result array item matching the source array item index (including insert items) at index 2", function () {
 
         const object1 = {
             "a": [
@@ -132,7 +132,7 @@ describe("when merging two arrays and the source item has", function () {
                     "$move": {
                         "index": 2,
                         "value": {
-                            "a1": "move to index 3"
+                            "a1": "move first target array item to index 2"
                         }
                     }
                 }

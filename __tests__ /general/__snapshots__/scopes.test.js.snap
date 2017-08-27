@@ -53,7 +53,7 @@ exports[`when merging object1 and object2 and two objects are merged with $merge
 	\\"targetProp\\": \\"object1.targetProp\\",
 	\\"sharedProp\\": {
 		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"$sourceProperty.$expression\\",
+		\\"mergeSharedProp\\": \\"$sourceProperty\\",
 		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
 	},
 	\\"sourceProp\\": \\"object2.sourceProperty\\"
@@ -95,7 +95,7 @@ exports[`when merging object1 and object2 then $source in object2 should refer t
 exports[`when merging object1 and object2 then $sourceProperty in object2 should refer to the unprocessed object2 property 1`] = `
 "{
 	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"$sourceProperty.$expression\\"
+	\\"sharedProp\\": \\"$sourceProperty\\"
 }"
 `;
 

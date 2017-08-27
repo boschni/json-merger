@@ -190,8 +190,9 @@ describe("when merging two arrays and a source array item has a $match indicator
                     "$match": {
                         "index": 1,
                         "value": {
-                            "$comment": "Should be stripped",
-                            "b2": "merged"
+                            "b2": {
+                                "$replace": "merged"
+                            }
                         }
                     }
                 }

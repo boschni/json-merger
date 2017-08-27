@@ -42,8 +42,9 @@ describe("when merging two arrays and the source item has $prepend", function ()
             "a": [
                 {
                     "$prepend": {
-                        "$comment": "this should be stripped",
-                        "bb": "prepend"
+                        "bb": {
+                            "$replace": "prepend"
+                        }
                     }
                 }
             ]

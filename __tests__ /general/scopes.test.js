@@ -98,7 +98,7 @@ describe("when merging object1 and object2", function () {
 
         const object2 = {
             "sharedProp": {
-                "$expression": "$sourceProperty.$expression"
+                "$expression": "$sourceProperty"
             }
         };
 
@@ -307,7 +307,7 @@ describe("when merging object1 and object2", function () {
                         "with": {
                             "mergeWithProp": "$merge.with.mergeWithProp",
                             "mergeSharedProp": {
-                                "$expression": "$sourceProperty.$expression"
+                                "$expression": "$sourceProperty"
                             }
                         }
                     }

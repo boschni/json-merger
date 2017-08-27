@@ -1,22 +1,22 @@
 import Merger from "./Merger";
-import {Config} from "./config";
+import {IConfig} from "./Config";
 
-export function mergeObject(object: object, config?: Config) {
+export function mergeObject(object: object, config?: Partial<IConfig>) {
     const merger = new Merger(config);
     return merger.mergeObject(object);
 }
 
-export function mergeObjects(objects: object[], config?: Config) {
+export function mergeObjects(objects: object[], config?: Partial<IConfig>) {
     const merger = new Merger(config);
     return merger.mergeObjects(objects);
 }
 
-export function mergeFile(file: string, config?: Config) {
+export function mergeFile(file: string, config?: Partial<IConfig>) {
     const merger = new Merger(config);
     return merger.mergeFile(file);
 }
 
-export function mergeFiles(files: string[], config?: Config) {
+export function mergeFiles(files: string[], config?: Partial<IConfig>) {
     const merger = new Merger(config);
     return merger.mergeFiles(files);
 }
