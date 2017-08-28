@@ -8,26 +8,26 @@ export default class RepeatOperation extends Operation {
         return "repeat";
     }
 
-    process(source: RepeatOperationValue, target?: any): any {
+    processInObject(keywordValue: RepeatKeywordValue, target?: any): any {
         let result;
 
         let step = 1;
         let values: {key?: number | string, value: any}[] = [];
 
         // Handle $repeat.step
-        if (typeof source.step === "number") {
-            step = source.step;
+        if (typeof keywordValue.step === "number") {
+            step = keywordValue.step;
         }
 
         // Handle $repeat.from
-        if (typeof source.from === "number") {
-            let from = source.from;
+        if (typeof keywordValue.from === "number") {
+            let from = keywordValue.from;
             let to = from + 1;
 
-            if (typeof source.to === "number") {
-                to = source.to;
-            } else if (typeof source.through === "number") {
-                to = source.through;
+            if (typeof keywordValue.to === "number") {
+                to = keywordValue.to;
+            } else if (typeof keywordValue.through === "number") {
+                to = keywordValue.through;
                 to = to > 0 ? to + 1 : to - 1;
             }
 
@@ -36,9 +36,9 @@ export default class RepeatOperation extends Operation {
         }
 
         // Handle $repeat.range
-        else if (typeof source.range === "string") {
+        else if (typeof keywordValue.range === "string") {
             // replace comma's with spaces, remove double spaces and split by space
-            const items = source.range.replace(/,/g, " ").replace(/\s+/g, " ").split(" ");
+            const items = keywordValue.range.replace(/,/g, " ").replace(/\s+/g, " ").split(" ");
 
             items.forEach(item => {
                 const split = item.split(":");
@@ -65,9 +65,9 @@ export default class RepeatOperation extends Operation {
         }
 
         // Handle $repeat.in
-        else if (source.in !== undefined) {
+        else if (keywordValue.in !== undefined) {
             // Process in property
-            const processedIn = this._processor.processSourcePropertyInNewScope(source.in, "in");
+            const processedIn = this._processor.processSourcePropertyInNewScope(keywordValue.in, "in");
 
             // Handle array
             if (Array.isArray(processedIn)) {
@@ -93,7 +93,7 @@ export default class RepeatOperation extends Operation {
             };
 
             // Process the value property without a target
-            return this._processor.processSourceInNewScope(source.value, undefined, scopeVariables);
+            return this._processor.processSourceInNewScope(keywordValue.value, undefined, scopeVariables);
         });
 
         // Process repeat result and use the original target as target but do not process operations
@@ -109,7 +109,7 @@ export default class RepeatOperation extends Operation {
  * TYPES
  */
 
-export interface RepeatOperationValue {
+export interface RepeatKeywordValue {
     "from"?: number; // index start
     "in"?: object | any[]; // object or array to iterate over
     "range"?: string; // the range in format "1 2:10 11:100, 200:300, 400"

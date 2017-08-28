@@ -6,8 +6,8 @@ export default class ReplaceOperation extends Operation {
         return "replace";
     }
 
-    process(source: ReplaceOperationValue): any {
-        return this._processor.processSourceInNewScope(source);
+    processInObject(keywordValue: ReplaceKeywordValue): any {
+        return this._processor.processSourceInNewScope(keywordValue);
     }
 }
 
@@ -15,4 +15,4 @@ export default class ReplaceOperation extends Operation {
  * TYPES
  */
 
-export type ReplaceOperationValue = any;
+export type ReplaceKeywordValue = any;

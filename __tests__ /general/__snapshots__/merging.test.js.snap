@@ -1,5 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`when merging two arrays containing operations it should apply the operation to the element matching the index in the target array, even if elements are inserted 1`] = `
+"[
+	{
+		\\"prop\\": \\"this should be the first item\\"
+	},
+	{
+		\\"prop\\": \\"this should be the second item\\"
+	},
+	{
+		\\"prop\\": \\"this should be the third item\\",
+		\\"prop2\\": \\"this should be added to the third item\\"
+	},
+	{
+		\\"prop\\": \\"this should be the fourth item\\"
+	}
+]"
+`;
+
+exports[`when merging two arrays containing operations it should apply the operation to the element matching the index in the target array, even if elements are removed 1`] = `
+"[
+	{
+		\\"prop\\": \\"this should be the first item\\",
+		\\"prop2\\": \\"this should be added to the first item\\"
+	},
+	{
+		\\"prop\\": \\"this should be the second item\\"
+	}
+]"
+`;
+
 exports[`when merging two arrays it should add items if the source array has more items 1`] = `
 "[
 	{

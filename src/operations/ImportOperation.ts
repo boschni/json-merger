@@ -7,9 +7,9 @@ export default class ImportOperation extends Operation {
         return "import";
     }
 
-    process(source: ImportOperationValue, target?: any) {
+    processInObject(keywordValue: ImportKeywordValue, target?: any) {
         // Make sure we have an array of import values
-        const importValues: ImportOperationValue[] = Array.isArray(source) ? source : [source];
+        const importValues: ImportKeywordValue[] = Array.isArray(keywordValue) ? keywordValue : [keywordValue];
 
         // Process and merge sources
         const importResult = importValues.reduce((result: any, importValue) => {
@@ -67,7 +67,7 @@ export default class ImportOperation extends Operation {
  * TYPES
  */
 
-export type ImportOperationValue = string // the path to the file to import
+export type ImportKeywordValue = string // the path to the file to import
     | {
     path: string; // the path to the file to import
     process?: boolean; // indicates if the file should be processed

@@ -6,12 +6,12 @@ export default class SelectOperation extends Operation {
         return "select";
     }
 
-    process(source: SelectOperationValue, target?: any): any {
+    processInObject(keywordValue: SelectKeywordValue, target?: any): any {
         // Determine the select context
         let selectContext;
 
-        if (source.from !== undefined) {
-            selectContext = this._processor.processSourcePropertyInNewScope(source.from, "from");
+        if (keywordValue.from !== undefined) {
+            selectContext = this._processor.processSourcePropertyInNewScope(keywordValue.from, "from");
         } else {
             selectContext = this._processor.currentScope.target;
         }
@@ -19,11 +19,11 @@ export default class SelectOperation extends Operation {
         let value;
 
         // Select based on JSON pointer or JSON path
-        if (typeof source.path === "string") {
-            value = this._processor.resolveJsonPointer(selectContext, source.path);
-        } else if (typeof source.query === "string") {
-            value = this._processor.resolveJsonPath(selectContext, source.query);
-            if (source.multiple !== true) {
+        if (typeof keywordValue.path === "string") {
+            value = this._processor.resolveJsonPointer(selectContext, keywordValue.path);
+        } else if (typeof keywordValue.query === "string") {
+            value = this._processor.resolveJsonPath(selectContext, keywordValue.query);
+            if (keywordValue.multiple !== true) {
                 value = value[0];
             }
         }
@@ -37,7 +37,7 @@ export default class SelectOperation extends Operation {
  * TYPES
  */
 
-export interface SelectOperationValue {
+export interface SelectKeywordValue {
     "from"?: any; // select context
     "multiple"?: boolean; // expect multiple results?
     "path"?: string; // json pointer

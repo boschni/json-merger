@@ -203,4 +203,87 @@ describe("when merging two arrays and a source array item has a $match indicator
 
         expect(result).toMatchSnapshot();
     });
+
+    test("it should correct the result array index if a matched item below the current source array index has been removed", function () {
+
+        const object1 = {
+            "a": [
+                {
+                    "prop": "this should be removed"
+                },
+                {
+                    "prop": "this should be the first item"
+                },
+                {
+                    "prop": "this should be the second item"
+                },
+                {
+                    "prop": "this should be the third item"
+                }
+            ]
+        };
+
+        const object2 = {
+            "a": [
+                {
+                    "prop2": "this should be removed"
+                },
+                {
+                    "$match": {
+                        "index": 0,
+                        "value": {
+                            "$remove": true
+                        }
+                    }
+                },
+                {
+                    "prop2": "this should be added to the second item"
+                }
+            ]
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("it should correct the result array index if a matched item equal to the current source array index has been removed", function () {
+
+        const object1 = {
+            "a": [
+                {
+                    "prop": "this should be the first item"
+                },
+                {
+                    "prop": "this should be removed"
+                },
+                {
+                    "prop": "this should be the second item"
+                }
+            ]
+        };
+
+        const object2 = {
+            "a": [
+                {
+                    "prop2": "this should be added to the first item"
+                },
+                {
+                    "$match": {
+                        "index": 1,
+                        "value": {
+                            "$remove": true
+                        }
+                    }
+                },
+                {
+                    "prop2": "this should be added to the second item"
+                }
+            ]
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });

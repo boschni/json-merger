@@ -7,21 +7,21 @@ export default class ExpressionOperation extends Operation {
         return "expression";
     }
 
-    process(source: ExpressionOperationValue, target?: any) {
+    processInObject(keywordValue: ExpressionKeywordValue, target?: any) {
         let input: any;
         let expression: string;
 
         // Get expression and input variable
-        if (typeof source === "string") {
-            expression = source;
+        if (typeof keywordValue === "string") {
+            expression = keywordValue;
         } else {
-            if (typeof source.expression === "string") {
-                expression = source.expression;
+            if (typeof keywordValue.expression === "string") {
+                expression = keywordValue.expression;
             }
 
             // process input if set
-            if (source.input !== undefined) {
-                input = this._processor.processSourcePropertyInNewScope(source.input, "input");
+            if (keywordValue.input !== undefined) {
+                input = this._processor.processSourcePropertyInNewScope(keywordValue.input, "input");
             }
         }
 
@@ -33,7 +33,7 @@ export default class ExpressionOperation extends Operation {
         // Create eval context
         const evalContext = {
             ...this._processor.currentScope.getScopeVariables(),
-            $sourceProperty: source,
+            $sourceProperty: keywordValue,
             $targetProperty: target,
             $input: input
         };
@@ -47,7 +47,7 @@ export default class ExpressionOperation extends Operation {
  * TYPES
  */
 
-export type ExpressionOperationValue = string // the expression
+export type ExpressionKeywordValue = string // the expression
     | {
     "expression": string; // the expression
     "input"?: any; // value of the $input variable

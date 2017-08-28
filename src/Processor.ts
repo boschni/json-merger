@@ -5,7 +5,7 @@ import {isObject} from "./utils/types";
 import Scope from "./Scope";
 import Config from "./Config";
 import DataLoader from "./DataLoader";
-import Operation from "./operations/Operation";
+import Operation, {ProcessArrayItemResult} from "./operations/Operation";
 
 export default class Processor {
 
@@ -162,7 +162,7 @@ export default class Processor {
             const value = source[keyword];
             if (value !== undefined) {
                 this.currentScope.enterProperty(keyword);
-                const result = operation.process(value, target);
+                const result = operation.processInObject(value, target);
                 this.currentScope.leaveProperty();
                 return result;
             }
@@ -198,20 +198,23 @@ export default class Processor {
         // Make sure target is an array
         target = (Array.isArray(target) ? target : [])  as any[];
 
-        // Create a copy of the target
-        let result = target.slice();
+        // Create the initial process result object
+        let processResult: ProcessArrayItemResult = {
+            resultArray: target.slice(),
+            resultArrayIndex: -1
+        };
 
         // Process all source array items
         source.forEach((sourceItem, sourceItemIndex) => {
             this.currentScope.enterProperty(sourceItemIndex);
-            result = this.processArrayItem(sourceItem, source, sourceItemIndex, result, target);
+            processResult = this.processArrayItem(sourceItem, source, sourceItemIndex, processResult.resultArray, processResult.resultArrayIndex + 1, target);
             this.currentScope.leaveProperty();
         });
 
-        return result;
+        return processResult.resultArray;
     }
 
-    processArrayItem(source: any, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], target: any[]) {
+    processArrayItem(source: any, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, target: any[]): ProcessArrayItemResult {
         // Check if the array item is an operation
         for (let i = 0; i < this._enabledOperationNames.length; i++) {
             const name = this._enabledOperationNames[i];
@@ -220,13 +223,13 @@ export default class Processor {
             const value = source[keyword];
             if (value !== undefined) {
                 this.currentScope.enterProperty(keyword);
-                const result = operation.processArrayItem(value, sourceArray, sourceArrayIndex, resultArray, target);
+                const result = operation.processInArray(value, sourceArray, sourceArrayIndex, resultArray, resultArrayIndex, target);
                 this.currentScope.leaveProperty();
                 return result;
             }
         }
-        resultArray[sourceArrayIndex] = this.processSource(source, target[sourceArrayIndex]);
-        return resultArray;
+        resultArray[resultArrayIndex] = this.processSource(source, resultArray[resultArrayIndex]);
+        return {resultArray, resultArrayIndex};
     }
 
     resolveJsonPointer(target: object, pointer?: string): any {

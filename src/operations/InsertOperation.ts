@@ -6,11 +6,12 @@ export default class InsertOperation extends Operation {
         return "insert";
     }
 
-    processArrayItem(source: InsertOperationValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], _target: any[]) {
-        const item = this._processor.processSourcePropertyInNewScope(source.value, "value");
-        const index = source.index === "-" ? resultArray.length : source.index;
+    processInArray(keywordValue: InsertKeywordValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
+        const item = this._processor.processSourcePropertyInNewScope(keywordValue.value, "value");
+        const index = keywordValue.index === "-" ? resultArray.length : keywordValue.index;
         resultArray.splice(index, 0, item);
-        return resultArray;
+        resultArrayIndex = index <= resultArrayIndex ? resultArrayIndex + 1 : resultArrayIndex;
+        return {resultArray, resultArrayIndex};
     }
 }
 
@@ -18,7 +19,7 @@ export default class InsertOperation extends Operation {
  * TYPES
  */
 
-export interface InsertOperationValue {
+export interface InsertKeywordValue {
     "index": number | "-"; // the index to insert at, use '-' to append
     "value": any; // the value to insert
 }

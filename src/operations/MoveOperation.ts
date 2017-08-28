@@ -6,20 +6,22 @@ export default class MoveOperation extends Operation {
         return "move";
     }
 
-    processArrayItem(source: MoveOperationValue, _sourceArray: any[], sourceArrayIndex: number, resultArray: any[], _target: any[]) {
+    processInArray(keywordValue: MoveKeywordValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
         // First remove the item from the result array
-        const removedItem = resultArray.splice(sourceArrayIndex, 1)[0];
+        const removedItem = resultArray.splice(resultArrayIndex, 1)[0];
+        resultArrayIndex--;
 
         // Then merge $move.value with the removed item
-        const mergedItem = this._processor.processSourcePropertyInNewScope(source.value, "value", removedItem);
+        const mergedItem = this._processor.processSourcePropertyInNewScope(keywordValue.value, "value", removedItem);
 
         // Calculate the index
-        const index = source.index === "-" ? resultArray.length : source.index;
+        const index = keywordValue.index === "-" ? resultArray.length : keywordValue.index;
 
         // Then insert the merged item
         resultArray.splice(index, 0, mergedItem);
+        resultArrayIndex = index <= resultArrayIndex ? resultArrayIndex + 1 : resultArrayIndex;
 
-        return resultArray;
+        return {resultArray, resultArrayIndex};
     }
 }
 
@@ -27,7 +29,7 @@ export default class MoveOperation extends Operation {
  * TYPES
  */
 
-export interface MoveOperationValue {
+export interface MoveKeywordValue {
     "index": number | "-"; // the index to move to, use '-' to append
     "value"?: any; // the optional value to merge the target item with
 }

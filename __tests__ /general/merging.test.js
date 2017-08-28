@@ -224,3 +224,67 @@ describe("when merging two arrays it", function () {
         expect(result).toMatchSnapshot();
     });
 });
+
+describe("when merging two arrays containing operations it", function () {
+
+    test("should apply the operation to the element matching the index in the target array, even if elements are removed", function () {
+
+        const object1 = [
+            {
+                "prop": "this item should be removed"
+            },
+            {
+                "prop": "this should be the first item"
+            },
+            {
+                "prop": "this should be the second item"
+            }
+        ];
+
+        const object2 = [
+            {
+                "$remove": true
+            },
+            {
+                "prop2": "this should be added to the first item"
+            }
+        ];
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("should apply the operation to the element matching the index in the target array, even if elements are inserted", function () {
+
+        const object1 = [
+            {
+                "prop": "this should be the second item"
+            },
+            {
+                "prop": "this should be the third item"
+            },
+            {
+                "prop": "this should be the fourth item"
+            }
+        ];
+
+        const object2 = [
+            {
+                "$insert": {
+                    "index": 0,
+                    "value": {
+                        "prop": "this should be the first item"
+                    }
+                }
+            },
+            {
+                "prop2": "this should be added to the third item"
+            }
+        ];
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+});

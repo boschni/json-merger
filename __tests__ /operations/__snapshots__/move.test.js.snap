@@ -94,13 +94,14 @@ exports[`when merging two arrays and the source item has $move: 2 it should merg
 			\\"b1\\": \\"insert at index 0\\"
 		},
 		{
-			\\"a2\\": \\"string\\"
-		},
-		{
-			\\"a1\\": \\"move first target array item to index 2\\"
+			\\"a1\\": \\"string\\"
 		},
 		{
 			\\"a3\\": \\"string\\"
+		},
+		{
+			\\"a2\\": \\"string\\",
+			\\"a1\\": \\"move second target array item to index 3\\"
 		}
 	]
 }"

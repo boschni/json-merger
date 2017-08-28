@@ -6,9 +6,9 @@ export default class ProcessOperation extends Operation {
         return "process";
     }
 
-    process(source: ProcessValue, target?: any): any {
+    processInObject(keywordValue: ProcessValue, target?: any): any {
         // Process the $process property without a target
-        const processedProcessProperty = this._processor.processSourceInNewScope(source);
+        const processedProcessProperty = this._processor.processSourceInNewScope(keywordValue);
 
         // Process the processed $process property and use the original target as target
         return this._processor.processSourceInNewScope(processedProcessProperty, target);

@@ -10,13 +10,21 @@ export default abstract class Operation {
 
     abstract name(): string;
 
-    process(_source: any, _target: any): any {
+    processInObject(_keywordValue: any, _target: any): any {
         return {};
     }
 
-    processArrayItem(source: any, _sourceArray: any[], sourceArrayIndex: number, resultArray: any[], target: any[]): any[] {
-        const targetArrayItem = Array.isArray(target) ? target[sourceArrayIndex] : undefined;
-        resultArray[sourceArrayIndex] = this.process(source, targetArrayItem);
-        return resultArray;
+    processInArray(keywordValue: any, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]): ProcessArrayItemResult {
+        resultArray[resultArrayIndex] = this.processInObject(keywordValue, resultArray[resultArrayIndex]);
+        return {resultArray, resultArrayIndex};
     }
+}
+
+/*
+ * TYPES
+ */
+
+export interface ProcessArrayItemResult {
+    resultArray: any[],
+    resultArrayIndex: number;
 }

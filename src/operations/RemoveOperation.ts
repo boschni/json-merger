@@ -6,9 +6,9 @@ export default class RemoveOperation extends Operation {
         return "remove";
     }
 
-    process(source: RemoveOperationValue, target?: any) {
+    processInObject(keywordValue: RemoveKeywordValue, target?: any) {
         // Undefined values get stripped in the serialize step
-        if (source === true) {
+        if (keywordValue === true) {
             return undefined;
         }
 
@@ -16,11 +16,12 @@ export default class RemoveOperation extends Operation {
         return target;
     }
 
-    processArrayItem(source: RemoveOperationValue, _sourceArray: any[], sourceArrayIndex: number, resultArray: any[], _target: any[]) {
-        if (source === true) {
-            resultArray.splice(sourceArrayIndex, 1);
+    processInArray(keywordValue: RemoveKeywordValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
+        if (keywordValue === true) {
+            resultArray.splice(resultArrayIndex, 1);
+            resultArrayIndex--;
         }
-        return resultArray;
+        return {resultArray, resultArrayIndex};
     }
 }
 
@@ -28,4 +29,4 @@ export default class RemoveOperation extends Operation {
  * TYPES
  */
 
-export type RemoveOperationValue = boolean;
+export type RemoveKeywordValue = boolean;

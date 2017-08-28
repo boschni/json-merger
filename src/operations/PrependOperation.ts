@@ -6,12 +6,13 @@ export default class PrependOperation extends Operation {
         return "prepend";
     }
 
-    processArrayItem(source: PrependOperationValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], _target: any[]) {
-        const processedItem = this._processor.processSource(source);
+    processInArray(keywordValue: PrependKeywordValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
+        const processedItem = this._processor.processSource(keywordValue);
         if (processedItem !== undefined) {
             resultArray.unshift(processedItem);
+            resultArrayIndex++;
         }
-        return resultArray;
+        return {resultArray, resultArrayIndex};
     }
 }
 
@@ -19,4 +20,4 @@ export default class PrependOperation extends Operation {
  * TYPES
  */
 
-export type PrependOperationValue = any;
+export type PrependKeywordValue = any;

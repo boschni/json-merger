@@ -130,9 +130,9 @@ describe("when merging two arrays and the source item has", function () {
                 },
                 {
                     "$move": {
-                        "index": 2,
+                        "index": 3,
                         "value": {
-                            "a1": "move first target array item to index 2"
+                            "a1": "move second target array item to index 3"
                         }
                     }
                 }

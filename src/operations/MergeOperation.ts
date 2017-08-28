@@ -6,12 +6,12 @@ export default class MergeOperation extends Operation {
         return "merge";
     }
 
-    process(source: MergeOperationValue, target?: any) {
+    processInObject(keywordValue: MergeKeywordValue, target?: any) {
         // Process $merge.source property without a target
-        const processedSourceProperty = this._processor.processSourcePropertyInNewScope(source.source, "source");
+        const processedSourceProperty = this._processor.processSourcePropertyInNewScope(keywordValue.source, "source");
 
         // Process $merge.with property and use the processed $merge.source property as target
-        const processedWithProperty = this._processor.processSourcePropertyInNewScope(source.with, "with", processedSourceProperty);
+        const processedWithProperty = this._processor.processSourcePropertyInNewScope(keywordValue.with, "with", processedSourceProperty);
 
         // Process $merge result and use the original target as target but do not process operations
         this._processor.disableOperations();
@@ -26,7 +26,7 @@ export default class MergeOperation extends Operation {
  * TYPES
  */
 
-export interface MergeOperationValue {
+export interface MergeKeywordValue {
     "source": any; // the value to merge
     "with": any; // the value to merge with
 }

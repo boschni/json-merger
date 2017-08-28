@@ -1,6 +1,6 @@
 import * as jsonpath from "jsonpath";
 import * as jsonPtr from "json-ptr";
-import Operation from "./Operation";
+import Operation, {ProcessArrayItemResult} from "./Operation";
 
 export default class MatchOperation extends Operation {
 
@@ -8,36 +8,43 @@ export default class MatchOperation extends Operation {
         return "match";
     }
 
-    processArrayItem(source: MatchOperationValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], _target: any[]) {
-        let resultItemIndex: number;
+    processInArray(keywordValue: MatchKeywordValue, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, target: any[]): ProcessArrayItemResult {
+        let matchedResultArrayIndex: number;
 
         // Handle $match.index
-        if (source.index !== undefined) {
-            resultItemIndex = source.index === "-" ? resultArray.length - 1 : source.index;
+        if (keywordValue.index !== undefined) {
+            matchedResultArrayIndex = keywordValue.index === "-" ? resultArray.length - 1 : keywordValue.index;
         }
 
         // Handle $match.query
-        else if (source.query !== undefined) {
+        else if (keywordValue.query !== undefined) {
             // Try to find a matching item in the result
-            const path = jsonpath.paths(resultArray, source.query)[0];
-            resultItemIndex = path !== undefined ? path[1] as number : undefined;
+            const path = jsonpath.paths(resultArray, keywordValue.query)[0];
+            matchedResultArrayIndex = path !== undefined ? path[1] as number : undefined;
         }
 
         // Handle $match.path
-        else if (source.path !== undefined) {
+        else if (keywordValue.path !== undefined) {
             // Try to find a matching item in the result
-            if (jsonPtr.get(resultArray, source.path) !== undefined) {
-                [resultItemIndex] = jsonPtr.decodePointer(source.path)[0];
+            if (jsonPtr.get(resultArray, keywordValue.path) !== undefined) {
+                [matchedResultArrayIndex] = jsonPtr.decodePointer(keywordValue.path)[0];
             }
         }
 
         // Ignore the item if no match found
-        if (resultItemIndex === undefined || resultArray[resultItemIndex] === undefined) {
-            return resultArray;
+        if (matchedResultArrayIndex === undefined || resultArray[matchedResultArrayIndex] === undefined) {
+            return {resultArray, resultArrayIndex};
         }
 
         // Process result array item
-        return this._processor.processArrayItem(source.value, resultArray, resultItemIndex, resultArray, resultArray);
+        const result = this._processor.processArrayItem(keywordValue.value, sourceArray, sourceArrayIndex, resultArray, matchedResultArrayIndex, target);
+
+        // Check if an array item has been inserted or removed below or at the current array item
+        if (matchedResultArrayIndex <= resultArrayIndex) {
+            resultArrayIndex += result.resultArrayIndex - matchedResultArrayIndex;
+        }
+
+        return {resultArray: result.resultArray, resultArrayIndex};
     }
 }
 
@@ -45,7 +52,7 @@ export default class MatchOperation extends Operation {
  * TYPES
  */
 
-export interface MatchOperationValue {
+export interface MatchKeywordValue {
     "index"?: number | "-"; // the index to match against, use '-' to match on the last item
     "path"?: string; // the json pointer to match against
     "query"?: string; // the json path to match against

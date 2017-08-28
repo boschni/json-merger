@@ -6,12 +6,12 @@ export default class AppendOperation extends Operation {
         return "append";
     }
 
-    processArrayItem(source: AppendOperationValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], _target: any[]) {
-        const processedItem = this._processor.processSource(source);
+    processInArray(keywordValue: AppendKeywordValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
+        const processedItem = this._processor.processSource(keywordValue);
         if (processedItem !== undefined) {
             resultArray.push(processedItem);
         }
-        return resultArray;
+        return {resultArray, resultArrayIndex};
     }
 }
 
@@ -19,4 +19,4 @@ export default class AppendOperation extends Operation {
  * TYPES
  */
 
-export type AppendOperationValue = any;
+export type AppendKeywordValue = any;
