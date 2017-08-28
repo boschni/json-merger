@@ -3,7 +3,7 @@ import Operation from "./Operation";
 
 export default class ExpressionOperation extends Operation {
 
-    keyword() {
+    name() {
         return "expression";
     }
 

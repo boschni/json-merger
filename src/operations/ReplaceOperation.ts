@@ -2,7 +2,7 @@ import Operation from "./Operation";
 
 export default class ReplaceOperation extends Operation {
 
-    keyword() {
+    name() {
         return "replace";
     }
 

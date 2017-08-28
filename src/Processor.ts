@@ -12,31 +12,35 @@ export default class Processor {
     currentScope: Scope;
 
     private _cache: CacheItem[] = [];
-    private _enabledOperations: PrefixedKeywordOperationPair[] = [];
-    private _keywordOperationMap: PrefixedKeywordOperationMap = {};
-    private _operations: PrefixedKeywordOperationPair[] = [];
+    private _enabledOperationNames: string[] = [];
+    private _keywordOperationMap: KeywordOperationMap = {};
+    private _operationNameKeywordMap: OperationNameKeywordMap = {};
+    private _operationNames: string[] = [];
     private _scopes: Scope[] = [];
 
     constructor(
         private _config: Config,
         private _dataLoader: DataLoader
     ) {
-        // Set enabled operations
-        this._enabledOperations = this._operations;
+        // Enable all operations
+        this._enabledOperationNames = this._operationNames;
     }
 
     addOperation(operation: Operation) {
-        // Create prefixed keyword and operation pair
-        const pair = {
-            operation,
-            prefixedKeyword: this._config.operationPrefix + operation.keyword()
-        };
+        // Get operation name
+        const name = operation.name();
 
-        // Add to the operations array
-        this._operations.push(pair);
+        // Create keyword
+        const keyword = this._config.operationPrefix + name;
 
-        // Add prefixed keyword to operation map for performance
-        this._keywordOperationMap[pair.prefixedKeyword] = operation;
+        // Add to keyword to operation map
+        this._keywordOperationMap[keyword] = operation;
+
+        // Add to operation name to keyword map
+        this._operationNameKeywordMap[name] = keyword;
+
+        // Add to the operation names array
+        this._operationNames.push(name);
     }
 
     addOperations(operations: Operation[]) {
@@ -44,11 +48,11 @@ export default class Processor {
     }
 
     enableOperations() {
-        this._enabledOperations = this._operations;
+        this._enabledOperationNames = this._operationNames;
     }
 
     disableOperations() {
-        this._enabledOperations = [];
+        this._enabledOperationNames = [];
     }
 
     isKeyword(input: string): boolean {
@@ -151,12 +155,14 @@ export default class Processor {
 
     private _processObject(source: any, target: any) {
         // Check if the object is an operation
-        for (let i = 0; i < this._enabledOperations.length; i++) {
-            const pair = this._enabledOperations[i];
-            const value = source[pair.prefixedKeyword];
+        for (let i = 0; i < this._enabledOperationNames.length; i++) {
+            const name = this._enabledOperationNames[i];
+            const keyword = this._operationNameKeywordMap[name];
+            const operation = this._keywordOperationMap[keyword];
+            const value = source[keyword];
             if (value !== undefined) {
-                this.currentScope.enterProperty(pair.prefixedKeyword);
-                const result = pair.operation.process(value, target);
+                this.currentScope.enterProperty(keyword);
+                const result = operation.process(value, target);
                 this.currentScope.leaveProperty();
                 return result;
             }
@@ -206,12 +212,15 @@ export default class Processor {
     }
 
     processArrayItem(source: any, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], target: any[]) {
-        for (let i = 0; i < this._enabledOperations.length; i++) {
-            const pair = this._enabledOperations[i];
-            const value = source[pair.prefixedKeyword];
+        // Check if the array item is an operation
+        for (let i = 0; i < this._enabledOperationNames.length; i++) {
+            const name = this._enabledOperationNames[i];
+            const keyword = this._operationNameKeywordMap[name];
+            const operation = this._keywordOperationMap[keyword];
+            const value = source[keyword];
             if (value !== undefined) {
-                this.currentScope.enterProperty(pair.prefixedKeyword);
-                const result = pair.operation.processArrayItem(value, sourceArray, sourceArrayIndex, resultArray, target);
+                this.currentScope.enterProperty(keyword);
+                const result = operation.processArrayItem(value, sourceArray, sourceArrayIndex, resultArray, target);
                 this.currentScope.leaveProperty();
                 return result;
             }
@@ -274,11 +283,10 @@ interface CacheItem {
     uri: string;
 }
 
-interface PrefixedKeywordOperationMap {
-    [prefixedKeyword: string]: Operation;
+interface KeywordOperationMap {
+    [keyword: string]: Operation;
 }
 
-interface PrefixedKeywordOperationPair {
-    operation: Operation;
-    prefixedKeyword: string;
+interface OperationNameKeywordMap {
+    [name: string]: string;
 }

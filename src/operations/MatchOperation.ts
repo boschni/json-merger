@@ -4,7 +4,7 @@ import Operation from "./Operation";
 
 export default class MatchOperation extends Operation {
 
-    keyword() {
+    name() {
         return "match";
     }
 

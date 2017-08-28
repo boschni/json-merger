@@ -2,7 +2,7 @@ import Operation from "./Operation";
 
 export default class PrependOperation extends Operation {
 
-    keyword() {
+    name() {
         return "prepend";
     }
 

@@ -8,7 +8,7 @@ export default abstract class Operation {
         this._processor = processor;
     }
 
-    abstract keyword(): string;
+    abstract name(): string;
 
     process(_source: any, _target: any): any {
         return {};

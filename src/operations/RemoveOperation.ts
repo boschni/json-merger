@@ -2,7 +2,7 @@ import Operation from "./Operation";
 
 export default class RemoveOperation extends Operation {
 
-    keyword() {
+    name() {
         return "remove";
     }
 

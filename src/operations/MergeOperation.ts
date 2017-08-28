@@ -2,7 +2,7 @@ import Operation from "./Operation";
 
 export default class MergeOperation extends Operation {
 
-    keyword() {
+    name() {
         return "merge";
     }
 

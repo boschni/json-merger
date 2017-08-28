@@ -2,7 +2,7 @@ import Operation from "./Operation";
 
 export default class AppendOperation extends Operation {
 
-    keyword() {
+    name() {
         return "append";
     }
 

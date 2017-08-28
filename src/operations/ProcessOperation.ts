@@ -2,7 +2,7 @@ import Operation from "./Operation";
 
 export default class ProcessOperation extends Operation {
 
-    keyword() {
+    name() {
         return "process";
     }
 

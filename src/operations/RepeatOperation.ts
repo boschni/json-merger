@@ -4,7 +4,7 @@ import {isObject} from "../utils/types";
 
 export default class RepeatOperation extends Operation {
 
-    keyword() {
+    name() {
         return "repeat";
     }
 
