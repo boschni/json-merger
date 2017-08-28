@@ -30,3 +30,14 @@ exports[`when config.params is set it should expose the property in the source a
 	}
 }"
 `;
+
+exports[`when config.params is set should not cache an imported file or files imported by the imported file if the params are different 1`] = `
+"{
+	\\"a\\": {
+		\\"prop\\": \\"first params prop\\"
+	},
+	\\"b\\": {
+		\\"prop\\": \\"second params prop\\"
+	}
+}"
+`;

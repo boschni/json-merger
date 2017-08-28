@@ -76,4 +76,40 @@ describe("when config.params is set", function () {
 
         expect(result).toMatchSnapshot();
     });
+
+    test("should not cache an imported file or files imported by the imported file if the params are different", function () {
+
+        const files = {
+            "a.json": {
+                "a": {
+                    "$import": {
+                        "path": "b.json",
+                        "params": {
+                            "prop": "first params prop"
+                        }
+                    }
+                },
+                "b": {
+                    "$import": {
+                        "path": "b.json",
+                        "params": {
+                            "prop": "second params prop"
+                        }
+                    }
+                }
+            },
+            "b.json": {
+                "$import": "c.json"
+            },
+            "c.json": {
+                "$expression": "$params"
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeFile("a.json", testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });

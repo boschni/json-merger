@@ -82,11 +82,26 @@ export default class Processor {
     loadAndProcessFile(uri: string, target?: any, scopeVariables?: object): any {
         // Get absolute URI
         const currentUri = this.getCurrentUri();
-        const sourceUri = this._dataLoader.toAbsoluteUri(uri, currentUri);
+        const absoluteUri = this._dataLoader.toAbsoluteUri(uri, currentUri);
+
+        // Determine the used scope variables
+        let usedScopeVariables = scopeVariables;
+        if (usedScopeVariables === undefined && this.currentScope) {
+            usedScopeVariables = this.currentScope.variables;
+        }
+
+        // Hash the data that could change the output of the processing.
+        // At the moment the target and scope variables can change the output.
+        const hashedTarget = JSON.stringify(target);
+        const hashedScopeVariables = JSON.stringify(usedScopeVariables);
 
         // Check cache
         const cacheItem = this._cache
-            .filter(x => x.uri === sourceUri && x.target === target && x.scopeVariables === scopeVariables)[0];
+            .filter(x => (
+                x.absoluteUri === absoluteUri
+                && x.hashedTarget === hashedTarget
+                && x.hashedScopeVariables === hashedScopeVariables
+            ))[0];
 
         // Return cache result if found
         if (cacheItem) {
@@ -94,13 +109,13 @@ export default class Processor {
         }
 
         // Load file
-        const source = this._dataLoader.load(sourceUri, currentUri);
+        const source = this._dataLoader.load(absoluteUri, currentUri);
 
         // Process source
-        const result = this.processSourceWithUriInNewScope(source, sourceUri, target, scopeVariables);
+        const result = this.processSourceWithUriInNewScope(source, absoluteUri, target, scopeVariables);
 
         // Add to processed file cache
-        this._cache.push({uri: sourceUri, target, result, scopeVariables});
+        this._cache.push({absoluteUri, hashedTarget, hashedScopeVariables, result});
 
         return result;
     }
@@ -278,10 +293,10 @@ export default class Processor {
  */
 
 interface CacheItem {
+    absoluteUri: string;
+    hashedScopeVariables: string;
+    hashedTarget: string;
     result: any;
-    scopeVariables?: object;
-    target: object;
-    uri: string;
 }
 
 interface NameOperationMap {
