@@ -13,8 +13,7 @@ export default class Processor {
 
     private _cache: CacheItem[] = [];
     private _enabledOperationNames: string[] = [];
-    private _keywordOperationMap: KeywordOperationMap = {};
-    private _operationNameKeywordMap: OperationNameKeywordMap = {};
+    private _nameOperationMap: NameOperationMap = {};
     private _operationNames: string[] = [];
     private _scopes: Scope[] = [];
 
@@ -30,14 +29,8 @@ export default class Processor {
         // Get operation name
         const name = operation.name();
 
-        // Create keyword
-        const keyword = this._config.operationPrefix + name;
-
-        // Add to keyword to operation map
-        this._keywordOperationMap[keyword] = operation;
-
-        // Add to operation name to keyword map
-        this._operationNameKeywordMap[name] = keyword;
+        // Add to name to operation map
+        this._nameOperationMap[name] = operation;
 
         // Add to the operation names array
         this._operationNames.push(name);
@@ -55,8 +48,13 @@ export default class Processor {
         this._enabledOperationNames = [];
     }
 
+    getKeyword(operationName: string): string {
+        return this._config.operationPrefix + operationName;
+    }
+
     isKeyword(input: string): boolean {
-        return this._keywordOperationMap[input] !== undefined;
+        const name = input.substr(this._config.operationPrefix.length);
+        return this._nameOperationMap[name] !== undefined;
     }
 
     getCurrentUri(): string {
@@ -157,8 +155,8 @@ export default class Processor {
         // Check if the object is an operation
         for (let i = 0; i < this._enabledOperationNames.length; i++) {
             const name = this._enabledOperationNames[i];
-            const keyword = this._operationNameKeywordMap[name];
-            const operation = this._keywordOperationMap[keyword];
+            const operation = this._nameOperationMap[name];
+            const keyword = this.getKeyword(name);
             const value = source[keyword];
             if (value !== undefined) {
                 this.currentScope.enterProperty(keyword);
@@ -218,8 +216,8 @@ export default class Processor {
         // Check if the array item is an operation
         for (let i = 0; i < this._enabledOperationNames.length; i++) {
             const name = this._enabledOperationNames[i];
-            const keyword = this._operationNameKeywordMap[name];
-            const operation = this._keywordOperationMap[keyword];
+            const operation = this._nameOperationMap[name];
+            const keyword = this.getKeyword(name);
             const value = source[keyword];
             if (value !== undefined) {
                 this.currentScope.enterProperty(keyword);
@@ -286,10 +284,6 @@ interface CacheItem {
     uri: string;
 }
 
-interface KeywordOperationMap {
-    [keyword: string]: Operation;
-}
-
-interface OperationNameKeywordMap {
-    [name: string]: string;
+interface NameOperationMap {
+    [name: string]: Operation;
 }

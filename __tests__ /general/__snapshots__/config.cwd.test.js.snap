@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`when config.cwd is set it should be possible to change it with Merger.setConfig 1`] = `
+Array [
+  "{
+	\\"object\\": \\"this should be the value of /object\\"
+}",
+  "{
+	\\"object\\": \\"this should be the value of /object\\"
+}",
+]
+`;
+
 exports[`when config.cwd is set it should try to load files relative to config.cwd 1`] = `
 "{
 	\\"object\\": \\"this should be the value of /object\\"

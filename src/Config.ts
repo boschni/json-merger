@@ -7,6 +7,10 @@ export default class Config implements IConfig {
     stringify: boolean | "pretty";
 
     constructor(config?: Partial<IConfig>) {
+        this.set(config);
+    }
+
+    set(config?: Partial<IConfig>) {
         config = config || {};
         this.cwd = typeof config.cwd === "string" ? config.cwd : "";
         this.errorOnFileNotFound = config.errorOnFileNotFound !== false;

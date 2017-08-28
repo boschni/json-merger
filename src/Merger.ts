@@ -84,31 +84,40 @@ export default class Merger {
         ]);
     }
 
-    mergeObject(object: object) {
+    mergeObject(object: object, config?: Partial<IConfig>) {
         const sources = [{type: SourceType.Object, object} as Source];
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
-    mergeObjects(objects: object[]) {
+    mergeObjects(objects: object[], config?: Partial<IConfig>) {
         const sources = objects.map(object => ({type: SourceType.Object, object} as Source));
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
-    mergeFile(uri: string) {
+    mergeFile(uri: string, config?: Partial<IConfig>) {
         const sources = [{type: SourceType.Uri, uri} as Source];
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
     }
 
-    mergeFiles(uris: string[]) {
+    mergeFiles(uris: string[], config?: Partial<IConfig>) {
         const sources = uris.map(uri => ({type: SourceType.Uri, uri} as Source));
-        return this._mergeSources(sources);
+        return this._mergeSources(sources, config);
+    }
+
+    setConfig(config?: Partial<IConfig>) {
+        this._config.set(config);
     }
 
     clearCaches() {
         this._dataLoader.clearCache();
     }
 
-    private _mergeSources(sources: Source[]): any {
+    private _mergeSources(sources: Source[], config?: Partial<IConfig>): any {
+        // Set new config if given
+        if (config !== undefined) {
+            this.setConfig(config);
+        }
+
         // Init result
         let result: any;
 
