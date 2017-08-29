@@ -6,7 +6,9 @@ export default class MergeOperation extends Operation {
         return "merge";
     }
 
-    processInObject(keywordValue: MergeKeywordValue, target?: any) {
+    processInObject(keyword: string, source: any, target?: any) {
+        const keywordValue: MergeKeywordValue = source[keyword];
+
         // Process $merge.source property without a target
         const processedSourceProperty = this._processor.processSourcePropertyInNewScope(keywordValue.source, "source");
 

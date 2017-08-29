@@ -6,7 +6,9 @@ export default class MoveOperation extends Operation {
         return "move";
     }
 
-    processInArray(keywordValue: MoveKeywordValue, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
+    processInArray(keyword: string, source: any, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
+        const keywordValue: MoveKeywordValue = source[keyword];
+
         // First remove the item from the result array
         const removedItem = resultArray.splice(resultArrayIndex, 1)[0];
         resultArrayIndex--;

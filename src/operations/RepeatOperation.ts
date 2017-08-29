@@ -8,9 +8,10 @@ export default class RepeatOperation extends Operation {
         return "repeat";
     }
 
-    processInObject(keywordValue: RepeatKeywordValue, target?: any): any {
-        let result;
+    processInObject(keyword: string, source: any, target?: any) {
+        const keywordValue: RepeatKeywordValue = source[keyword];
 
+        let result;
         let step = 1;
         let values: {key?: number | string, value: any}[] = [];
 

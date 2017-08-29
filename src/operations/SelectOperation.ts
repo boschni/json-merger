@@ -6,7 +6,9 @@ export default class SelectOperation extends Operation {
         return "select";
     }
 
-    processInObject(keywordValue: SelectKeywordValue, target?: any): any {
+    processInObject(keyword: string, source: any, target?: any) {
+        const keywordValue: SelectKeywordValue = source[keyword];
+
         // Determine the select context
         let selectContext;
 

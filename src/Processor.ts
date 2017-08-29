@@ -25,6 +25,25 @@ export default class Processor {
         this._enabledOperationNames = this._operationNames;
     }
 
+    merge(sources: Source[]): any {
+        // Create scope variables
+        const scopeVariables = {
+            $params: this._config.params
+        };
+
+        // Process and merge sources
+        let result = sources.reduce((target: any, source) => {
+            // Is the source an object or URI?
+            if (source.type === SourceType.Object) {
+                return this.processSourceInNewScope(source.object, target, scopeVariables);
+            } else if (source.type === SourceType.Uri) {
+                return this.loadAndProcessFileByRef(source.uri, target, scopeVariables);
+            }
+        }, undefined);
+
+        return result;
+    }
+
     addOperation(operation: Operation) {
         // Get operation name
         const name = operation.name();
@@ -92,14 +111,15 @@ export default class Processor {
 
         // Hash the data that could change the output of the processing.
         // At the moment the target and scope variables can change the output.
-        const hashedTarget = JSON.stringify(target);
+        // But we don't need to hash the target because the DataLoader
+        // always returns the same target reference.
         const hashedScopeVariables = JSON.stringify(usedScopeVariables);
 
         // Check cache
         const cacheItem = this._cache
             .filter(x => (
                 x.absoluteUri === absoluteUri
-                && x.hashedTarget === hashedTarget
+                && x.target === target
                 && x.hashedScopeVariables === hashedScopeVariables
             ))[0];
 
@@ -115,7 +135,7 @@ export default class Processor {
         const result = this.processSourceWithUriInNewScope(source, absoluteUri, target, scopeVariables);
 
         // Add to processed file cache
-        this._cache.push({absoluteUri, hashedTarget, hashedScopeVariables, result});
+        this._cache.push({absoluteUri, target, hashedScopeVariables, result});
 
         return result;
     }
@@ -172,10 +192,9 @@ export default class Processor {
             const name = this._enabledOperationNames[i];
             const operation = this._nameOperationMap[name];
             const keyword = this.getKeyword(name);
-            const value = source[keyword];
-            if (value !== undefined) {
+            if (source[keyword] !== undefined) {
                 this.currentScope.enterProperty(keyword);
-                const result = operation.processInObject(value, target);
+                const result = operation.processInObject(keyword, source, target);
                 this.currentScope.leaveProperty();
                 return result;
             }
@@ -233,10 +252,9 @@ export default class Processor {
             const name = this._enabledOperationNames[i];
             const operation = this._nameOperationMap[name];
             const keyword = this.getKeyword(name);
-            const value = source[keyword];
-            if (value !== undefined) {
+            if (source[keyword] !== undefined) {
                 this.currentScope.enterProperty(keyword);
-                const result = operation.processInArray(value, sourceArray, sourceArrayIndex, resultArray, resultArrayIndex, target);
+                const result = operation.processInArray(keyword, source, sourceArray, sourceArrayIndex, resultArray, resultArrayIndex, target);
                 this.currentScope.leaveProperty();
                 return result;
             }
@@ -295,10 +313,28 @@ export default class Processor {
 interface CacheItem {
     absoluteUri: string;
     hashedScopeVariables: string;
-    hashedTarget: string;
     result: any;
+    target: any;
 }
 
 interface NameOperationMap {
     [name: string]: Operation;
 }
+
+export const enum SourceType {
+    Object,
+    Uri
+}
+
+export interface UriSource {
+    uri: string;
+    type: SourceType.Uri;
+}
+
+export interface ObjectSource {
+    object: object;
+    type: SourceType.Object;
+}
+
+export type Source = UriSource
+    | ObjectSource;

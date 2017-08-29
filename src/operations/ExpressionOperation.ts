@@ -7,7 +7,9 @@ export default class ExpressionOperation extends Operation {
         return "expression";
     }
 
-    processInObject(keywordValue: ExpressionKeywordValue, target?: any) {
+    processInObject(keyword: string, source: any, target?: any) {
+        const keywordValue: ExpressionKeywordValue = source[keyword];
+
         let input: any;
         let expression: string;
 

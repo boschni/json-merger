@@ -1,7 +1,7 @@
 import Config, {IConfig} from "./Config";
 import DataLoader from "./DataLoader";
 import MergerError from "./MergerError";
-import Processor from "./Processor";
+import Processor, {Source, SourceType} from "./Processor";
 
 // Import file loaders
 import FileLoader from "./fileLoaders/FileLoader";
@@ -86,22 +86,22 @@ export default class Merger {
 
     mergeObject(object: object, config?: Partial<IConfig>) {
         const sources = [{type: SourceType.Object, object} as Source];
-        return this._mergeSources(sources, config);
+        return this._merge(sources, config);
     }
 
     mergeObjects(objects: object[], config?: Partial<IConfig>) {
         const sources = objects.map(object => ({type: SourceType.Object, object} as Source));
-        return this._mergeSources(sources, config);
+        return this._merge(sources, config);
     }
 
     mergeFile(uri: string, config?: Partial<IConfig>) {
         const sources = [{type: SourceType.Uri, uri} as Source];
-        return this._mergeSources(sources, config);
+        return this._merge(sources, config);
     }
 
     mergeFiles(uris: string[], config?: Partial<IConfig>) {
         const sources = uris.map(uri => ({type: SourceType.Uri, uri} as Source));
-        return this._mergeSources(sources, config);
+        return this._merge(sources, config);
     }
 
     setConfig(config?: Partial<IConfig>) {
@@ -112,7 +112,7 @@ export default class Merger {
         this._dataLoader.clearCache();
     }
 
-    private _mergeSources(sources: Source[], config?: Partial<IConfig>): any {
+    private _merge(sources: Source[], config?: Partial<IConfig>): any {
         // Set new config if given
         if (config !== undefined) {
             this.setConfig(config);
@@ -122,29 +122,7 @@ export default class Merger {
         let result: any;
 
         try {
-            // Process and merge sources
-            result = sources.reduce((target: any, source) => {
-
-                // only create locals if params is defined because locals
-                // is used to check if a file is already processed (caching)
-                let scopeVariables: object;
-
-                if (this._config.params !== undefined) {
-                    scopeVariables = {
-                        $params: this._config.params
-                    };
-                }
-
-                // Is the source an object?
-                if (source.type === SourceType.Object) {
-                    return this._processor.processSourceInNewScope(source.object, target, scopeVariables);
-                }
-
-                // Or is the source a ref?
-                else if (source.type === SourceType.Uri) {
-                    return this._processor.loadAndProcessFileByRef(source.uri, target, scopeVariables);
-                }
-            }, undefined);
+            result = this._processor.merge(sources);
         } catch (e) {
             throw new MergerError(e, this._processor.currentScope);
         }
@@ -158,25 +136,3 @@ export default class Merger {
         return result;
     }
 }
-
-/*
- * TYPES
- */
-
-enum SourceType {
-    Object,
-    Uri
-}
-
-interface UriSource {
-    uri: string;
-    type: SourceType.Uri;
-}
-
-interface ObjectSource {
-    object: object;
-    type: SourceType.Object;
-}
-
-type Source = UriSource
-    | ObjectSource;

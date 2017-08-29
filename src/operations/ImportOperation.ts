@@ -7,7 +7,9 @@ export default class ImportOperation extends Operation {
         return "import";
     }
 
-    processInObject(keywordValue: ImportKeywordValue, target?: any) {
+    processInObject(keyword: string, source: any, target?: any) {
+        const keywordValue: ImportKeywordValue = source[keyword];
+
         // Make sure we have an array of import values
         const importValues: ImportKeywordValue[] = Array.isArray(keywordValue) ? keywordValue : [keywordValue];
 

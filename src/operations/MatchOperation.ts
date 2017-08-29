@@ -1,6 +1,6 @@
 import * as jsonpath from "jsonpath";
 import * as jsonPtr from "json-ptr";
-import Operation, {ProcessArrayItemResult} from "./Operation";
+import Operation from "./Operation";
 
 export default class MatchOperation extends Operation {
 
@@ -8,7 +8,9 @@ export default class MatchOperation extends Operation {
         return "match";
     }
 
-    processInArray(keywordValue: MatchKeywordValue, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, target: any[]): ProcessArrayItemResult {
+    processInArray(keyword: string, source: any, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, target: any[]) {
+        const keywordValue: MatchKeywordValue = source[keyword];
+
         let matchedResultArrayIndex: number;
 
         // Handle $match.index
