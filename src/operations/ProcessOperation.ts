@@ -1,4 +1,5 @@
 import Operation from "./Operation";
+import {Phase} from "../Scope";
 
 export default class ProcessOperation extends Operation {
 
@@ -9,11 +10,13 @@ export default class ProcessOperation extends Operation {
     processInObject(keyword: string, source: any, target?: any) {
         const keywordValue: ProcessKeywordValue = source[keyword];
 
-        // Process the $process property without a target
-        const processedProcessProperty = this._processor.processSourceInNewScope(keywordValue);
+        if (typeof keywordValue.phase === "string" && keywordValue.phase !== this._processor.currentScope.phase) {
+            this._processor.currentScope.executePhase(keywordValue.phase);
+            return source;
+        }
 
-        // Process the processed $process property and use the original target as target
-        return this._processor.processSourceInNewScope(processedProcessProperty, target);
+        // Process the $process property without a target
+        return this._processor.processSource(keywordValue.value, target);
     }
 }
 
@@ -21,4 +24,7 @@ export default class ProcessOperation extends Operation {
  * TYPES
  */
 
-export type ProcessKeywordValue = any;
+export type ProcessKeywordValue = {
+    "phase"?: Phase,
+    "value": any;
+};

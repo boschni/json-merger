@@ -1,6 +1,9 @@
 const jsonMerger = require("../../dist");
 const {testConfig} = require("../__helpers__");
 
+jest.mock("fs");
+const fs = require("fs");
+
 describe("when merging object1 and object2", function () {
 
     test("then $target in object1 should refer to undefined", function () {
@@ -318,5 +321,33 @@ describe("when merging object1 and object2", function () {
 
             expect(result).toMatchSnapshot();
         });
+    });
+});
+
+describe("when importing a file", function () {
+
+    test("then $root in the file should refer to the root of the file", function () {
+
+        const files = {
+            "a.json": {
+                "aa": {
+                    "$expression": "$root.$source.sharedProp"
+                },
+                "sharedProp": "This should be the value of /a/aa"
+            }
+        };
+
+        const object = {
+            "a": {
+                "$import": "a.json"
+            },
+            "sharedProp": "wrong"
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeObject(object, testConfig());
+
+        expect(result).toMatchSnapshot();
     });
 });

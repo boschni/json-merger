@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`when importing a file then $root in the file should refer to the root of the file 1`] = `
+"{
+	\\"a\\": {
+		\\"aa\\": \\"This should be the value of /a/aa\\",
+		\\"sharedProp\\": \\"This should be the value of /a/aa\\"
+	},
+	\\"sharedProp\\": \\"wrong\\"
+}"
+`;
+
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $parent.$target in object2 $merge.with should refer to the processed object1 1`] = `
 "{
 	\\"targetProp\\": \\"should be the value of mergeSharedProp\\",
