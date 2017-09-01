@@ -3,7 +3,34 @@ const {testConfig} = require("../__helpers__");
 
 describe("when merging two arrays and the source item has", function () {
 
-    test("$move: 0 it should merge and prepend the target array item matching the source array item index", function () {
+    test("$move: 0 it should prepend the target array item matching the source array item index", function () {
+
+        const object1 = {
+            "a": [
+                {
+                    "a1": "string"
+                },
+                {
+                    "a2": "move to index 0"
+                }
+            ]
+        };
+
+        const object2 = {
+            "a": [
+                {},
+                {
+                    "$move": 0
+                }
+            ]
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("$move.index set to 0 and $move.value set it should merge and prepend the target array item matching the source array item index", function () {
 
         const object1 = {
             "a": [

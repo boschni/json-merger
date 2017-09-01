@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when processing an object containing an $include operation and used in an source array item it should process the file content as array item source 1`] = `
+"{
+	\\"a\\": [
+		\\"should be the first item\\",
+		\\"should be the second item\\",
+		\\"should be the third item\\"
+	]
+}"
+`;
+
+exports[`when processing an object containing an $include operation it should process the file content in the current scope 1`] = `
+"{
+	\\"a\\": \\"This should be the value of /a\\",
+	\\"b\\": \\"This should be the value of /a\\"
+}"
+`;
+
+exports[`when processing an object containing an $include operation it should resolve to the file defined in the $include property 1`] = `
+"{
+	\\"a\\": {
+		\\"b\\": \\"This should be the value of /a/b\\"
+	}
+}"
+`;

@@ -9,6 +9,19 @@ exports[`$move on a non array item should do nothing and be stripped 1`] = `
 }"
 `;
 
+exports[`when merging two arrays and the source item has $move.index set to 0 and $move.value set it should merge and prepend the target array item matching the source array item index 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"move to index 0\\"
+		},
+		{
+			\\"a1\\": \\"string\\"
+		}
+	]
+}"
+`;
+
 exports[`when merging two arrays and the source item has $move: - it should merge and append the target array item matching the source array item index 1`] = `
 "{
 	\\"a\\": [
@@ -42,19 +55,6 @@ exports[`when merging two arrays and the source item has $move: -1 it should mer
 }"
 `;
 
-exports[`when merging two arrays and the source item has $move: 0 it should merge and prepend the target array item matching the source array item index 1`] = `
-"{
-	\\"a\\": [
-		{
-			\\"a2\\": \\"move to index 0\\"
-		},
-		{
-			\\"a1\\": \\"string\\"
-		}
-	]
-}"
-`;
-
 exports[`when merging two arrays and the source item has $move: 0 it should prepend the source array item if no matching target array item found 1`] = `
 "{
 	\\"a\\": [
@@ -66,6 +66,19 @@ exports[`when merging two arrays and the source item has $move: 0 it should prep
 		},
 		{
 			\\"a2\\": \\"string\\"
+		}
+	]
+}"
+`;
+
+exports[`when merging two arrays and the source item has $move: 0 it should prepend the target array item matching the source array item index 1`] = `
+"{
+	\\"a\\": [
+		{
+			\\"a2\\": \\"move to index 0\\"
+		},
+		{
+			\\"a1\\": \\"string\\"
 		}
 	]
 }"

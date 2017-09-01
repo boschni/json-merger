@@ -17,19 +17,20 @@ import DataSerializer from "./dataSerializers/DataSerializer";
 import JSONDataSerializer from "./dataSerializers/JSONDataSerializer";
 
 // Import operations
-import RemoveOperation from "./operations/RemoveOperation";
-import ReplaceOperation from "./operations/ReplaceOperation";
-import MergeOperation from "./operations/MergeOperation";
+import AppendOperation from "./operations/AppendOperation";
 import ExpressionOperation from "./operations/ExpressionOperation";
 import ImportOperation from "./operations/ImportOperation";
-import AppendOperation from "./operations/AppendOperation";
-import PrependOperation from "./operations/PrependOperation";
+import IncludeOperation from "./operations/IncludeOperation";
 import InsertOperation from "./operations/InsertOperation";
-import SelectOperation from "./operations/SelectOperation";
-import RepeatOperation from "./operations/RepeatOperation";
 import MatchOperation from "./operations/MatchOperation";
+import MergeOperation from "./operations/MergeOperation";
 import MoveOperation from "./operations/MoveOperation";
+import PrependOperation from "./operations/PrependOperation";
 import ProcessOperation from "./operations/ProcessOperation";
+import RemoveOperation from "./operations/RemoveOperation";
+import RepeatOperation from "./operations/RepeatOperation";
+import ReplaceOperation from "./operations/ReplaceOperation";
+import SelectOperation from "./operations/SelectOperation";
 
 export default class Merger {
 
@@ -70,7 +71,6 @@ export default class Merger {
         this._processor.addOperations([
             new RemoveOperation(this._processor),
             new ReplaceOperation(this._processor),
-            new MergeOperation(this._processor),
             new ExpressionOperation(this._processor),
             new ImportOperation(this._processor),
             new AppendOperation(this._processor),
@@ -80,6 +80,8 @@ export default class Merger {
             new RepeatOperation(this._processor),
             new MatchOperation(this._processor),
             new MoveOperation(this._processor),
+            new MergeOperation(this._processor),
+            new IncludeOperation(this._processor),
             new ProcessOperation(this._processor)
         ]);
     }

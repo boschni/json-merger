@@ -10,17 +10,29 @@ export default class MoveOperation extends Operation {
         const keywordValue: MoveKeywordValue = source[keyword];
 
         // First remove the item from the result array
-        const removedItem = resultArray.splice(resultArrayIndex, 1)[0];
+        let item = resultArray.splice(resultArrayIndex, 1)[0];
         resultArrayIndex--;
 
-        // Then merge $move.value with the removed item
-        const mergedItem = this._processor.processSourcePropertyInNewScope(keywordValue.value, "value", removedItem);
+        let index: IndexValue;
 
-        // Calculate the index
-        const index = keywordValue.index === "-" ? resultArray.length : keywordValue.index;
+        if (typeof keywordValue === "number" || keywordValue === "-") {
+            index = keywordValue;
+        } else {
+            index = keywordValue.index;
 
-        // Then insert the merged item
-        resultArray.splice(index, 0, mergedItem);
+            // Merge $move.value with the item?
+            if (keywordValue.value !== undefined) {
+                item = this._processor.processSourcePropertyInNewScope(keywordValue.value, "value", item);
+            }
+        }
+
+        // Check if the index should be the last item
+        if (index === "-") {
+            index = resultArray.length;
+        }
+
+        // Then insert the item at the given index
+        resultArray.splice(index, 0, item);
         resultArrayIndex = index <= resultArrayIndex ? resultArrayIndex + 1 : resultArrayIndex;
 
         return {resultArray, resultArrayIndex};
@@ -31,7 +43,9 @@ export default class MoveOperation extends Operation {
  * TYPES
  */
 
-export interface MoveKeywordValue {
-    "index": number | "-"; // the index to move to, use '-' to append
+export type MoveKeywordValue = IndexValue | {
+    "index": IndexValue;
     "value"?: any; // the optional value to merge the target item with
 }
+
+export type IndexValue = number | "-"; // the index to move to, use '-' to append

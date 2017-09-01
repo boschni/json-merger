@@ -30,6 +30,7 @@ Table of Contents:
   * [`$move`](#move)
   * [`$select`](#select)
   * [`$repeat`](#repeat)
+  * [`$include`](#include)
   * [`$expression`](#expression)
   * [`$process`](#process)
   * [`$comment`](#comment)
@@ -259,6 +260,7 @@ Operations
 ### `$import`
 
 Use `$import` to import other JSON or YAML files.
+All operations in `a.json` will be applied before returning the result.
 
 ```json
 {
@@ -274,24 +276,11 @@ Use `$import` to import other JSON or YAML files.
 }
 ```
 
-When defined as an array, `$import` will merge the files in order and return the result.
+When defined as an array, `$import` will process and merge the files in order and return the result.
 
 ```json
 {
   "$import": ["a.json", "b.yaml", "c.json"]
-}
-```
-
-Import will process the file before importing by default.
-Meaning all operations in `a.json` will be applied before returning the result.
-Set `$import.process` to false to disable this behavior. When `false` it will return the unprocessed value.
-
-```json
-{
-  "$import": {
-    "path": "a.json",
-    "process": false
-  }
 }
 ```
 
@@ -316,15 +305,21 @@ The object syntax is also supported in an array.
   "$import": [
     {
       "path": "a.json",
-      "process": false
+      "params": {
+        "prop": "value1"
+      }
     },
     {
-      "path": "b.json",
-      "process": false
+      "path": "a.json",
+      "params": {
+        "prop": "value2"
+      }
     }
   ]
 }
 ```
+
+To process an imported file in the current scope use [`$include`](#include).
 
 ### `$merge`
 
@@ -951,9 +946,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 {
   "someArray": [
     {
-      "$move": {
-        "index": 1
-      }
+      "$move": 1
     }
   ]
 }
@@ -994,9 +987,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
       "$match": {
         "index": 0,
         "value": {
-          "$move": {
-            "index": 1
-          }
+          "$move": 1
         }
       }
     }
@@ -1039,9 +1030,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
       "$match": {
         "index": 0,
         "value": {
-          "$move": {
-            "index": "-"
-          }
+          "$move": "-"
         }
       }
     }
@@ -1419,6 +1408,52 @@ Use `$parent` to get to the parent scope containing the parent `$repeat`.
 **result**
 ```json
 ["0.0", "0.1", "1.0", "1.1"]
+```
+
+### `$include`
+
+Use `$include` to load other JSON or YAML files and process them in the current scope.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [
+    {
+      "$include": "remove.json"
+    }
+  ]
+}
+```
+
+**remove.json**
+
+```json
+{
+  "$remove": true
+}
+```
+
+**result**
+
+```json
+{
+  "someArray": [2, 3]
+}
 ```
 
 ### `$expression`
