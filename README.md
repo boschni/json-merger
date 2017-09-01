@@ -260,7 +260,8 @@ Operations
 ### `$import`
 
 Use `$import` to import other JSON or YAML files.
-All operations in `a.json` will be applied before returning the result.
+
+Files imported with `$import` are processed before the result is returned.
 
 ```json
 {
@@ -276,7 +277,7 @@ All operations in `a.json` will be applied before returning the result.
 }
 ```
 
-When defined as an array, `$import` will process and merge the files in order and return the result.
+When defined as an array, `$import` will process and merge the files in order before returning the result.
 
 ```json
 {
@@ -319,7 +320,7 @@ The object syntax is also supported in an array.
 }
 ```
 
-To process an imported file in the current scope use [`$include`](#include).
+Use [`$include`](#include) to process a file in the current scope.
 
 ### `$merge`
 
@@ -363,7 +364,7 @@ var result = jsonMerger.mergeFile("a.json");
 
 #### Merging with other files
 
-The `$merge` operation is often used in conjunction with the `$import` operation to merge with other files from out the JSON itself.
+The `$merge` operation is often used with the `$import` operation to merge other files from within the JSON itself.
 
 **javascript**
 
