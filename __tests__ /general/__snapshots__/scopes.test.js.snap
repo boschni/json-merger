@@ -10,6 +10,13 @@ exports[`when importing a file then $root in the file should refer to the root o
 }"
 `;
 
+exports[`when importing a file then $sourceFilename in the file should refer to the filename without extension 1`] = `
+"{
+	\\"a\\": \\"a\\",
+	\\"b\\": \\"b\\"
+}"
+`;
+
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $parent.$target in object2 $merge.with should refer to the processed object1 1`] = `
 "{
 	\\"targetProp\\": \\"should be the value of mergeSharedProp\\",

@@ -6,6 +6,7 @@ export default class Scope {
     parent?: Scope;
     source: any;
     sourceFilePath?: string;
+    sourceFilename?: string;
     target?: any;
     phase: Phase;
     phasesToProcess: {[phase: string]: boolean} = {};
@@ -31,6 +32,7 @@ export default class Scope {
         if (this.type === ScopeType.FileRoot) {
             this.root = this;
             this.sourceFilePath = sourceFilePath;
+            this.sourceFilename = sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
         }
 
         // Is this an object root scope?
@@ -69,6 +71,7 @@ export default class Scope {
         const scopeVariables: any = {
             ...this.variables,
             $source: this.source,
+            $sourceFilename: this.sourceFilename,
             $target: this.target
         };
 

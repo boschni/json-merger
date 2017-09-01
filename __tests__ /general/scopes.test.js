@@ -350,4 +350,27 @@ describe("when importing a file", function () {
 
         expect(result).toMatchSnapshot();
     });
+
+    test("then $sourceFilename in the file should refer to the filename without extension", function () {
+
+        const files = {
+            "a.json": {
+                "a": {
+                    "$expression": "$sourceFilename"
+                },
+                "b": {
+                    "$import": "b.json"
+                }
+            },
+            "b.json": {
+                "$expression": "$sourceFilename"
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeFile("a.json", testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });
