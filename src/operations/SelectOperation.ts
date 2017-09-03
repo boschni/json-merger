@@ -9,24 +9,26 @@ export default class SelectOperation extends Operation {
     processInObject(keyword: string, source: any, target?: any) {
         const keywordValue: SelectKeywordValue = source[keyword];
 
-        // Determine the select context
-        let selectContext;
-
-        if (keywordValue.from !== undefined) {
-            selectContext = this._processor.processSourcePropertyInNewScope(keywordValue.from, "from");
-        } else {
-            selectContext = this._processor.currentScope.target;
-        }
-
         let value;
 
-        // Select based on JSON pointer or JSON path
-        if (typeof keywordValue.path === "string") {
-            value = this._processor.resolveJsonPointer(selectContext, keywordValue.path);
-        } else if (typeof keywordValue.query === "string") {
-            value = this._processor.resolveJsonPath(selectContext, keywordValue.query);
-            if (keywordValue.multiple !== true) {
-                value = value[0];
+        // Determine the select context
+        let selectContext = this._processor.currentScope.root.source;
+
+        if (typeof keywordValue === "string") {
+            value = this._processor.resolveJsonPointer(selectContext, keywordValue);
+        } else {
+            if (keywordValue.from !== undefined) {
+                selectContext = this._processor.processSourcePropertyInNewScope(keywordValue.from, "from");
+            }
+
+            // Select based on JSON pointer or JSON path
+            if (typeof keywordValue.path === "string") {
+                value = this._processor.resolveJsonPointer(selectContext, keywordValue.path);
+            } else if (typeof keywordValue.query === "string") {
+                value = this._processor.resolveJsonPath(selectContext, keywordValue.query);
+                if (keywordValue.multiple !== true) {
+                    value = value[0];
+                }
             }
         }
 
@@ -39,10 +41,11 @@ export default class SelectOperation extends Operation {
  * TYPES
  */
 
-export interface SelectKeywordValue {
+export type SelectKeywordValue = string // json pointer
+    | {
     "from"?: any; // select context
     "multiple"?: boolean; // expect multiple results?
     "path"?: string; // json pointer
     "query"?: string; // json path
-}
+};
 

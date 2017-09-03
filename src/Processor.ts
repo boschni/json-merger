@@ -323,7 +323,7 @@ export default class Processor {
     }
 
     resolveJsonPath(target: object, path?: string): any {
-        let result;
+        let result: any;
 
         if (path === undefined) {
             result = target;
@@ -331,7 +331,7 @@ export default class Processor {
             result = jsonpath.query(target, path);
         }
 
-        if (result === undefined && this._config.errorOnRefNotFound) {
+        if (this._config.errorOnRefNotFound && (result === undefined || result.length === 0)) {
             throw new Error(`The JSON path "${path}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`);
         }
 

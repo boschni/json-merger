@@ -3,96 +3,94 @@ const {testConfig} = require("../__helpers__");
 
 describe("when merging two objects and a source object contains a $select operation", function () {
 
-    test("and $select.path is set it should use the json pointer to select a value in the target", function () {
+    test("and $select is a string it should treat it as a json pointer and select a value in the source", function () {
 
-        const object1 = {
-            "a": [
-                "should not be selected",
-                "should be selected"
+        const object = {
+            "a": {
+                "$select": "/b/0"
+            },
+            "b": [
+                "should be the value of /a"
             ]
         };
 
-        const object2 = {
-            "a": {
-                "$select": {
-                    "path": "/a/1"
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
 
-    test("and $select.query is set it should use the json path to select a value in the target", function () {
+    test("and $select.path is set it should use the json pointer to select a value in the source", function () {
 
-        const object1 = {
-            "a": [
-                "should not be selected",
-                "should be selected"
+        const object = {
+            "a": {
+                "$select": {
+                    "path": "/b/0"
+                }
+            },
+            "b": [
+                "should be the value of /a"
             ]
         };
 
-        const object2 = {
+        const result = jsonMerger.mergeObject(object, testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("and $select.query is set it should use the json path to select a value in the source", function () {
+
+        const object = {
             "a": {
                 "$select": {
-                    "query": "$.a[1]"
+                    "query": "$.b[1]"
                 }
-            }
+            },
+            "b": [
+                "should not be the value of /a",
+                "should be the value of /a"
+            ]
         };
 
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
 
     test("and a $select.query matching multiple elements is set but $select.multiple is not set it should return the first value", function () {
 
-        const object1 = {
-            "targetProp": [
-                "should be the value of sourceProp",
-                "object1/targetProp/1"
+        const object = {
+            "a": {
+                "$select": {
+                    "query": "$.b[*]"
+                }
+            },
+            "b": [
+                "should be the value of /a",
+                "should not be the value of /a"
             ]
         };
 
-        const object2 = {
-            "sourceProp": {
-                "$select": {
-                    "query": "$.targetProp[*]"
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
 
     test("and a $select.query matching multiple elements is set and $select.multiple is true it should return an array with all matches", function () {
 
-        const object1 = {
-            "targetProp": [
-                "should be selected",
-                "should also be selected"
-            ],
-            "sharedProp": [
-                "should be merged",
-                "should be merged",
-                "should be merged and visible"
+        const object = {
+            "a": {
+                "$select": {
+                    "query": "$.b[*]",
+                    "multiple": true
+                }
+            },
+            "b": [
+                "should be in the /a array",
+                "should also be in the /a array"
             ]
         };
 
-        const object2 = {
-            "sharedProp": {
-                "$select": {
-                    "query": "$.targetProp[*]",
-                    "multiple": true
-                }
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });
@@ -149,23 +147,18 @@ describe("when merging two objects and a source object contains a $select operat
 
     test("and $select.from is set it should process the $select.from value and select from the result", function () {
 
-        const object1 = {
-            "targetProp": "object1.targetProp",
-            "sharedProp": "object1.sharedProp"
-        };
-
-        const object2 = {
-            "sharedProp": {
+        const object = {
+            "a": {
                 "$select": {
                     "from": {
-                        "$replace": "should be the value of sharedProp"
+                        "$replace": "should be the value of /a"
                     },
                     "path": "/"
                 }
             }
         };
 
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+        const result = jsonMerger.mergeObject(object, testConfig());
 
         expect(result).toMatchSnapshot();
     });

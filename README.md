@@ -242,11 +242,11 @@ The current working directory when importing files. Defaults to process.cwd().
 Set this property to `false` to disable throwing errors when an imported file does not exist.
 
 ### `errorOnRefNotFound: boolean`
-Set this property to `false` to disable throwing errors when an JSON pointer or JSON path resolves to undefined.
+Set this property to `false` to disable throwing errors when an JSON pointer or JSON path does not exist.
 
 ### `operationPrefix: string`
 Use this property to override the prefix to indicate a property is an operation like $import.
-The default prefix is `$` but it is possible to change this to for example `@import`.
+The default prefix is `$` but it is possible to change this to for example `@` to use keywords like `@import`.
 
 ### `params: object`
 Object that will be available in [`$expression`](#expression) operations as `$params` variable.
@@ -881,7 +881,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
-#### Match by JSON path
+#### Match by JSON path query
 
 Use `$match.query` to match an array item with a [JSON path](https://www.npmjs.com/package/jsonpath) query.
 The following example will search for an array item containing the value `2` and merge it with the value `4`.
@@ -1120,34 +1120,26 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 
 Use the `$select` operation to select one or multiple values.
 
-### Select value by JSON pointer
+Be careful not to create an endless loop by selecting a parent property.
+
+### Select by JSON pointer
+
+More information about JSON pointers can be found in the [JSON pointer specification](https://tools.ietf.org/html/rfc6901).
 
 **javascript**
 
 ```javascript
-var result = jsonMerger.mergeFile("b.json");
+var result = jsonMerger.mergeFile("a.json");
 ```
 
 **a.json**
 
 ```json
 {
-  "someArray": [1, 2, 3]
-}
-```
-
-**b.json**
-
-```json
-{
   "prop": {
-    "$select": {
-      "from": {
-        "$import": "a.json"
-      },
-      "path": "/someArray/0"
-    }
-  }
+    "$select": "/otherProp"
+  },
+  "otherProp": "Should be the value of prop"
 }
 ```
 
@@ -1155,38 +1147,31 @@ var result = jsonMerger.mergeFile("b.json");
 
 ```json
 {
-  "prop": 1
+  "prop": "Should be the value of prop",
+  "otherProp": "Should be the value of prop"
 }
 ```
 
-### Select value by JSON path
+### Use `$select.query` to select by JSON path query
+
+More information about JSON path queries can be found in the [JSON path documentation](https://www.npmjs.com/package/jsonpath).
 
 **javascript**
 
 ```javascript
-var result = jsonMerger.mergeFile("b.json");
+var result = jsonMerger.mergeFile("a.json");
 ```
 
 **a.json**
 
 ```json
 {
-  "someArray": [1, 2, 3]
-}
-```
-
-**b.json**
-
-```json
-{
   "prop": {
     "$select": {
-      "from": {
-        "$import": "a.json"
-      },
-      "query": "$[*]"
+      "query": "$.someArray[*]"
     }
-  }
+  },
+  "someArray": [1, 2, 3]
 }
 ```
 
@@ -1194,39 +1179,30 @@ var result = jsonMerger.mergeFile("b.json");
 
 ```json
 {
-  "prop": 1
+  "prop": 1,
+  "someArray": [1, 2, 3]
 }
 ```
 
-### Select multiple values by JSON path
+### Use `$select.multiple` to select multiple values
 
 **javascript**
 
 ```javascript
-var result = jsonMerger.mergeFile("b.json");
+var result = jsonMerger.mergeFile("a.json");
 ```
 
 **a.json**
 
 ```json
 {
-  "someArray": [1, 2, 3]
-}
-```
-
-**b.json**
-
-```json
-{
   "prop": {
     "$select": {
-      "from": {
-        "$import": "a.json"
-      },
-      "query": "$[?(@ < 3)]",
+      "query": "$.someArray[?(@ < 3)]",
       "multiple": true
     }
-  }
+  },
+  "someArray": [1, 2, 3]
 }
 ```
 
@@ -1235,6 +1211,45 @@ var result = jsonMerger.mergeFile("b.json");
 ```json
 {
   "prop": [1, 2]
+}
+```
+
+### Use `$select.from` to select from an object
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFile("a.json");
+```
+
+**a.json**
+
+```json
+{
+  "prop": {
+    "$select": {
+      "from": {
+        "$import": "b.json"
+      },
+      "path": "/someArray/2"
+    }
+  }
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**result**
+
+```json
+{
+  "prop": 3
 }
 ```
 
