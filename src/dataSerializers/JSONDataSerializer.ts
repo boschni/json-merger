@@ -1,12 +1,14 @@
 import {DataSerializerInterface} from "./DataSerializer";
 
+const jsonFileRegex = /\.json$/;
+
 export default class JSONDataSerializer implements DataSerializerInterface {
 
     /**
      * Check if the URI should be handled by this serializer.
      */
     match(uri: string): boolean {
-        return /\.json$/.test(uri);
+        return jsonFileRegex.test(uri);
     }
 
     serialize(_: string, data: any, pretty: boolean): string {

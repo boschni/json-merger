@@ -2,6 +2,8 @@ import * as fs from "fs";
 import * as path from "path";
 import {FileLoaderInterface} from "./FileLoader";
 
+const protocolRegex = /^(?:[a-z]+:)?\/\//i;
+
 export default class FsFileLoader implements FileLoaderInterface {
 
     /**
@@ -11,8 +13,6 @@ export default class FsFileLoader implements FileLoaderInterface {
         if (uri.substr(0, 7) === "file://") {
             return true;
         }
-
-        const protocolRegex = /^(?:[a-z]+:)?\/\//i;
 
         // Ignore if the uri contains a non file:// protocol
         if (protocolRegex.test(uri)) {
