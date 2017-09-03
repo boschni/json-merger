@@ -1122,7 +1122,7 @@ Use the `$select` operation to select one or multiple values.
 
 Be careful not to create an endless loop by selecting a parent property.
 
-### Select by JSON pointer
+#### Select by JSON pointer
 
 More information about JSON pointers can be found in the [JSON pointer specification](https://tools.ietf.org/html/rfc6901).
 
@@ -1152,7 +1152,7 @@ var result = jsonMerger.mergeFile("a.json");
 }
 ```
 
-### Use `$select.query` to select by JSON path query
+#### Use `$select.query` to select by JSON path query
 
 More information about JSON path queries can be found in the [JSON path documentation](https://www.npmjs.com/package/jsonpath).
 
@@ -1184,7 +1184,7 @@ var result = jsonMerger.mergeFile("a.json");
 }
 ```
 
-### Use `$select.multiple` to select multiple values
+#### Use `$select.multiple` to select multiple values
 
 **javascript**
 
@@ -1214,7 +1214,7 @@ var result = jsonMerger.mergeFile("a.json");
 }
 ```
 
-### Use `$select.from` to select from an object
+#### Use `$select.from` to select from an object
 
 **javascript**
 
