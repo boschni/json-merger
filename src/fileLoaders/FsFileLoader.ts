@@ -10,21 +10,22 @@ export default class FsFileLoader implements FileLoaderInterface {
      * Check if the URI should be handled by this loader.
      */
     match(uri: string, currentUri: string): boolean {
+        // Match if the uri contains a file:// protocol
         if (uri.substr(0, 7) === "file://") {
             return true;
         }
 
-        // Ignore if the uri contains a non file:// protocol
+        // No match if the uri contains an other protocol
         if (protocolRegex.test(uri)) {
             return false;
         }
 
-        // Uri has no protocol so if the current uri has file:// it is a file uri
+        // Match if the uri has no protocol but the current uri contains a file:// protocol
         if (currentUri.substr(0, 7) === "file://") {
             return true;
         }
 
-        // return true if the current uri contains no protocol
+        // Match if both the uri and the current uri contain no protocol
         return !protocolRegex.test(currentUri);
     }
 
