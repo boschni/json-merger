@@ -191,24 +191,24 @@ describe("when processing an object containing an $import operation it", functio
         }
     });
 
-    test("should throw with a nested processing stack trace if the files do exist but the pointer does not exist and Config.errorOnRefNotFound is true", function () {
+    test("should throw with a processing stack trace if the files do exist but the pointer does not exist and Config.errorOnRefNotFound is true", function () {
 
         try {
 
             const files = {
-                "a.json": {
-                    "a": {
-                        "$import": "b.json"
+                "b.json": {
+                    "b": {
+                        "$import": "c.json"
                     }
                 },
-                "b.json": {
-                    "b": 100
+                "c.json": {
+                    "c": 100
                 }
             };
 
             const object = {
                 "a": {
-                    "$import": "a.json#/a/b/nonExisting"
+                    "$import": "b.json#/b/c/nonExisting"
                 }
             };
 
@@ -221,9 +221,44 @@ describe("when processing an object containing an $import operation it", functio
             expect("this code").toBe("unreachable");
 
         } catch (e) {
-            expect(e.message).toMatch(`An error occurred while processing the property "$import"`);
-            expect(e.message).toMatch(`at #/a/$import`);
-            expect(e.message).toMatch(/The JSON pointer "\/a\/b\/nonExisting" resolves to undefined/);
+            expect(e.message).toMatchSnapshot();
+        }
+    });
+
+    test("should throw with a nested processing stack trace if the files do exist but a nested import does not exist and Config.errorOnFileNotFound is true", function () {
+
+        try {
+
+            const files = {
+                "b.json": {
+                    "b": {
+                        "$import": "c.json"
+                    }
+                },
+                "c.json": {
+                    "c": {
+                        "$import": "d.json"
+                    }
+                }
+            };
+
+            const object = {
+                "a": {
+                    "$import": "b.json#/b/c/nonExisting"
+                }
+            };
+
+            fs.__setJsonMockFiles(files);
+
+            jsonMerger.mergeObject(object, testConfig({
+                errorOnFileNotFound: true
+            }));
+
+            expect("this code").toBe("unreachable");
+
+        } catch (e) {
+            const messageWithoutPaths = e.message.split(process.cwd()).join("/fake/path");
+            expect(messageWithoutPaths).toMatchSnapshot();
         }
     });
 

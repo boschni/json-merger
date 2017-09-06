@@ -23,6 +23,12 @@ export default class Scope {
         // Set type
         this.type = type;
 
+        // Set parent
+        this.parent = parentScope;
+
+        // Set property path
+        this.propertyPath = [];
+
         // Is this a merge root scope?
         if (this.type === ScopeType.MergeRoot) {
             this.mergeRoot = this;
@@ -45,9 +51,6 @@ export default class Scope {
             this.source = source;
             this.target = target;
         }
-
-        // Set parent
-        this.parent = parentScope;
 
         // Set phase if given
         if (phase !== undefined) {

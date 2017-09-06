@@ -1,8 +1,6 @@
 # json-merger
 Merge JSON (or YAML) files and objects with operations like $import $remove $replace $merge and more.
 
-WORK IN PROGRESS, expect the API to change until 1.0.0.
-
 Table of Contents:
 ------------------
 * [API](#api)
@@ -32,8 +30,6 @@ Table of Contents:
   * [`$repeat`](#repeat)
   * [`$include`](#include)
   * [`$expression`](#expression)
-  * [`$process`](#process)
-  * [`$comment`](#comment)
 * [Scopes](#scopes)
 * [Command line interface `json-merger`](#command-line-interface-json-merger)
 * [Roadmap](#roadmap)
@@ -1610,7 +1606,7 @@ var result = jsonMerger.mergeFile("a.json", {
 
 ## Scopes
 
-Scopes are created while processing operation properties.
+Scopes can be created while processing operation properties.
 If for example a `$merge.with` is being processed then the merger will create a new scope for the `$merge.with` property.
 Or if a `$repeat.value` property is being processed a new scope is created for the `$repeat.value` property.
 
@@ -1782,7 +1778,7 @@ You can use `json-merger` as a command line tool:
     -V, --version                    output the version number
     -p, --pretty                     pretty-print the output json
     -o, --output [file]              the output file. Defaults to stdout
-    -i, --operation-prefix [prefix]  the operation prefix. Defaults to $
+    -op, --operation-prefix [prefix] the operation prefix. Defaults to $
     --error-on-file-not-found        throw an error if a file is not found. Defaults to true
     --error-on-ref-not-found         throw an error if a JSON pointer or JSON path is not found. Defaults to true
     -h, --help                       output usage information

@@ -1,5 +1,5 @@
 import * as jsonPtr from "json-ptr";
-import Scope from "./Scope";
+import Scope, {ScopeType} from "./Scope";
 
 export default class MergerError extends Error {
 
@@ -29,10 +29,10 @@ export default class MergerError extends Error {
     private _createProcessingStackTrace(scope: Scope) {
         let trace = "";
         let currentScope = scope;
-        while (currentScope) {
+        while (currentScope && currentScope.type !== ScopeType.MergeRoot) {
             const pathEncoded = jsonPtr.encodePointer(currentScope.propertyPath);
             const file = currentScope.sourceFilePath === undefined ? "" : currentScope.sourceFilePath;
-            trace = `${trace}    at ${file}#${pathEncoded}\n`;
+            trace += `    at ${file}#${pathEncoded}\n`;
             currentScope = currentScope.parent;
         }
         return trace;
