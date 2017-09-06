@@ -68,7 +68,7 @@ export default class RepeatOperation extends Operation {
         // Handle $repeat.in
         else if (keywordValue.in !== undefined) {
             // Process in property
-            const processedIn = this._processor.processSourcePropertyInNewScope(keywordValue.in, "in");
+            const processedIn = this._processor.processSourceProperty(keywordValue.in, "in");
 
             // Handle array
             if (Array.isArray(processedIn)) {
@@ -94,7 +94,7 @@ export default class RepeatOperation extends Operation {
             };
 
             // Process the value property without a target
-            return this._processor.processSourceInNewScope(keywordValue.value, undefined, scopeVariables);
+            return this._processor.processSourcePropertyInNewVariableScope(keywordValue.value, "value", undefined, scopeVariables);
         });
 
         // Process repeat result and use the original target as target but do not process operations

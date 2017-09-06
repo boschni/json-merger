@@ -8,7 +8,7 @@ export default class ReplaceOperation extends Operation {
 
     processInObject(keyword: string, source: any, _target?: any) {
         const keywordValue: ReplaceKeywordValue = source[keyword];
-        return this._processor.processSourceInNewScope(keywordValue);
+        return this._processor.processSource(keywordValue);
     }
 }
 

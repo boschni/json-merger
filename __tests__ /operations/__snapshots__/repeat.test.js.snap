@@ -138,6 +138,23 @@ exports[`when merging two objects and a source property has a $repeat operation 
 }"
 `;
 
+exports[`when merging two objects and a source property has a $repeat operation it should keep the current scope source and target 1`] = `
+"{
+	\\"targetProp\\": \\"This should be the value of /prop/0/0/c and /prop/0/0/d\\",
+	\\"prop\\": [
+		[
+			{
+				\\"a\\": \\"This should be the value of /prop/0/0/a and /prop/0/0/b\\",
+				\\"b\\": \\"This should be the value of /prop/0/0/a and /prop/0/0/b\\",
+				\\"c\\": \\"This should be the value of /prop/0/0/c and /prop/0/0/d\\",
+				\\"d\\": \\"This should be the value of /prop/0/0/c and /prop/0/0/d\\"
+			}
+		]
+	],
+	\\"sourceProp\\": \\"This should be the value of /prop/0/0/a and /prop/0/0/b\\"
+}"
+`;
+
 exports[`when merging two objects and a source property has a $repeat operation it should merge the result with the target 1`] = `
 "{
 	\\"prop\\": [

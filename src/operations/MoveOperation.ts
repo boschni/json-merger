@@ -22,7 +22,7 @@ export default class MoveOperation extends Operation {
 
             // Merge $move.value with the item?
             if (keywordValue.value !== undefined) {
-                item = this._processor.processSourcePropertyInNewScope(keywordValue.value, "value", item);
+                item = this._processor.processSourceProperty(keywordValue.value, "value", item);
             }
         }
 

@@ -9,13 +9,9 @@ exports[`when merging two objects and a source property has a $merge indicator i
 }"
 `;
 
-exports[`when merging two objects and a source property has a $merge indicator it should not process the $merge result before merging with the target 1`] = `
+exports[`when merging two objects and a source property has a $merge indicator it should process the $merge result before merging with the target 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"original\\",
-		\\"$replace\\": \\"source\\",
-		\\"bb\\": \\"with\\"
-	}
+	\\"a\\": \\"source\\"
 }"
 `;
 

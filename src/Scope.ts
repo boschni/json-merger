@@ -40,10 +40,14 @@ export default class Scope {
             this.root = this;
         }
 
-        // Set references
+        // Set new source and target if not a variable scope
+        if (this.type !== ScopeType.Variable) {
+            this.source = source;
+            this.target = target;
+        }
+
+        // Set parent
         this.parent = parentScope;
-        this.source = source;
-        this.target = target;
 
         // Set phase if given
         if (phase !== undefined) {
@@ -105,5 +109,6 @@ export const enum ScopeType {
     FileRoot,
     MergeRoot,
     Object,
-    ObjectRoot
+    ObjectRoot,
+    Variable
 }

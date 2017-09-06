@@ -199,15 +199,15 @@ export default class Processor {
         return result;
     }
 
-    processSourceInNewScope(source: any, target?: any, scopeVariables?: any) {
-        this._enterObjectScope(source, target, scopeVariables);
-        const result = this.processSource(source, target);
+    processSourcePropertyInNewObjectScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
+        this._enterObjectScope(sourceProperty, targetProperty, scopeVariables);
+        const result = this.processSourceProperty(sourceProperty, sourcePropertyName, targetProperty);
         this._leaveScope();
         return result;
     }
 
-    processSourcePropertyInNewScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
-        this._enterObjectScope(sourceProperty, targetProperty, scopeVariables);
+    processSourcePropertyInNewVariableScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
+        this._enterVariableScope(scopeVariables);
         const result = this.processSourceProperty(sourceProperty, sourcePropertyName, targetProperty);
         this._leaveScope();
         return result;
@@ -352,6 +352,10 @@ export default class Processor {
 
     private _enterObjectScope(source: any, target: any, variables?: any) {
         return this._enterScope(ScopeType.Object, source, undefined, target, variables);
+    }
+
+    private _enterVariableScope(variables?: any) {
+        return this._enterScope(ScopeType.Variable, this.currentScope.source, undefined, this.currentScope.target, variables);
     }
 
     private _enterScope(type: ScopeType, source?: any, sourceFilePath?: string, target?: any, variables?: any, phase?: Phase) {

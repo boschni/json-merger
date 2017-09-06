@@ -8,7 +8,7 @@ export default class InsertOperation extends Operation {
 
     processInArray(keyword: string, source: any, _sourceArray: any[], _sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, _target: any[]) {
         const keywordValue: InsertKeywordValue = source[keyword];
-        const item = this._processor.processSourcePropertyInNewScope(keywordValue.value, "value");
+        const item = this._processor.processSourceProperty(keywordValue.value, "value");
         const index = keywordValue.index === "-" ? resultArray.length : keywordValue.index;
         resultArray.splice(index, 0, item);
         resultArrayIndex = index <= resultArrayIndex ? resultArrayIndex + 1 : resultArrayIndex;

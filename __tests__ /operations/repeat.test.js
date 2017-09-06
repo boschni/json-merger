@@ -316,4 +316,45 @@ describe("when merging two objects and a source property has a $repeat operation
 
         expect(result).toMatchSnapshot();
     });
+
+    test("it should keep the current scope source and target", function () {
+
+        const object1 = {
+            "targetProp": "This should be the value of /prop/0/0/c and /prop/0/0/d"
+        };
+
+        const object2 = {
+            "prop": {
+                "$repeat": {
+                    "from": 0,
+                    "to": 1,
+                    "value": {
+                        "$repeat": {
+                            "from": 0,
+                            "to": 1,
+                            "value": {
+                                "a": {
+                                    "$expression": "$source.sourceProp"
+                                },
+                                "b": {
+                                    "$expression": "$parent.$source.sourceProp"
+                                },
+                                "c": {
+                                    "$expression": "$target.targetProp"
+                                },
+                                "d": {
+                                    "$expression": "$parent.$target.targetProp"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "sourceProp": "This should be the value of /prop/0/0/a and /prop/0/0/b"
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });

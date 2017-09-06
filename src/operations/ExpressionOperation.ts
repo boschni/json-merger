@@ -23,7 +23,7 @@ export default class ExpressionOperation extends Operation {
 
             // process input if set
             if (keywordValue.input !== undefined) {
-                input = this._processor.processSourcePropertyInNewScope(keywordValue.input, "input");
+                input = this._processor.processSourceProperty(keywordValue.input, "input");
             }
         }
 

@@ -85,7 +85,7 @@ describe("when merging two objects and a source property has a $merge indicator"
         expect(result).toMatchSnapshot();
     });
 
-    test("it should not process the $merge result before merging with the target", function () {
+    test("it should process the $merge result before merging with the target", function () {
 
         const object1 = {
             "a": {

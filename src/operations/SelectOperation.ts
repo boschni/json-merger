@@ -18,7 +18,7 @@ export default class SelectOperation extends Operation {
             value = this._processor.resolveJsonPointer(selectContext, keywordValue);
         } else {
             if (keywordValue.from !== undefined) {
-                selectContext = this._processor.processSourcePropertyInNewScope(keywordValue.from, "from");
+                selectContext = this._processor.processSourceProperty(keywordValue.from, "from");
             }
 
             // Select based on JSON pointer or JSON path
@@ -33,7 +33,7 @@ export default class SelectOperation extends Operation {
         }
 
         // Merge with the target
-        return this._processor.processSourceInNewScope(value, target);
+        return this._processor.processSource(value, target);
     }
 }
 

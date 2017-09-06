@@ -32,7 +32,7 @@ export default class ImportOperation extends Operation {
             // Process the params property if set
             if (isObject(importValue.params)) {
                 scopeVariables = {};
-                scopeVariables.$params = this._processor.processSourcePropertyInNewScope(importValue.params, "params");
+                scopeVariables.$params = this._processor.processSourceProperty(importValue.params, "params");
             }
 
             // process the file
@@ -40,7 +40,7 @@ export default class ImportOperation extends Operation {
         }, undefined);
 
         // Merge with the target
-        return this._processor.processSourceInNewScope(importResult, target);
+        return this._processor.processSource(importResult, target);
     }
 }
 
