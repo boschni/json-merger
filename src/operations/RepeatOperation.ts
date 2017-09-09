@@ -94,7 +94,7 @@ export default class RepeatOperation extends Operation {
             };
 
             // Process the value property without a target
-            return this._processor.processSourcePropertyInNewVariableScope(keywordValue.value, "value", undefined, scopeVariables);
+            return this._processor.processSourcePropertyInNewScope(keywordValue.value, "value", undefined, scopeVariables);
         });
 
         // Process repeat result and use the original target as target but do not process operations

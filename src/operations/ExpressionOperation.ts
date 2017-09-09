@@ -34,7 +34,7 @@ export default class ExpressionOperation extends Operation {
 
         // Create eval context
         const evalContext = {
-            ...this._processor.currentScope.toPublicScope(),
+            ...this._processor.currentScope.scopeVariables,
             $sourceProperty: keywordValue,
             $targetProperty: target,
             $input: input

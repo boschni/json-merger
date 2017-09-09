@@ -356,14 +356,14 @@ describe("when importing a file", function () {
         const files = {
             "a.json": {
                 "a": {
-                    "$expression": "$sourceFilename"
+                    "$expression": "$sourceFileName"
                 },
                 "b": {
                     "$import": "b.json"
                 }
             },
             "b.json": {
-                "$expression": "$sourceFilename"
+                "$expression": "$sourceFileName"
             }
         };
 

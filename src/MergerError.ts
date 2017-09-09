@@ -1,9 +1,9 @@
 import * as jsonPtr from "json-ptr";
-import Scope, {ScopeType} from "./Scope";
+import {GlobalScope, MergeFileScope, RootMergeFileScope, ScopeBase} from "./Scope";
 
 export default class MergerError extends Error {
 
-    constructor(originalError: Error, scope: Scope) {
+    constructor(originalError: Error, scope: ScopeBase) {
         super();
 
         // Set the prototype explicitly because because new.target
@@ -17,7 +17,7 @@ export default class MergerError extends Error {
         this.stack = `${message}${stack}\n${originalError.stack}`;
     }
 
-    private _createMessage(scope: Scope) {
+    private _createMessage(scope: ScopeBase) {
         let message = "";
         if (scope) {
             const lastProp = scope.propertyPath[scope.propertyPath.length - 1];
@@ -26,13 +26,16 @@ export default class MergerError extends Error {
         return message;
     }
 
-    private _createProcessingStackTrace(scope: Scope) {
+    private _createProcessingStackTrace(scope: ScopeBase) {
         let trace = "";
         let currentScope = scope;
-        while (currentScope && currentScope.type !== ScopeType.MergeRoot) {
+        while (currentScope && !(currentScope instanceof GlobalScope)) {
             const pathEncoded = jsonPtr.encodePointer(currentScope.propertyPath);
-            const file = currentScope.sourceFilePath === undefined ? "" : currentScope.sourceFilePath;
-            trace += `    at ${file}#${pathEncoded}\n`;
+            let filePath = "";
+            if (currentScope instanceof MergeFileScope || currentScope instanceof RootMergeFileScope) {
+                filePath = currentScope.sourceFilePath;
+            }
+            trace += `    at ${filePath}#${pathEncoded}\n`;
             currentScope = currentScope.parent;
         }
         return trace;

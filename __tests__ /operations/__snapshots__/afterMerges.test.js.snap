@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when merging two files and a source property has a $afterMerges indicator and $import is used it should handle the phases correctly 1`] = `
+"{
+	\\"a\\": {
+		\\"b\\": \\"this should be the value of /a/b\\"
+	},
+	\\"aa\\": \\"this should be the value of /a/b\\"
+}"
+`;
+
+exports[`when merging two files and a source property has a $afterMerges indicator it should process the $afterMerges property after processing all sources 1`] = `
+"{
+	\\"a\\": \\"this should be the value of a\\",
+	\\"b\\": \\"this should be the value of a\\"
+}"
+`;
+
+exports[`when merging two objects and a source property has a $afterMerges indicator it should process the $afterMerges property after processing all sources 1`] = `
+"{
+	\\"a\\": \\"this should be the value of a\\",
+	\\"b\\": {
+		\\"prop\\": \\"this should be the value of a\\"
+	}
+}"
+`;

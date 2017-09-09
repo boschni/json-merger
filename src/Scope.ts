@@ -1,66 +1,33 @@
-export default class Scope {
+/*
+ * BASE CLASS
+ */
 
-    type: ScopeType;
-    mergeRoot: Scope;
-    root: Scope;
-    parent?: Scope;
-    source: any;
-    sourceFilePath?: string;
-    sourceFilename?: string;
-    target?: any;
-    phase: Phase;
-    phasesToProcess: {[phase: string]: boolean} = {};
+export class ScopeBase {
+
+    parent?: ScopeBase;
+    phase: Phase = Phase.Merge;
+    registeredPhases: RegisteredPhasesMap = {};
     propertyPath: (string | number)[] = [];
-    variables: {[key: string]: any} = {};
+    localVariables: Variables;
+    scopeVariables: Variables = {};
 
-    constructor(type: ScopeType, parentScope?: Scope, source?: any, sourceFilePath?: string, target?: any, variables?: any, phase?: Phase) {
-        // copy parent scope properties if available
-        if (parentScope) {
-            Object.keys(parentScope)
-                .forEach((key: keyof Scope) => this[key] = parentScope[key]);
+    constructor(parent?: ScopeBase, localVariables?: Variables, phase?: Phase) {
+        this.localVariables = localVariables;
+
+        if (parent) {
+            this.parent = parent;
+            this.phase = parent.phase;
+            this.scopeVariables = {...this.parent.scopeVariables};
+            this.scopeVariables.$parent = this.parent.scopeVariables;
         }
 
-        // Set type
-        this.type = type;
-
-        // Set parent
-        this.parent = parentScope;
-
-        // Set property path
-        this.propertyPath = [];
-
-        // Is this a merge root scope?
-        if (this.type === ScopeType.MergeRoot) {
-            this.mergeRoot = this;
+        if (this.localVariables) {
+            this.scopeVariables = {...this.scopeVariables, ...this.localVariables};
         }
 
-        // Is this a file root scope?
-        if (this.type === ScopeType.FileRoot) {
-            this.root = this;
-            this.sourceFilePath = sourceFilePath;
-            this.sourceFilename = sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
-        }
-
-        // Is this an object root scope?
-        if (this.type === ScopeType.ObjectRoot) {
-            this.root = this;
-        }
-
-        // Set new source and target if not a variable scope
-        if (this.type !== ScopeType.Variable) {
-            this.source = source;
-            this.target = target;
-        }
-
-        // Set phase if given
-        if (phase !== undefined) {
+        if (phase) {
+            this.deregisterPhase(phase);
             this.phase = phase;
-        }
-
-        // Add variables if given
-        if (variables) {
-            this.variables = {...this.variables};
-            Object.keys(variables).forEach(key => this.variables[key] = variables[key]);
         }
     }
 
@@ -74,30 +41,111 @@ export default class Scope {
         this.propertyPath.pop();
     }
 
-    toPublicScope(): any {
-        const scopeVariables: any = {
-            ...this.variables,
-            $source: this.source,
-            $sourceFilename: this.sourceFilename,
-            $target: this.target
-        };
-
-        if (this.root) {
-            scopeVariables.$parent = this.parent ? this.parent.toPublicScope() : undefined;
-            scopeVariables.$root = this.root === this ? scopeVariables : this.root.toPublicScope();
+    registerPhase(phase: Phase) {
+        let scope: ScopeBase = this;
+        while (scope) {
+            scope.registeredPhases[phase] = true;
+            scope = scope.parent;
         }
-
-        return scopeVariables;
     }
 
-    executePhase(phase: Phase) {
-        if (phase === Phase.AfterMerge) {
-            this.root.phasesToProcess[Phase.AfterMerge] = true;
-        } else if (phase === Phase.AfterMerges) {
-            this.mergeRoot.phasesToProcess[Phase.AfterMerges] = true;
+    deregisterPhase(phase: Phase) {
+        let scope: ScopeBase = this;
+        while (scope) {
+            scope.registeredPhases[phase] = false;
+            scope = scope.parent;
         }
+    }
+
+    hasRegisteredPhase(phase: Phase) {
+        return this.registeredPhases[phase] === true;
     }
 }
+
+/*
+ * PUBLIC CLASSES
+ */
+
+export class GlobalScope extends ScopeBase {}
+
+export class RootMergeObjectScope extends ScopeBase {
+    root: RootMergeObjectScope;
+    source: any;
+    target: any;
+    constructor(source: any, target: any, parent: ScopeBase, variables?: Variables, phase?: Phase) {
+        super(parent, variables, phase);
+        this.root = this;
+        this.source = source;
+        this.target = target;
+        this.scopeVariables.$root = this.root.scopeVariables;
+        this.scopeVariables.$source = this.source;
+        this.scopeVariables.$target = this.target;
+    }
+}
+
+export class MergeObjectScope extends ScopeBase {
+    root: ScopeWithRoot;
+    source: any;
+    target: any;
+    constructor(source: any, target: any, parent: ScopeWithRoot, variables?: Variables, phase?: Phase) {
+        super(parent, variables, phase);
+        this.root = parent.root;
+        this.source = source;
+        this.target = target;
+        this.scopeVariables.$root = this.root.scopeVariables;
+        this.scopeVariables.$source = this.source;
+        this.scopeVariables.$target = this.target;
+    }
+}
+
+export class RootMergeFileScope extends ScopeBase {
+    root: RootMergeFileScope;
+    source: any;
+    sourceFilePath: string;
+    sourceFileName: string;
+    target: any;
+    constructor(sourceFilePath: string, source: any, target: any, parent: ScopeBase, variables?: Variables, phase?: Phase) {
+        super(parent, variables, phase);
+        this.root = this;
+        this.source = source;
+        this.target = target;
+        this.sourceFilePath = sourceFilePath;
+        this.sourceFileName = this.sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
+        this.scopeVariables.$root = this.root.scopeVariables;
+        this.scopeVariables.$source = this.source;
+        this.scopeVariables.$target = this.target;
+        this.scopeVariables.$sourceFilePath = this.sourceFilePath;
+        this.scopeVariables.$sourceFileName = this.sourceFileName;
+    }
+}
+
+export class MergeFileScope extends ScopeBase {
+    root: MergeFileScope;
+    sourceFileName: string;
+    constructor(public sourceFilePath: string, public source: any, public target: any, parent: ScopeBase, variables?: Variables, phase?: Phase) {
+        super(parent, variables, phase);
+        this.root = this;
+        this.sourceFileName = this.sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
+        this.scopeVariables.$root = this.root.scopeVariables;
+        this.scopeVariables.$source = this.source;
+        this.scopeVariables.$target = this.target;
+        this.scopeVariables.$sourceFilePath = this.sourceFilePath;
+        this.scopeVariables.$sourceFileName = this.sourceFileName;
+    }
+}
+
+export class Scope extends ScopeBase {
+    root: ScopeWithRoot;
+    constructor(parent: ScopeWithRoot, variables?: Variables, phase?: Phase) {
+        super(parent, variables, phase);
+        this.root = parent.root;
+        this.scopeVariables.$root = this.root.scopeVariables;
+    }
+}
+
+export type ScopeWithRoot = RootMergeFileScope | RootMergeObjectScope | MergeFileScope | MergeObjectScope | Scope;
+
+export type AnyScope = GlobalScope | ScopeWithRoot;
 
 /*
  * TYPES
@@ -106,12 +154,13 @@ export default class Scope {
 export const enum Phase {
     AfterMerge = "afterMerge",
     AfterMerges = "afterMerges",
+    Merge = "merge"
 }
 
-export const enum ScopeType {
-    FileRoot,
-    MergeRoot,
-    Object,
-    ObjectRoot,
-    Variable
+export interface RegisteredPhasesMap {
+    [phase: string]: boolean;
+}
+
+export interface Variables {
+    [name: string]: any;
 }

@@ -2,7 +2,10 @@ import * as path from "path";
 import * as jsonpath from "jsonpath";
 import * as jsonPtr from "json-ptr";
 import {isObject} from "./utils/types";
-import Scope, {Phase, ScopeType} from "./Scope";
+import {
+    GlobalScope, Scope, Phase, RootMergeObjectScope, RootMergeFileScope, MergeFileScope, ScopeBase,
+    MergeObjectScope, ScopeWithRoot, AnyScope
+} from "./Scope";
 import Config from "./Config";
 import DataLoader from "./DataLoader";
 import Operation, {ProcessArrayItemResult} from "./operations/Operation";
@@ -13,7 +16,7 @@ import Operation, {ProcessArrayItemResult} from "./operations/Operation";
 
 export default class Processor {
 
-    currentScope: Scope;
+    currentScope: AnyScope;
 
     private _cache: CacheItem[] = [];
     private _enabledOperationNames: string[] = [];
@@ -34,8 +37,9 @@ export default class Processor {
             $params: this._config.params
         };
 
-        // Create merge root scope
-        const scope = this._enterMergeRootScope(scopeVariables);
+        // Create scope
+        const scope = new GlobalScope();
+        this._enterScope(scope);
 
         // Process and merge sources
         let result = sources.reduce((target: any, source) => {
@@ -48,31 +52,30 @@ export default class Processor {
         }, undefined);
 
         // Check if the AfterMerges phase should be executed
-        if (scope.phasesToProcess[Phase.AfterMerges]) {
+        if (scope.hasRegisteredPhase(Phase.AfterMerges)) {
             result = this.mergeObject(result, undefined, scopeVariables, Phase.AfterMerges);
         }
 
-        // Leave merge root scope
+        // Leave global scope
         this._leaveScope();
 
         return result;
     }
 
     mergeFile(uri: string, target?: any, scopeVariables?: any) {
-        return this.loadAndProcessFileByRef(uri, target, scopeVariables);
+        return this.loadAndProcessFileByRef(uri, target, scopeVariables, true);
     }
 
     mergeObject(source: any, target?: any, scopeVariables?: any, phase?: Phase) {
         // Process
-        const scope = this._enterObjectRootScope(source, target, scopeVariables, phase);
+        const scope = new RootMergeObjectScope(source, target, this.currentScope, scopeVariables, phase);
+        this._enterScope(scope);
         let result = this.processSource(source, target);
         this._leaveScope();
 
         // Check if the AfterMerge phase should be executed
-        if (scope.phasesToProcess[Phase.AfterMerge]) {
-            this._enterObjectRootScope(result, undefined, scopeVariables, Phase.AfterMerge);
-            result = this.processSource(result);
-            this._leaveScope();
+        if (scope.hasRegisteredPhase(Phase.AfterMerge)) {
+            result = this.mergeObject(result, target, scopeVariables, Phase.AfterMerge);
         }
 
         return result;
@@ -111,8 +114,9 @@ export default class Processor {
     }
 
     getCurrentUri(): string {
-        if (this.currentScope && this.currentScope.sourceFilePath) {
-            return this.currentScope.sourceFilePath;
+        const scope = this.currentScope as MergeFileScope;
+        if (scope.root && scope.root.sourceFilePath) {
+            return scope.root.sourceFilePath;
         } else if (this._config.cwd !== "") {
             return path.join(this._config.cwd, "object.json");
         }
@@ -132,7 +136,7 @@ export default class Processor {
         return result;
     }
 
-    loadAndProcessFile(uri: string, target?: any, scopeVariables?: object): any {
+    loadAndProcessFile(uri: string, target?: any, scopeVariables?: object, isRoot: boolean = false): any {
         // Get absolute URI
         const currentUri = this.getCurrentUri();
         const absoluteUri = this._dataLoader.toAbsoluteUri(uri, currentUri);
@@ -140,7 +144,7 @@ export default class Processor {
         // Determine the used scope variables
         let usedScopeVariables = scopeVariables;
         if (usedScopeVariables === undefined && this.currentScope) {
-            usedScopeVariables = this.currentScope.variables;
+            usedScopeVariables = this.currentScope.localVariables;
         }
 
         // Hash the data that could change the output of the processing.
@@ -160,7 +164,7 @@ export default class Processor {
         // Return cache result if found
         if (cacheItem) {
             if (cacheItem.executeAfterMergesPhase) {
-                this.currentScope.mergeRoot.phasesToProcess[Phase.AfterMerges] = true;
+                this.currentScope.registerPhase(Phase.AfterMerges);
             }
             return cacheItem.result;
         }
@@ -169,45 +173,57 @@ export default class Processor {
         const source = this._dataLoader.load(absoluteUri, currentUri);
 
         // Enter file root scope
-        const scope = this._enterFileRootScope(absoluteUri, source, target, scopeVariables);
+        let scope;
+
+        if (isRoot) {
+            scope = new RootMergeFileScope(absoluteUri, source, target, this.currentScope, scopeVariables, this.currentScope.phase);
+        } else {
+            scope = new MergeFileScope(absoluteUri, source, target, this.currentScope, scopeVariables, this.currentScope.phase);
+        }
+
+        this._enterScope(scope);
 
         // Process source
         let result = this.processSource(source, target);
 
         // Check if an after merge phase should be executed
-        if (scope.phasesToProcess[Phase.AfterMerge]) {
-            scope.phase = Phase.AfterMerge;
+        if (scope.hasRegisteredPhase(Phase.AfterMerge)) {
+            const mergeObjectScope = new MergeObjectScope(result, undefined, scope, scopeVariables, Phase.AfterMerge);
+            this._enterScope(mergeObjectScope);
             result = this.processSource(result);
+            this._leaveScope();
         }
 
         // Leave file root scope
         this._leaveScope();
 
         // Add to processed file cache
-        const executeAfterMergesPhase = scope.mergeRoot.phasesToProcess[Phase.AfterMerges];
+        const executeAfterMergesPhase = scope.hasRegisteredPhase(Phase.AfterMerges);
         this._cache.push({absoluteUri, target, hashedScopeVariables, result, executeAfterMergesPhase});
 
         return result;
     }
 
-    loadAndProcessFileByRef(ref: string, target?: any, scopeVariables?: object) {
+    loadAndProcessFileByRef(ref: string, target?: any, scopeVariables?: object, isRoot: boolean = false) {
         const [uri, pointer] = ref.split("#");
-        let result = this.loadAndProcessFile(uri, target, scopeVariables);
+        let result = this.loadAndProcessFile(uri, target, scopeVariables, isRoot);
         if (pointer !== undefined) {
             result = this.resolveJsonPointer(result, pointer);
         }
         return result;
     }
 
-    processSourcePropertyInNewObjectScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
-        this._enterObjectScope(sourceProperty, targetProperty, scopeVariables);
+    processSourcePropertyInNewMergeObjectScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
+        const scope = new MergeObjectScope(sourceProperty, targetProperty, this.currentScope as ScopeWithRoot, scopeVariables);
+        this._enterScope(scope);
         const result = this.processSourceProperty(sourceProperty, sourcePropertyName, targetProperty);
         this._leaveScope();
         return result;
     }
 
-    processSourcePropertyInNewVariableScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
-        this._enterVariableScope(scopeVariables);
+    processSourcePropertyInNewScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
+        const scope = new Scope(this.currentScope as ScopeWithRoot, scopeVariables);
+        this._enterScope(scope);
         const result = this.processSourceProperty(sourceProperty, sourcePropertyName, targetProperty);
         this._leaveScope();
         return result;
@@ -338,28 +354,8 @@ export default class Processor {
         return result;
     }
 
-    private _enterMergeRootScope(variables?: any) {
-        return this._enterScope(ScopeType.MergeRoot, undefined, undefined, undefined, variables);
-    }
-
-    private _enterFileRootScope(uri: string, source: any, target: any, variables?: any, phase?: Phase) {
-        return this._enterScope(ScopeType.FileRoot, source, uri, target, variables, phase);
-    }
-
-    private _enterObjectRootScope(source: any, target: any, variables?: any, phase?: Phase) {
-        return this._enterScope(ScopeType.ObjectRoot, source, undefined, target, variables, phase);
-    }
-
-    private _enterObjectScope(source: any, target: any, variables?: any) {
-        return this._enterScope(ScopeType.Object, source, undefined, target, variables);
-    }
-
-    private _enterVariableScope(variables?: any) {
-        return this._enterScope(ScopeType.Variable, this.currentScope.source, undefined, this.currentScope.target, variables);
-    }
-
-    private _enterScope(type: ScopeType, source?: any, sourceFilePath?: string, target?: any, variables?: any, phase?: Phase) {
-        this.currentScope = new Scope(type, this.currentScope, source, sourceFilePath, target, variables, phase);
+    private _enterScope(scope: ScopeBase) {
+        this.currentScope = scope;
         return this.currentScope;
     }
 

@@ -17,6 +17,8 @@ import DataSerializer from "./dataSerializers/DataSerializer";
 import JSONDataSerializer from "./dataSerializers/JSONDataSerializer";
 
 // Import operations
+import AfterMergeOperation from "./operations/AfterMergeOperation";
+import AfterMergesOperation from "./operations/AfterMergesOperation";
 import AppendOperation from "./operations/AppendOperation";
 import ExpressionOperation from "./operations/ExpressionOperation";
 import ImportOperation from "./operations/ImportOperation";
@@ -26,7 +28,6 @@ import MatchOperation from "./operations/MatchOperation";
 import MergeOperation from "./operations/MergeOperation";
 import MoveOperation from "./operations/MoveOperation";
 import PrependOperation from "./operations/PrependOperation";
-import ProcessOperation from "./operations/ProcessOperation";
 import RemoveOperation from "./operations/RemoveOperation";
 import RepeatOperation from "./operations/RepeatOperation";
 import ReplaceOperation from "./operations/ReplaceOperation";
@@ -82,7 +83,8 @@ export default class Merger {
             new MoveOperation(this._processor),
             new MergeOperation(this._processor),
             new IncludeOperation(this._processor),
-            new ProcessOperation(this._processor)
+            new AfterMergeOperation(this._processor),
+            new AfterMergesOperation(this._processor)
         ]);
     }
 

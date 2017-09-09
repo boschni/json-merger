@@ -1,4 +1,5 @@
 import Operation from "./Operation";
+import {RootMergeFileScope, RootMergeObjectScope, ScopeWithRoot} from "../Scope";
 
 export default class SelectOperation extends Operation {
 
@@ -12,7 +13,15 @@ export default class SelectOperation extends Operation {
         let value;
 
         // Determine the select context
-        let selectContext = this._processor.currentScope.root.source;
+        let selectContext;
+
+        const scope = this._processor.currentScope;
+        if (scope instanceof RootMergeFileScope || scope instanceof RootMergeObjectScope) {
+            selectContext = scope.source;
+        } else {
+            selectContext = (scope as ScopeWithRoot).root;
+        }
+
 
         if (typeof keywordValue === "string") {
             value = this._processor.resolveJsonPointer(selectContext, keywordValue);
