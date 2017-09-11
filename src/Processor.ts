@@ -136,7 +136,7 @@ export default class Processor {
         return result;
     }
 
-    loadAndProcessFile(uri: string, target?: any, scopeVariables?: object, isRoot: boolean = false): any {
+    loadAndProcessFile(uri: string, target?: any, scopeVariables?: any, isRoot: boolean = false): any {
         // Get absolute URI
         const currentUri = this.getCurrentUri();
         const absoluteUri = this._dataLoader.toAbsoluteUri(uri, currentUri);
@@ -171,6 +171,14 @@ export default class Processor {
 
         // Load file
         const source = this._dataLoader.load(absoluteUri, currentUri);
+
+        // Create scope variables
+        scopeVariables = scopeVariables || {};
+
+        // Copy current scope $params if no new $params are defined
+        if (!scopeVariables.$params) {
+            scopeVariables.$params = this.currentScope.scopeVariables.$params;
+        }
 
         // Enter file root scope
         let scope;

@@ -351,6 +351,35 @@ describe("when importing a file", function () {
         expect(result).toMatchSnapshot();
     });
 
+    test("then the parent scope variables should not be accessible", function () {
+
+        const files = {
+            "b.json": {
+                "$expression": "typeof $repeat"
+            }
+        };
+
+        const object = {
+            "$repeat": {
+                "range": "1",
+                "value": {
+                    "a": {
+                        "$expression": "typeof $repeat"
+                    },
+                    "b": {
+                        "$import": "b.json"
+                    }
+                }
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeObject(object, testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
     test("then $sourceFilename in the file should refer to the filename without extension", function () {
 
         const files = {

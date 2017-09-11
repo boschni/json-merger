@@ -72,8 +72,8 @@ export class RootMergeObjectScope extends ScopeBase {
     root: RootMergeObjectScope;
     source: any;
     target: any;
-    constructor(source: any, target: any, parent: ScopeBase, variables?: Variables, phase?: Phase) {
-        super(parent, variables, phase);
+    constructor(source: any, target: any, parent: ScopeBase, localVariables?: Variables, phase?: Phase) {
+        super(parent, localVariables, phase);
         this.root = this;
         this.source = source;
         this.target = target;
@@ -87,8 +87,8 @@ export class MergeObjectScope extends ScopeBase {
     root: ScopeWithRoot;
     source: any;
     target: any;
-    constructor(source: any, target: any, parent: ScopeWithRoot, variables?: Variables, phase?: Phase) {
-        super(parent, variables, phase);
+    constructor(source: any, target: any, parent: ScopeWithRoot, localVariables?: Variables, phase?: Phase) {
+        super(parent, localVariables, phase);
         this.root = parent.root;
         this.source = source;
         this.target = target;
@@ -104,8 +104,8 @@ export class RootMergeFileScope extends ScopeBase {
     sourceFilePath: string;
     sourceFileName: string;
     target: any;
-    constructor(sourceFilePath: string, source: any, target: any, parent: ScopeBase, variables?: Variables, phase?: Phase) {
-        super(parent, variables, phase);
+    constructor(sourceFilePath: string, source: any, target: any, parent: ScopeBase, localVariables?: Variables, phase?: Phase) {
+        super(parent, localVariables, phase);
         this.root = this;
         this.source = source;
         this.target = target;
@@ -122,8 +122,12 @@ export class RootMergeFileScope extends ScopeBase {
 export class MergeFileScope extends ScopeBase {
     root: MergeFileScope;
     sourceFileName: string;
-    constructor(public sourceFilePath: string, public source: any, public target: any, parent: ScopeBase, variables?: Variables, phase?: Phase) {
-        super(parent, variables, phase);
+    constructor(public sourceFilePath: string, public source: any, public target: any, parent: ScopeBase, localVariables?: Variables, phase?: Phase) {
+        super(parent, localVariables, phase);
+
+        // Do not inherit the parent scope variables when merging a file
+        this.scopeVariables = {...localVariables};
+
         this.root = this;
         this.sourceFileName = this.sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
         this.scopeVariables.$root = this.root.scopeVariables;
@@ -136,8 +140,8 @@ export class MergeFileScope extends ScopeBase {
 
 export class Scope extends ScopeBase {
     root: ScopeWithRoot;
-    constructor(parent: ScopeWithRoot, variables?: Variables, phase?: Phase) {
-        super(parent, variables, phase);
+    constructor(parent: ScopeWithRoot, localVariables?: Variables, phase?: Phase) {
+        super(parent, localVariables, phase);
         this.root = parent.root;
         this.scopeVariables.$root = this.root.scopeVariables;
     }

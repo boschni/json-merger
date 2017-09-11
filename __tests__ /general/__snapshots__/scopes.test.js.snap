@@ -17,6 +17,15 @@ exports[`when importing a file then $sourceFilename in the file should refer to 
 }"
 `;
 
+exports[`when importing a file then the parent scope variables should not be accessible 1`] = `
+"[
+	{
+		\\"a\\": \\"object\\",
+		\\"b\\": \\"undefined\\"
+	}
+]"
+`;
+
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $parent.$target in object2 $merge.with should refer to the processed object1 1`] = `
 "{
 	\\"targetProp\\": \\"should be the value of mergeSharedProp\\",
