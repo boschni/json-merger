@@ -155,6 +155,29 @@ describe("when merging two objects it", function () {
 
         expect(objects).toMatchSnapshot();
     });
+
+    test("should be able to handle null values", function () {
+
+        const object1 = {
+            "object1": {
+                "prop1": 1,
+                "prop2": null
+            }
+        };
+
+        const object2 = {
+            "object2": {
+                "prop1": 2,
+                "prop2": null
+            }
+        };
+
+        const objects = [object1, object2];
+
+        jsonMerger.mergeObjects(objects);
+
+        expect(objects).toMatchSnapshot();
+    });
 });
 
 describe("when merging two arrays it", function () {
@@ -215,6 +238,22 @@ describe("when merging two arrays it", function () {
             {
                 "1a": "this should be the only array item"
             }
+        ];
+
+        const object2 = [];
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("should be able to handle null values", function () {
+
+        const object1 = [
+            {
+                "1a": "1a"
+            },
+            null
         ];
 
         const object2 = [];

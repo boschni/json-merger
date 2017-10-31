@@ -314,16 +314,18 @@ export default class Processor {
     }
 
     processArrayItem(source: any, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, target: any[]): ProcessArrayItemResult {
-        // Check if the array item is an operation
-        for (let i = 0; i < this._enabledOperationNames.length; i++) {
-            const name = this._enabledOperationNames[i];
-            const operation = this._nameOperationMap[name];
-            const keyword = this.getKeyword(name);
-            if (source[keyword] !== undefined) {
-                this.currentScope.enterProperty(keyword);
-                const result = operation.processInArray(keyword, source, sourceArray, sourceArrayIndex, resultArray, resultArrayIndex, target);
-                this.currentScope.leaveProperty();
-                return result;
+        if (isObject(source)) {
+            // Check if the array item is an operation
+            for (let i = 0; i < this._enabledOperationNames.length; i++) {
+                const name = this._enabledOperationNames[i];
+                const operation = this._nameOperationMap[name];
+                const keyword = this.getKeyword(name);
+                if (source[keyword] !== undefined) {
+                    this.currentScope.enterProperty(keyword);
+                    const result = operation.processInArray(keyword, source, sourceArray, sourceArrayIndex, resultArray, resultArrayIndex, target);
+                    this.currentScope.leaveProperty();
+                    return result;
+                }
             }
         }
         resultArray[resultArrayIndex] = this.processSource(source, resultArray[resultArrayIndex]);
