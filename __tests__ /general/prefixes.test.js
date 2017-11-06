@@ -61,4 +61,30 @@ describe("when merging two objects", function () {
 
         expect(result).toMatchSnapshot();
     });
+
+    test("it should be possible to use an operation name in a property name starting with one other character", function () {
+
+        const object1 = {
+            "@replace": {
+                "aa": "this should be the value of /@replace/aa"
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("it should be possible to use an operation name in a property name starting with two other characters", function () {
+
+        const object1 = {
+            "@@replace": {
+                "aa": "this should be the value of /@@replace/aa"
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
 });

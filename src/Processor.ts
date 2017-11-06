@@ -109,8 +109,24 @@ export default class Processor {
     }
 
     isKeyword(input: string): boolean {
-        const name = input.substr(this._config.operationPrefix.length);
+        if (!this.startsWithOperationPrefix(input)) {
+            return false;
+        }
+        const name = this.stripOperationPrefix(input);
         return this._nameOperationMap[name] !== undefined;
+    }
+
+    isEscapedKeyword(input: string): boolean {
+        return this.isKeyword(this.stripOperationPrefix(input));
+    }
+
+    stripOperationPrefix(input: string): string {
+        return input.substr(this._config.operationPrefix.length);
+    }
+
+    startsWithOperationPrefix(input: string): boolean {
+        const prefix = this._config.operationPrefix;
+        return input.substr(0, prefix.length) === prefix;
     }
 
     getCurrentUri(): string {
@@ -277,16 +293,13 @@ export default class Processor {
 
         // Process source properties and copy to result object
         Object.keys(source).forEach((key) => {
-            // Strip the operation prefix
-            const possibleKeyword = key.substr(this._config.operationPrefix.length);
-
             // strip $comment properties
-            if (possibleKeyword === "comment") {
+            if (this.stripOperationPrefix(key) === "comment") {
                 return;
             }
 
             // process source property and copy to result
-            const targetKey = this.isKeyword(possibleKeyword) ? possibleKeyword : key;
+            const targetKey = this.isEscapedKeyword(key) ? this.stripOperationPrefix(key) : key;
             result[targetKey] = this.processSourceProperty(source[key], key, target[key]);
         });
 

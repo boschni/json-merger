@@ -18,6 +18,22 @@ exports[`when merging two objects it should be possible to escape a keyword with
 }"
 `;
 
+exports[`when merging two objects it should be possible to use an operation name in a property name starting with one other character 1`] = `
+"{
+	\\"@replace\\": {
+		\\"aa\\": \\"this should be the value of /@replace/aa\\"
+	}
+}"
+`;
+
+exports[`when merging two objects it should be possible to use an operation name in a property name starting with two other characters 1`] = `
+"{
+	\\"@@replace\\": {
+		\\"aa\\": \\"this should be the value of /@@replace/aa\\"
+	}
+}"
+`;
+
 exports[`when merging two objects it should merge non-operation properties starting with the operation prefix 1`] = `
 "{
 	\\"a\\": {
