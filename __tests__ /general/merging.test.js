@@ -178,6 +178,21 @@ describe("when merging two objects it", function () {
 
         expect(objects).toMatchSnapshot();
     });
+
+    test("should delete the object key for an undefined value", function () {
+
+        const object1 = {
+            "prop": 1
+        };
+
+        const object2 = {
+            "prop": undefined
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], {stringify: false});
+
+        expect(result.hasOwnProperty("prop")).toBe(false);
+    });
 });
 
 describe("when merging two arrays it", function () {

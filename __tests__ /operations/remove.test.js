@@ -23,6 +23,23 @@ describe("when merging two objects and a source property has a $remove indicator
 
         expect(result).toMatchSnapshot();
     });
+
+    test("it should delete the object key for an undefined value", function () {
+
+        const object1 = {
+            "a": 1
+        };
+
+        const object2 = {
+            "a": {
+                "$remove": true
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], {stringify: false});
+
+        expect(result.hasOwnProperty("a")).toBe(false);
+    });
 });
 
 describe("when merging two arrays and a source property has a $remove indicator", function () {
