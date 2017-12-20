@@ -302,8 +302,8 @@ export default class Processor {
             const targetKey = this.isEscapedKeyword(key) ? this.stripOperationPrefix(key) : key;
             result[targetKey] = this.processSourceProperty(source[key], key, target[key]);
 
-            // value of 'undefined' indicates the property must be deleted (see 'remove' operation)
-            if (typeof result[targetKey] === 'undefined') {
+            // value of "undefined" indicates the property must be deleted (see "remove" operation)
+            if (typeof result[targetKey] === "undefined") {
                 delete result[targetKey];
             }
         });
