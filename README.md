@@ -1589,9 +1589,7 @@ var result = jsonMerger.mergeFile("a.json", {
 ```json
 {
   "prop": {
-    "$expression": {
-      "expression": "1 + $params.add"
-    }
+    "$expression": "1 + $params.add"
   }
 }
 ```
