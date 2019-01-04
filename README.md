@@ -711,7 +711,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 
 #### Insert as last item
 
-Set `$import.index` to `-` to insert an item at the end of the array.
+Set `$insert.index` to `-` to insert an item at the end of the array.
 
 **javascript**
 
@@ -752,7 +752,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 
 #### Insert before the last item
 
-A negative `$import.index` can be used, indicating an offset from the end of the array. 
+A negative `$insert.index` can be used, indicating an offset from the end of the array. 
 
 **javascript**
 
