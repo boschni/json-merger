@@ -86,21 +86,24 @@ exports[`when merging two objects it should add properties if they do not exist 
 }"
 `;
 
+exports[`when merging two objects it should be able to handle function values 1`] = `
+Object {
+  "prop1": [Function],
+  "prop2": "prop2",
+}
+`;
+
 exports[`when merging two objects it should be able to handle null values 1`] = `
-Array [
-  Object {
-    "object1": Object {
-      "prop1": 1,
-      "prop2": null,
-    },
-  },
-  Object {
-    "object2": Object {
-      "prop1": 2,
-      "prop2": null,
-    },
-  },
-]
+"{
+	\\"object1\\": {
+		\\"prop1\\": 1,
+		\\"prop2\\": null
+	},
+	\\"object2\\": {
+		\\"prop1\\": 2,
+		\\"prop2\\": null
+	}
+}"
 `;
 
 exports[`when merging two objects it should not mutate any of the input objects 1`] = `
@@ -116,6 +119,14 @@ Array [
     },
   },
 ]
+`;
+
+exports[`when merging two objects it should only process objects constructed with the built-in Object constructor 1`] = `
+Object {
+  "prop1": Prop1 {
+    "nestedProp2": "should be the only property left",
+  },
+}
 `;
 
 exports[`when merging two objects it should overwrite a primitive property value if the source property value is a primitive 1`] = `

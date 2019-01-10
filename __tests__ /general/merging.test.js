@@ -172,11 +172,53 @@ describe("when merging two objects it", function () {
             }
         };
 
-        const objects = [object1, object2];
+        const result = jsonMerger.mergeObjects(
+            [object1, object2],
+            testConfig()
+        );
 
-        jsonMerger.mergeObjects(objects);
+        expect(result).toMatchSnapshot();
+    });
 
-        expect(objects).toMatchSnapshot();
+    test("should be able to handle function values", function () {
+        const object1 = {
+            "prop1": "prop1",
+            "prop2": function prop2() {}
+        };
+
+        const object2 = {
+            "prop1": function prop1() {},
+            "prop2": "prop2"
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], {
+            stringify: false
+        });
+
+        expect(result).toMatchSnapshot();
+    });
+
+    test("should only process objects constructed with the built-in Object constructor", function () {
+        function Prop1() {
+            this.nestedProp2 = "should be the only property left";
+        }
+
+        const object1 = {
+            "prop1": {
+                "nestedProp1": "nestedProp1",
+                "nestedProp2": "nestedProp2"
+            }
+        };
+
+        const object2 = {
+            "prop1": new Prop1()
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], {
+            stringify: false
+        });
+
+        expect(result).toMatchSnapshot();
     });
 
     test("should delete the object key for an undefined value", function () {
