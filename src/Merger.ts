@@ -20,6 +20,7 @@ import JSONDataSerializer from "./dataSerializers/JSONDataSerializer";
 import AfterMergeOperation from "./operations/AfterMergeOperation";
 import AfterMergesOperation from "./operations/AfterMergesOperation";
 import AppendOperation from "./operations/AppendOperation";
+import ConcatOperation from "./operations/ConcatOperation";
 import ExpressionOperation from "./operations/ExpressionOperation";
 import ImportOperation from "./operations/ImportOperation";
 import IncludeOperation from "./operations/IncludeOperation";
@@ -74,6 +75,7 @@ export default class Merger {
             new ReplaceOperation(this._processor),
             new ExpressionOperation(this._processor),
             new ImportOperation(this._processor),
+            new ConcatOperation(this._processor),
             new AppendOperation(this._processor),
             new PrependOperation(this._processor),
             new InsertOperation(this._processor),
