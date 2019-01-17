@@ -13,7 +13,7 @@ describe("when merging two objects", function () {
 
         const object2 = {
             "a": {
-                "$$noOperation": "this should be the value of /a/$$noOperation"
+                "$noOperation": "this should be the value of /a/$noOperation"
             }
         };
 
@@ -40,6 +40,26 @@ describe("when merging two objects", function () {
 
         expect(result).toMatchSnapshot();
     });
+
+    test("it should merge non-operation properties starting with the operation prefix and an additional prefix character", function () {
+
+        const object1 = {
+            "a": {
+                "aa": "this should be the value of /a/aa"
+            }
+        };
+
+        const object2 = {
+            "a": {
+                "$$noOperation": "this should be the value of /a/$$noOperation"
+            }
+        };
+
+        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
 
     test("it should be possible to escape a keyword but the value should be processed", function () {
 
