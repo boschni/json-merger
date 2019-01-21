@@ -21,6 +21,7 @@ Table of Contents:
   * [`$merge`](#merge)
   * [`$remove`](#remove)
   * [`$replace`](#replace)
+  * [`$concat`](#concat)
   * [`$append`](#append)
   * [`$prepend`](#prepend)
   * [`$insert`](#insert)
@@ -592,6 +593,42 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
+### `$concat`
+
+Use the `$concat` operation to concatenate two arrays.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [1]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": {
+    "$concat": [2]
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "someArray": [1, 2]
+}
+```
+
 ### `$append`
 
 Use the `$append` operation to append an item to an array.
@@ -752,7 +789,7 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 
 #### Insert before the last item
 
-A negative `$insert.index` can be used, indicating an offset from the end of the array. 
+A negative `$insert.index` can be used, indicating an offset from the end of the array.
 
 **javascript**
 
