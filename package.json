@@ -54,21 +54,21 @@
     "testURL": "http://localhost/"
   },
   "dependencies": {
-    "commander": "^2.19.0",
-    "fs-extra": "^7.0.1",
-    "js-yaml": "^3.9.1",
-    "json-ptr": "^1.1.1",
-    "jsonpath": "^1.0.0",
+    "commander": "^2.20.0",
+    "fs-extra": "^8.0.1",
+    "js-yaml": "^3.13.1",
+    "json-ptr": "^1.1.2",
+    "jsonpath": "^1.0.2",
     "lodash.range": "^3.2.0",
     "safe-eval": "^0.4.1"
   },
   "devDependencies": {
-    "@types/js-yaml": "^3.11.4",
+    "@types/js-yaml": "^3.12.1",
     "@types/jsonpath": "^0.2.0",
-    "@types/lodash.range": "^3.2.3",
+    "@types/lodash.range": "^3.2.6",
     "@types/node": "^10.12.18",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "typescript": "^3.2.2"
+    "typescript": "^3.5.1"
   }
 }

@@ -1,5 +1,5 @@
 const jsonMerger = require("../../dist");
-const {testConfig} = require("../__helpers__");
+const {testConfig} = require("../../__helpers__");
 
 jest.mock("fs");
 const fs = require("fs");

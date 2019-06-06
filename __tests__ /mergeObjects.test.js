@@ -1,46 +1,50 @@
 const jsonMerger = require("../dist");
-const {testConfig} = require("./__helpers__");
+const { testConfig } = require("../__helpers__");
 
-describe(".mergeObjects()", function () {
-
-    test("should process the objects and return the result", function () {
-
+describe(".mergeObjects()", function() {
+    test("should process the objects and return the result", function() {
         const object1 = {
-            "a": {
-                "$replace": "this should be the value of a",
+            a: {
+                $replace: "this should be the value of a"
             }
         };
 
         const object2 = {
-            "b": {
-                "$replace": "this should be the value of b",
+            b: {
+                $replace: "this should be the value of b"
             }
         };
 
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
+        const result = jsonMerger.mergeObjects(
+            [object1, object2],
+            testConfig()
+        );
 
         expect(result).toMatchSnapshot();
     });
 
-    test("should use the config object", function () {
-
+    test("should use the config object", function() {
         const object1 = {
-            "a": {
-                "$replace": "this should be the value of a and not be pretty printed",
+            a: {
+                $replace:
+                    "this should be the value of a and not be pretty printed"
             }
         };
 
         const object2 = {
-            "b": {
-                "$replace": "this should be the value of b and not be pretty printed",
+            b: {
+                $replace:
+                    "this should be the value of b and not be pretty printed"
             }
         };
 
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig({
-            stringify: false
-        }));
+        const result = jsonMerger.mergeObjects(
+            [object1, object2],
+            testConfig({
+                stringify: false
+            })
+        );
 
         expect(result).toMatchSnapshot();
     });
 });
-

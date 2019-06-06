@@ -1,18 +1,16 @@
-const {Merger} = require("../dist");
-const {testConfig} = require("./__helpers__");
+const { Merger } = require("../dist");
+const { testConfig } = require("../__helpers__");
 
 jest.mock("fs");
 const fs = require("fs");
 
-describe("Merger()", function () {
-
-    test("should return the same result when processing the same file twice", function () {
-
+describe("Merger()", function() {
+    test("should return the same result when processing the same file twice", function() {
         const files = {
             "a.json": {
-                "a": {
-                    "$replace": {
-                        "with": 10
+                a: {
+                    $replace: {
+                        with: 10
                     }
                 }
             }
@@ -27,13 +25,12 @@ describe("Merger()", function () {
         expect(result1).toBe(result2);
     });
 
-    test("should cache previously loaded files when calling Merger.mergeFile()", function () {
-
+    test("should cache previously loaded files when calling Merger.mergeFile()", function() {
         const files = {
             "a.json": {
-                "a": {
-                    "$replace": {
-                        "with": 10
+                a: {
+                    $replace: {
+                        with: 10
                     }
                 }
             }
@@ -49,21 +46,20 @@ describe("Merger()", function () {
         expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     });
 
-    test("should cache previously loaded files when loaded from $import", function () {
-
+    test("should cache previously loaded files when loaded from $import", function() {
         const files = {
             "a.json": {
-                "a": {
-                    "$import": "b.json"
+                a: {
+                    $import: "b.json"
                 },
-                "b": {
-                    "$import": "b.json"
+                b: {
+                    $import: "b.json"
                 }
             },
             "b.json": {
-                "b": {
-                    "$replace": {
-                        "with": 10
+                b: {
+                    $replace: {
+                        with: 10
                     }
                 }
             }
@@ -78,15 +74,14 @@ describe("Merger()", function () {
         expect(fs.readFileSync).toHaveBeenCalledTimes(2);
     });
 
-    test("should cache previously loaded files when merging multiple files", function () {
-
+    test("should cache previously loaded files when merging multiple files", function() {
         const files = {
             "a.json": {
-                "a": 10
+                a: 10
             },
             "b.json": {
-                "a": {
-                    "$expression": "$targetProperty + 10"
+                a: {
+                    $expression: "$targetProperty + 10"
                 }
             }
         };

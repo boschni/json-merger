@@ -1,5 +1,5 @@
 const jsonMerger = require("../../dist");
-const {testConfig} = require("../__helpers__");
+const {testConfig} = require("../../__helpers__");
 
 describe("when merging two objects and a source property has a $repeat operation", function () {
 
