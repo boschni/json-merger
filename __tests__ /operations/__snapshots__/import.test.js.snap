@@ -50,6 +50,15 @@ exports[`when processing an object containing an $import operation it should res
 }"
 `;
 
+exports[`when processing an object containing an $import operation it should resolve to the processed file and then process the result against the target 1`] = `
+"{
+	\\"array\\": [
+		1,
+		2
+	]
+}"
+`;
+
 exports[`when processing an object containing an $import operation it should resolve to undefined if the file does exist but the pointer does not and opConfig.errorOnRefNotFound is false 1`] = `"{}"`;
 
 exports[`when processing an object containing an $import operation it should resolve to undefined if the file does not exist and Config.errorOnFileNotFound is false 1`] = `"{}"`;

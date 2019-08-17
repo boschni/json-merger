@@ -75,6 +75,36 @@ describe("when processing an object containing an $import operation it", functio
         expect(result).toMatchSnapshot();
     });
 
+    test("should resolve to the processed file and then process the result against the target", function () {
+
+        const files = {
+            "a.json": {
+                "array": [
+                    {
+                        "$$append": 2
+                    }
+                ]
+            }
+        };
+
+        const object = {
+            "$merge": {
+                "source": {
+                    "array": [1]
+                },
+                "with": {
+                    "$import": "a.json"
+                }
+            }
+        };
+
+        fs.__setJsonMockFiles(files);
+
+        const result = jsonMerger.mergeObject(object, testConfig());
+
+        expect(result).toMatchSnapshot();
+    });
+
     test("and $import.params is set it should process it and use the property as source params", function () {
 
         const files = {
