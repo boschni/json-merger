@@ -54,10 +54,10 @@
     "testURL": "http://localhost/"
   },
   "dependencies": {
-    "commander": "^2.20.0",
-    "fs-extra": "^8.0.1",
+    "commander": "^4.0.1",
+    "fs-extra": "^8.1.0",
     "js-yaml": "^3.13.1",
-    "json-ptr": "^1.1.2",
+    "json-ptr": "^1.2.0",
     "jsonpath": "^1.0.2",
     "lodash.range": "^3.2.0",
     "safe-eval": "^0.4.1"
@@ -67,8 +67,8 @@
     "@types/jsonpath": "^0.2.0",
     "@types/lodash.range": "^3.2.6",
     "@types/node": "^10.12.18",
-    "jest": "^24.8.0",
-    "rimraf": "^2.6.3",
-    "typescript": "^3.5.1"
+    "jest": "^24.9.0",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.7.4"
   }
 }
