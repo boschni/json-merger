@@ -1,12 +1,12 @@
-const fsActual = require.requireActual("fs");
+const fsActual = jest.requireActual("fs");
 const fs = jest.genMockFromModule("fs");
 const path = require("path");
 
 let mockFiles;
 
-fs.__setMockFiles = function(newMockFiles) {
+fs.__setMockFiles = function (newMockFiles) {
     mockFiles = Object.create(null);
-    Object.keys(newMockFiles).forEach(fileName => {
+    Object.keys(newMockFiles).forEach((fileName) => {
         let newFileName = fileName;
         if (!path.isAbsolute(fileName)) {
             newFileName = path.resolve(process.cwd(), fileName);
@@ -15,14 +15,17 @@ fs.__setMockFiles = function(newMockFiles) {
     });
 };
 
-fs.__setJsonMockFiles = function(newMockFiles, stringify) {
-    Object.keys(newMockFiles).forEach(fileName => {
-        newMockFiles[fileName] = stringify === false ? newMockFiles[fileName] : JSON.stringify(newMockFiles[fileName]);
+fs.__setJsonMockFiles = function (newMockFiles, stringify) {
+    Object.keys(newMockFiles).forEach((fileName) => {
+        newMockFiles[fileName] =
+            stringify === false
+                ? newMockFiles[fileName]
+                : JSON.stringify(newMockFiles[fileName]);
     });
     fs.__setMockFiles(newMockFiles);
 };
 
-fs.readFileSync = jest.fn(function(fileName) {
+fs.readFileSync = jest.fn(function (fileName) {
     if (mockFiles !== undefined) {
         if (mockFiles[fileName] === undefined) {
             throw new Error("readFileSyncMock: file does not exist");

@@ -1,21 +1,28 @@
 import * as path from "path";
 import * as jsonpath from "jsonpath";
-import * as jsonPtr from "json-ptr";
-import {isObject} from "./utils/types";
+import { JsonPointer } from "json-ptr";
+import { isObject } from "./utils/types";
 import {
-    GlobalScope, Scope, Phase, RootMergeObjectScope, RootMergeFileScope, MergeFileScope, ScopeBase,
-    MergeObjectScope, ScopeWithRoot, AnyScope
+    GlobalScope,
+    Scope,
+    Phase,
+    RootMergeObjectScope,
+    RootMergeFileScope,
+    MergeFileScope,
+    ScopeBase,
+    MergeObjectScope,
+    ScopeWithRoot,
+    AnyScope,
 } from "./Scope";
 import Config from "./Config";
 import DataLoader from "./DataLoader";
-import Operation, {ProcessArrayItemResult} from "./operations/Operation";
+import Operation, { ProcessArrayItemResult } from "./operations/Operation";
 
 /*
  * @TODO: Refactor the Processor/Scope/Phase construction
  */
 
 export default class Processor {
-
     currentScope: AnyScope;
 
     private _cache: CacheItem[] = [];
@@ -23,10 +30,7 @@ export default class Processor {
     private _nameOperationMap: NameOperationMap = {};
     private _operationNames: string[] = [];
 
-    constructor(
-        private _config: Config,
-        private _dataLoader: DataLoader
-    ) {
+    constructor(private _config: Config, private _dataLoader: DataLoader) {
         // Enable all operations
         this._enabledOperationNames = this._operationNames;
     }
@@ -34,7 +38,7 @@ export default class Processor {
     merge(sources: Source[]): any {
         // Create scope variables
         const scopeVariables = {
-            $params: this._config.params
+            $params: this._config.params,
         };
 
         // Create scope
@@ -44,7 +48,11 @@ export default class Processor {
         // Process and merge sources
         let result = sources.reduce((target: any, source) => {
             if (source.type === SourceType.Object) {
-                target = this.mergeObject(source.object, target, scopeVariables);
+                target = this.mergeObject(
+                    source.object,
+                    target,
+                    scopeVariables
+                );
             } else if (source.type === SourceType.Uri) {
                 target = this.mergeFile(source.uri, target, scopeVariables);
             }
@@ -53,7 +61,12 @@ export default class Processor {
 
         // Check if the AfterMerges phase should be executed
         if (scope.hasRegisteredPhase(Phase.AfterMerges)) {
-            result = this.mergeObject(result, undefined, scopeVariables, Phase.AfterMerges);
+            result = this.mergeObject(
+                result,
+                undefined,
+                scopeVariables,
+                Phase.AfterMerges
+            );
         }
 
         // Leave global scope
@@ -66,16 +79,32 @@ export default class Processor {
         return this.loadAndProcessFileByRef(uri, target, scopeVariables, true);
     }
 
-    mergeObject(source: any, target?: any, scopeVariables?: any, phase?: Phase) {
+    mergeObject(
+        source: any,
+        target?: any,
+        scopeVariables?: any,
+        phase?: Phase
+    ) {
         // Process
-        const scope = new RootMergeObjectScope(source, target, this.currentScope, scopeVariables, phase);
+        const scope = new RootMergeObjectScope(
+            source,
+            target,
+            this.currentScope,
+            scopeVariables,
+            phase
+        );
         this._enterScope(scope);
         let result = this.processSource(source, target);
         this._leaveScope();
 
         // Check if the AfterMerge phase should be executed
         if (scope.hasRegisteredPhase(Phase.AfterMerge)) {
-            result = this.mergeObject(result, target, scopeVariables, Phase.AfterMerge);
+            result = this.mergeObject(
+                result,
+                target,
+                scopeVariables,
+                Phase.AfterMerge
+            );
         }
 
         return result;
@@ -93,7 +122,7 @@ export default class Processor {
     }
 
     addOperations(operations: Operation[]) {
-        operations.forEach(operation => this.addOperation(operation));
+        operations.forEach((operation) => this.addOperation(operation));
     }
 
     enableOperations() {
@@ -152,7 +181,12 @@ export default class Processor {
         return result;
     }
 
-    loadAndProcessFile(uri: string, target?: any, scopeVariables?: any, isRoot: boolean = false): any {
+    loadAndProcessFile(
+        uri: string,
+        target?: any,
+        scopeVariables?: any,
+        isRoot: boolean = false
+    ): any {
         // Get absolute URI
         const currentUri = this.getCurrentUri();
         const absoluteUri = this._dataLoader.toAbsoluteUri(uri, currentUri);
@@ -170,12 +204,12 @@ export default class Processor {
         const hashedScopeVariables = JSON.stringify(usedScopeVariables);
 
         // Check cache
-        const cacheItem = this._cache
-            .filter(x => (
-                x.absoluteUri === absoluteUri
-                && x.target === target
-                && x.hashedScopeVariables === hashedScopeVariables
-            ))[0];
+        const cacheItem = this._cache.filter(
+            (x) =>
+                x.absoluteUri === absoluteUri &&
+                x.target === target &&
+                x.hashedScopeVariables === hashedScopeVariables
+        )[0];
 
         // Return cache result if found
         if (cacheItem) {
@@ -200,9 +234,23 @@ export default class Processor {
         let scope;
 
         if (isRoot) {
-            scope = new RootMergeFileScope(absoluteUri, source, target, this.currentScope, scopeVariables, this.currentScope.phase);
+            scope = new RootMergeFileScope(
+                absoluteUri,
+                source,
+                target,
+                this.currentScope,
+                scopeVariables,
+                this.currentScope.phase
+            );
         } else {
-            scope = new MergeFileScope(absoluteUri, source, target, this.currentScope, scopeVariables, this.currentScope.phase);
+            scope = new MergeFileScope(
+                absoluteUri,
+                source,
+                target,
+                this.currentScope,
+                scopeVariables,
+                this.currentScope.phase
+            );
         }
 
         this._enterScope(scope);
@@ -212,7 +260,13 @@ export default class Processor {
 
         // Check if an after merge phase should be executed
         if (scope.hasRegisteredPhase(Phase.AfterMerge)) {
-            const mergeObjectScope = new MergeObjectScope(result, undefined, scope, scopeVariables, Phase.AfterMerge);
+            const mergeObjectScope = new MergeObjectScope(
+                result,
+                undefined,
+                scope,
+                scopeVariables,
+                Phase.AfterMerge
+            );
             this._enterScope(mergeObjectScope);
             result = this.processSource(result);
             this._leaveScope();
@@ -222,38 +276,86 @@ export default class Processor {
         this._leaveScope();
 
         // Add to processed file cache
-        const executeAfterMergesPhase = scope.hasRegisteredPhase(Phase.AfterMerges);
-        this._cache.push({absoluteUri, target, hashedScopeVariables, result, executeAfterMergesPhase});
+        const executeAfterMergesPhase = scope.hasRegisteredPhase(
+            Phase.AfterMerges
+        );
+        this._cache.push({
+            absoluteUri,
+            target,
+            hashedScopeVariables,
+            result,
+            executeAfterMergesPhase,
+        });
 
         return result;
     }
 
-    loadAndProcessFileByRef(ref: string, target?: any, scopeVariables?: object, isRoot: boolean = false) {
+    loadAndProcessFileByRef(
+        ref: string,
+        target?: any,
+        scopeVariables?: object,
+        isRoot: boolean = false
+    ) {
         const [uri, pointer] = ref.split("#");
-        let result = this.loadAndProcessFile(uri, target, scopeVariables, isRoot);
+        let result = this.loadAndProcessFile(
+            uri,
+            target,
+            scopeVariables,
+            isRoot
+        );
         if (pointer !== undefined) {
             result = this.resolveJsonPointer(result, pointer);
         }
         return result;
     }
 
-    processSourcePropertyInNewMergeObjectScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
-        const scope = new MergeObjectScope(sourceProperty, targetProperty, this.currentScope as ScopeWithRoot, scopeVariables);
+    processSourcePropertyInNewMergeObjectScope(
+        sourceProperty: any,
+        sourcePropertyName: string,
+        targetProperty?: any,
+        scopeVariables?: any
+    ) {
+        const scope = new MergeObjectScope(
+            sourceProperty,
+            targetProperty,
+            this.currentScope as ScopeWithRoot,
+            scopeVariables
+        );
         this._enterScope(scope);
-        const result = this.processSourceProperty(sourceProperty, sourcePropertyName, targetProperty);
+        const result = this.processSourceProperty(
+            sourceProperty,
+            sourcePropertyName,
+            targetProperty
+        );
         this._leaveScope();
         return result;
     }
 
-    processSourcePropertyInNewScope(sourceProperty: any, sourcePropertyName: string, targetProperty?: any, scopeVariables?: any) {
-        const scope = new Scope(this.currentScope as ScopeWithRoot, scopeVariables);
+    processSourcePropertyInNewScope(
+        sourceProperty: any,
+        sourcePropertyName: string,
+        targetProperty?: any,
+        scopeVariables?: any
+    ) {
+        const scope = new Scope(
+            this.currentScope as ScopeWithRoot,
+            scopeVariables
+        );
         this._enterScope(scope);
-        const result = this.processSourceProperty(sourceProperty, sourcePropertyName, targetProperty);
+        const result = this.processSourceProperty(
+            sourceProperty,
+            sourcePropertyName,
+            targetProperty
+        );
         this._leaveScope();
         return result;
     }
 
-    processSourceProperty(sourceProperty: any, sourcePropertyName: string, targetProperty?: any) {
+    processSourceProperty(
+        sourceProperty: any,
+        sourcePropertyName: string,
+        targetProperty?: any
+    ) {
         this.currentScope.enterProperty(sourcePropertyName);
         const result = this.processSource(sourceProperty, targetProperty);
         this.currentScope.leaveProperty();
@@ -277,7 +379,11 @@ export default class Processor {
             const keyword = this.getKeyword(name);
             if (source[keyword] !== undefined) {
                 this.currentScope.enterProperty(keyword);
-                const result = operation.processInObject(keyword, source, target);
+                const result = operation.processInObject(
+                    keyword,
+                    source,
+                    target
+                );
                 this.currentScope.leaveProperty();
                 return result;
             }
@@ -289,7 +395,7 @@ export default class Processor {
         }
 
         // Copy target properties to the result object
-        const result = {...target};
+        const result = { ...target };
 
         // Process source properties and copy to result object
         Object.keys(source).forEach((key) => {
@@ -299,8 +405,14 @@ export default class Processor {
             }
 
             // process source property and copy to result
-            const targetKey = this.isEscapedKeyword(key) ? this.stripOperationPrefix(key) : key;
-            result[targetKey] = this.processSourceProperty(source[key], key, target[key]);
+            const targetKey = this.isEscapedKeyword(key)
+                ? this.stripOperationPrefix(key)
+                : key;
+            result[targetKey] = this.processSourceProperty(
+                source[key],
+                key,
+                target[key]
+            );
 
             // value of "undefined" indicates the property must be deleted (see "remove" operation)
             if (typeof result[targetKey] === "undefined") {
@@ -313,25 +425,39 @@ export default class Processor {
 
     private _processArray(source: any[], target?: any) {
         // Make sure target is an array
-        target = (Array.isArray(target) ? target : [])  as any[];
+        target = (Array.isArray(target) ? target : []) as any[];
 
         // Create the initial process result object
         let processResult: ProcessArrayItemResult = {
             resultArray: target.slice(),
-            resultArrayIndex: -1
+            resultArrayIndex: -1,
         };
 
         // Process all source array items
         source.forEach((sourceItem, sourceItemIndex) => {
             this.currentScope.enterProperty(sourceItemIndex);
-            processResult = this.processArrayItem(sourceItem, source, sourceItemIndex, processResult.resultArray, processResult.resultArrayIndex + 1, target);
+            processResult = this.processArrayItem(
+                sourceItem,
+                source,
+                sourceItemIndex,
+                processResult.resultArray,
+                processResult.resultArrayIndex + 1,
+                target
+            );
             this.currentScope.leaveProperty();
         });
 
         return processResult.resultArray;
     }
 
-    processArrayItem(source: any, sourceArray: any[], sourceArrayIndex: number, resultArray: any[], resultArrayIndex: number, target: any[]): ProcessArrayItemResult {
+    processArrayItem(
+        source: any,
+        sourceArray: any[],
+        sourceArrayIndex: number,
+        resultArray: any[],
+        resultArrayIndex: number,
+        target: any[]
+    ): ProcessArrayItemResult {
         if (isObject(source)) {
             // Check if the array item is an operation
             for (let i = 0; i < this._enabledOperationNames.length; i++) {
@@ -340,14 +466,25 @@ export default class Processor {
                 const keyword = this.getKeyword(name);
                 if (source[keyword] !== undefined) {
                     this.currentScope.enterProperty(keyword);
-                    const result = operation.processInArray(keyword, source, sourceArray, sourceArrayIndex, resultArray, resultArrayIndex, target);
+                    const result = operation.processInArray(
+                        keyword,
+                        source,
+                        sourceArray,
+                        sourceArrayIndex,
+                        resultArray,
+                        resultArrayIndex,
+                        target
+                    );
                     this.currentScope.leaveProperty();
                     return result;
                 }
             }
         }
-        resultArray[resultArrayIndex] = this.processSource(source, resultArray[resultArrayIndex]);
-        return {resultArray, resultArrayIndex};
+        resultArray[resultArrayIndex] = this.processSource(
+            source,
+            resultArray[resultArrayIndex]
+        );
+        return { resultArray, resultArrayIndex };
     }
 
     resolveJsonPointer(target: object, pointer?: string): any {
@@ -356,11 +493,13 @@ export default class Processor {
         if (pointer === undefined || pointer === "/") {
             result = target;
         } else {
-            result = jsonPtr.get(target, pointer);
+            result = JsonPointer.get(target, pointer);
         }
 
         if (result === undefined && this._config.errorOnRefNotFound) {
-            throw new Error(`The JSON pointer "${pointer}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`);
+            throw new Error(
+                `The JSON pointer "${pointer}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`
+            );
         }
 
         return result;
@@ -375,8 +514,13 @@ export default class Processor {
             result = jsonpath.query(target, path);
         }
 
-        if (this._config.errorOnRefNotFound && (result === undefined || result.length === 0)) {
-            throw new Error(`The JSON path "${path}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`);
+        if (
+            this._config.errorOnRefNotFound &&
+            (result === undefined || result.length === 0)
+        ) {
+            throw new Error(
+                `The JSON path "${path}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`
+            );
         }
 
         return result;
@@ -412,7 +556,7 @@ interface NameOperationMap {
 
 export const enum SourceType {
     Object,
-    Uri
+    Uri,
 }
 
 export interface UriSource {
@@ -425,5 +569,4 @@ export interface ObjectSource {
     type: SourceType.Object;
 }
 
-export type Source = UriSource
-    | ObjectSource;
+export type Source = UriSource | ObjectSource;

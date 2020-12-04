@@ -1,8 +1,12 @@
-import * as jsonPtr from "json-ptr";
-import {GlobalScope, MergeFileScope, RootMergeFileScope, ScopeBase} from "./Scope";
+import { encodePointer } from "json-ptr";
+import {
+    GlobalScope,
+    MergeFileScope,
+    RootMergeFileScope,
+    ScopeBase,
+} from "./Scope";
 
 export default class MergerError extends Error {
-
     constructor(originalError: Error, scope: ScopeBase) {
         super();
 
@@ -30,9 +34,12 @@ export default class MergerError extends Error {
         let trace = "";
         let currentScope = scope;
         while (currentScope && !(currentScope instanceof GlobalScope)) {
-            const pathEncoded = jsonPtr.encodePointer(currentScope.propertyPath);
+            const pathEncoded = encodePointer(currentScope.propertyPath);
             let filePath = "";
-            if (currentScope instanceof MergeFileScope || currentScope instanceof RootMergeFileScope) {
+            if (
+                currentScope instanceof MergeFileScope ||
+                currentScope instanceof RootMergeFileScope
+            ) {
                 filePath = currentScope.sourceFilePath;
             }
             trace += `    at ${filePath}#${pathEncoded}\n`;

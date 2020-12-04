@@ -1,2 +1,2 @@
 declare module "safe-eval";
-declare module "json-ptr";
+// declare module "json-ptr";
