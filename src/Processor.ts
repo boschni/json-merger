@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as jsonpath from "jsonpath";
-import * as jsonPtr from "json-ptr";
+import { JsonPointer } from "json-ptr";
 import { isObject } from "./utils/types";
 import {
   GlobalScope,
@@ -470,7 +470,7 @@ export default class Processor {
     if (pointer === undefined || pointer === "/") {
       result = target;
     } else {
-      result = jsonPtr.get(target, pointer);
+      result = JsonPointer.get(target, pointer);
     }
 
     if (result === undefined && this._config.errorOnRefNotFound) {

@@ -1,4 +1,4 @@
-const fsActual = require.requireActual("fs");
+const fsActual = jest.requireActual("fs");
 const fs = jest.genMockFromModule("fs");
 const path = require("path");
 

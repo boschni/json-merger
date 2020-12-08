@@ -1,5 +1,5 @@
 import * as jsonpath from "jsonpath";
-import * as jsonPtr from "json-ptr";
+import { JsonPointer } from "json-ptr";
 import Operation from "./Operation";
 
 export default class MatchOperation extends Operation {
@@ -39,8 +39,10 @@ export default class MatchOperation extends Operation {
     // Handle $match.path
     else if (keywordValue.path !== undefined) {
       // Try to find a matching item in the result
-      if (jsonPtr.get(resultArray, keywordValue.path) !== undefined) {
-        [matchedResultArrayIndex] = jsonPtr.decodePointer(keywordValue.path)[0];
+      if (JsonPointer.get(resultArray, keywordValue.path) !== undefined) {
+        matchedResultArrayIndex = Number(
+          JsonPointer.decode(keywordValue.path)[0]
+        );
       }
     }
 
