@@ -1,42 +1,42 @@
 # json-merger
+
 Merge JSON (or YAML) files and objects with operations like $import $remove $replace $merge and more.
 
-Table of Contents:
-------------------
-* [API](#api)
-  * [`.mergeFile(file: string, config?: Config)`](#mergefilefile-string-config-config)
-  * [`.mergeFiles(files: string[], config?: Config)`](#mergefilesfiles-string-config-config)
-  * [`.mergeObject(object: object, config?: Config)`](#mergeobjectobject-object-config-config)
-  * [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjects-object-config-config)
-  * [`Merger(config?: Config)`](#mergerconfig-config)
-* [Config](#config)
-  * [`cwd: string`](#cwd-string)
-  * [`errorOnFileNotFound: boolean`](#erroronfilenotfound-boolean)
-  * [`errorOnRefNotFound: boolean`](#erroronrefnotfound-boolean)
-  * [`operationPrefix: string`](#operationprefix-string)
-  * [`params: object`](#params-object)
-  * [`stringify: boolean`](#stringify-boolean)
-* [Operations](#operations)
-  * [`$import`](#import)
-  * [`$merge`](#merge)
-  * [`$remove`](#remove)
-  * [`$replace`](#replace)
-  * [`$concat`](#concat)
-  * [`$append`](#append)
-  * [`$prepend`](#prepend)
-  * [`$insert`](#insert)
-  * [`$match`](#match)
-  * [`$move`](#move)
-  * [`$select`](#select)
-  * [`$repeat`](#repeat)
-  * [`$include`](#include)
-  * [`$expression`](#expression)
-* [Scopes](#scopes)
-* [Command line interface `json-merger`](#command-line-interface-json-merger)
-* [Roadmap](#roadmap)
+## Table of Contents:
 
-API
----
+- [API](#api)
+  - [`.mergeFile(file: string, config?: Config)`](#mergefilefile-string-config-config)
+  - [`.mergeFiles(files: string[], config?: Config)`](#mergefilesfiles-string-config-config)
+  - [`.mergeObject(object: object, config?: Config)`](#mergeobjectobject-object-config-config)
+  - [`.mergeObjects(objects: object[], config?: Config)`](#mergeobjectsobjects-object-config-config)
+  - [`Merger(config?: Config)`](#mergerconfig-config)
+- [Config](#config)
+  - [`cwd: string`](#cwd-string)
+  - [`errorOnFileNotFound: boolean`](#erroronfilenotfound-boolean)
+  - [`errorOnRefNotFound: boolean`](#erroronrefnotfound-boolean)
+  - [`operationPrefix: string`](#operationprefix-string)
+  - [`params: object`](#params-object)
+  - [`stringify: boolean`](#stringify-boolean)
+- [Operations](#operations)
+  - [`$import`](#import)
+  - [`$merge`](#merge)
+  - [`$remove`](#remove)
+  - [`$replace`](#replace)
+  - [`$concat`](#concat)
+  - [`$append`](#append)
+  - [`$prepend`](#prepend)
+  - [`$insert`](#insert)
+  - [`$match`](#match)
+  - [`$move`](#move)
+  - [`$select`](#select)
+  - [`$repeat`](#repeat)
+  - [`$include`](#include)
+  - [`$expression`](#expression)
+- [Scopes](#scopes)
+- [Command line interface `json-merger`](#command-line-interface-json-merger)
+- [Roadmap](#roadmap)
+
+## API
 
 ### `.mergeFile(file: string, config?: Config)`
 
@@ -135,15 +135,15 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 **javascript**
 
 ```javascript
-var jsonMerger = require('json-merger');
+var jsonMerger = require("json-merger");
 
 var object = {
-  "a": {
-    "aa": "some value"
+  a: {
+    aa: "some value",
   },
-  "b": {
-    "$import": "b.json"
-  }
+  b: {
+    $import: "b.json",
+  },
 };
 
 var result = jsonMerger.mergeObject(object);
@@ -178,11 +178,11 @@ var result = jsonMerger.mergeObject(object);
 var jsonMerger = require("json-merger");
 
 var object1 = {
-  a: [1, 1, 1, 1]
+  a: [1, 1, 1, 1],
 };
 
 var object2 = {
-  a: [2, 2]
+  a: [2, 2],
 };
 
 var result = jsonMerger.mergeObjects([object1, object2]);
@@ -197,6 +197,7 @@ var result = jsonMerger.mergeObjects([object1, object2]);
 ```
 
 ### `Merger(config?: Config)`
+
 The actual `Merger` class is also exported. The other exports are just shortcut methods.
 
 Using one `Merger` instance has some performance advantages because it will cache previously loaded and processed files.
@@ -218,41 +219,45 @@ var result2 = merger.mergeFile("a.json");
 merger.clearCaches();
 ```
 
-Config
-------
+## Config
 
 ```typescript
 interface Config {
-    cwd?: string;
-    errorOnFileNotFound?: boolean;
-    errorOnRefNotFound?: boolean;
-    operationPrefix?: string;
-    params?: object;
-    stringify?: boolean | "pretty";
+  cwd?: string;
+  errorOnFileNotFound?: boolean;
+  errorOnRefNotFound?: boolean;
+  operationPrefix?: string;
+  params?: object;
+  stringify?: boolean | "pretty";
 }
 ```
 
 ### `cwd: string`
+
 The current working directory when importing files. Defaults to process.cwd().
 
 ### `errorOnFileNotFound: boolean`
+
 Set this property to `false` to disable throwing errors when an imported file does not exist.
 
 ### `errorOnRefNotFound: boolean`
+
 Set this property to `false` to disable throwing errors when an JSON pointer or JSON path does not exist.
 
 ### `operationPrefix: string`
+
 Use this property to override the prefix to indicate a property is an operation like $import.
-The default prefix is `$` but it is possible to change this to for example `@` to use keywords like `@import`.
+The default prefix is `$`but it is possible to change this to for example`@`to use keywords like`@import`.
 
 ### `params: object`
+
 Object that will be available in [`$expression`](#expression) operations as `$params` variable.
 
 ### `stringify: boolean | "pretty"`
+
 Set this property to `true` to stringify the JSON result. Set the property to `"pretty"` if the output should be pretty printed.
 
-Operations
-----------
+## Operations
 
 ### `$import`
 
@@ -1293,6 +1298,7 @@ Use the `$repeat` operation to repeat a value.
 #### Repeat with `$repeat.to`
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1304,14 +1310,17 @@ Use the `$repeat` operation to repeat a value.
 ```
 
 **result**
+
 ```json
 ["repeat", "repeat", "repeat"]
 ```
 
 #### Repeat with `$repeat.through`
+
 The current value is available on the scope as `$repeat.value` variable.
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1325,6 +1334,7 @@ The current value is available on the scope as `$repeat.value` variable.
 ```
 
 **result**
+
 ```json
 [1, 2, 3, 4]
 ```
@@ -1332,6 +1342,7 @@ The current value is available on the scope as `$repeat.value` variable.
 #### Repeat with `$repeat.step`
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1346,6 +1357,7 @@ The current value is available on the scope as `$repeat.value` variable.
 ```
 
 **result**
+
 ```json
 [0, 5, 10]
 ```
@@ -1353,6 +1365,7 @@ The current value is available on the scope as `$repeat.value` variable.
 #### Repeat with `$repeat.range`
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1365,6 +1378,7 @@ The current value is available on the scope as `$repeat.value` variable.
 ```
 
 **result**
+
 ```json
 [0, -1, -2, 10, 20, 25, 30]
 ```
@@ -1372,6 +1386,7 @@ The current value is available on the scope as `$repeat.value` variable.
 #### Repeat with `$repeat.in` as array
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1384,14 +1399,17 @@ The current value is available on the scope as `$repeat.value` variable.
 ```
 
 **result**
+
 ```json
 ["a", "b"]
 ```
 
 #### Repeat with `$repeat.in` as object
+
 The current key is available on the scope as `$repeat.key` variable.
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1407,17 +1425,20 @@ The current key is available on the scope as `$repeat.key` variable.
 ```
 
 **result**
+
 ```json
 [
-  {"key": "keyA", "value": "valueA"},
-  {"key": "keyB", "value": "valueB"}
+  { "key": "keyA", "value": "valueA" },
+  { "key": "keyB", "value": "valueB" }
 ]
 ```
 
 #### Getting the current index
+
 The current index is available on the scope as `$repeat.index` variable.
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1430,14 +1451,17 @@ The current index is available on the scope as `$repeat.index` variable.
 ```
 
 **result**
+
 ```json
 [0, 1]
 ```
 
 #### Nested repeat
+
 Use `$parent` to get to the parent scope containing the parent `$repeat`.
 
 **operation**
+
 ```json
 {
   "$repeat": {
@@ -1455,6 +1479,7 @@ Use `$parent` to get to the parent scope containing the parent `$repeat`.
 ```
 
 **result**
+
 ```json
 ["0.0", "0.1", "1.0", "1.1"]
 ```
@@ -1616,8 +1641,8 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ```javascript
 var result = jsonMerger.mergeFile("a.json", {
   params: {
-    add: 2
-  }
+    add: 2,
+  },
 });
 ```
 
@@ -1662,12 +1687,12 @@ When in the `$merge.source` scope it is possible to get to the root (object B) s
 
 ```typescript
 interface Scope {
-    $params?: any; // $params properties in current scope
-    $parent?: Scope; // reference to parent scope
-    $repeat?: ScopeRepeat; // $repeat properties in current scope
-    $root: Scope; // reference to root scope
-    $source: any; // reference to the source object
-    $target?: any; // reference to the target object
+  $params?: any; // $params properties in current scope
+  $parent?: Scope; // reference to parent scope
+  $repeat?: ScopeRepeat; // $repeat properties in current scope
+  $root: Scope; // reference to root scope
+  $source: any; // reference to the source object
+  $target?: any; // reference to the target object
 }
 ```
 
@@ -1797,10 +1822,9 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 }
 ```
 
---------
+---
 
-Command line interface `json-merger`
-------------------------------------
+## Command line interface `json-merger`
 
 You can use `json-merger` as a command line tool:
 
@@ -1833,7 +1857,7 @@ Install `json-merger` globally to be able to use the command line interface.
 npm install -g json-merger
 ```
 
-Roadmap
--------
+## Roadmap
+
 - Add configurable file resolvers to import files from different sources.
 - Add configurable (de)serializers to import and export different file formats.

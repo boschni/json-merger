@@ -1,65 +1,69 @@
 const jsonMerger = require("../../dist");
-const {testConfig} = require("../../__helpers__");
+const { testConfig } = require("../../__helpers__");
 
 jest.mock("fs");
 const fs = require("fs");
 
 describe("when config.cwd is set", function () {
+  test("it should try to load files relative to config.cwd", function () {
+    const files = {
+      "test/a.json": {
+        object: "this should be the value of /object",
+      },
+    };
 
-    test("it should try to load files relative to config.cwd", function () {
+    const object = {
+      $import: "a.json",
+    };
 
-        const files = {
-            "test/a.json": {
-                "object": "this should be the value of /object"
-            }
-        };
+    fs.__setJsonMockFiles(files);
 
-        const object = {
-            "$import": "a.json"
-        };
+    const result = jsonMerger.mergeObject(
+      object,
+      testConfig({
+        cwd: "./test",
+      })
+    );
 
-        fs.__setJsonMockFiles(files);
+    expect(result).toMatchSnapshot();
+  });
 
-        const result = jsonMerger.mergeObject(object, testConfig({
-            cwd: "./test"
-        }));
+  test("it should be possible to change it with Merger.setConfig", function () {
+    const files = {
+      "test/a.json": {
+        object: "this should be the value of /object",
+      },
+      "test2/a.json": {
+        object: "this should be the value of /object",
+      },
+    };
 
-        expect(result).toMatchSnapshot();
-    });
+    const object = {
+      $import: "a.json",
+    };
 
-    test("it should be possible to change it with Merger.setConfig", function () {
+    const object2 = {
+      $import: "a.json",
+    };
 
-        const files = {
-            "test/a.json": {
-                "object": "this should be the value of /object"
-            },
-            "test2/a.json": {
-                "object": "this should be the value of /object"
-            }
-        };
+    fs.__setJsonMockFiles(files);
 
-        const object = {
-            "$import": "a.json"
-        };
+    const merger = new jsonMerger.Merger(
+      testConfig({
+        cwd: "./test",
+      })
+    );
 
-        const object2 = {
-            "$import": "a.json"
-        };
+    const result1 = merger.mergeObject(object);
 
-        fs.__setJsonMockFiles(files);
+    merger.setConfig(
+      testConfig({
+        cwd: "./test2",
+      })
+    );
 
-        const merger = new jsonMerger.Merger(testConfig({
-            cwd: "./test"
-        }));
+    const result2 = merger.mergeObject(object2);
 
-        const result1 = merger.mergeObject(object);
-
-        merger.setConfig(testConfig({
-            cwd: "./test2"
-        }));
-
-        const result2 = merger.mergeObject(object2);
-
-        expect([result1, result2]).toMatchSnapshot();
-    });
+    expect([result1, result2]).toMatchSnapshot();
+  });
 });

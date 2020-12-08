@@ -1,25 +1,24 @@
 export default class DataSerializer {
+  private _serializers: DataSerializerInterface[] = [];
 
-    private _serializers: DataSerializerInterface[] = [];
+  serialize(uri: string, data: any, pretty: boolean): any {
+    const serializer = this._serializers.filter((x) => x.match(uri))[0];
 
-    serialize(uri: string, data: any, pretty: boolean): any {
-        const serializer = this._serializers.filter(x => x.match(uri))[0];
-
-        // Check if a loader was found
-        if (!serializer) {
-            throw new Error(`No serializer found for file "${uri}"`);
-        }
-
-        return serializer.serialize(uri, data, pretty);
+    // Check if a loader was found
+    if (!serializer) {
+      throw new Error(`No serializer found for file "${uri}"`);
     }
 
-    addSerializer(serializer: DataSerializerInterface) {
-        this._serializers.push(serializer);
-    }
+    return serializer.serialize(uri, data, pretty);
+  }
 
-    addSerializers(serializers: DataSerializerInterface[]) {
-        serializers.forEach(serializer => this.addSerializer(serializer));
-    }
+  addSerializer(serializer: DataSerializerInterface) {
+    this._serializers.push(serializer);
+  }
+
+  addSerializers(serializers: DataSerializerInterface[]) {
+    serializers.forEach((serializer) => this.addSerializer(serializer));
+  }
 }
 
 /*
@@ -27,6 +26,6 @@ export default class DataSerializer {
  */
 
 export interface DataSerializerInterface {
-    match(uri: string): boolean;
-    serialize(uri: string, data: any, pretty: boolean): string;
+  match(uri: string): boolean;
+  serialize(uri: string, data: any, pretty: boolean): string;
 }

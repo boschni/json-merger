@@ -1,24 +1,22 @@
 const jsonMerger = require("../../dist");
-const {testConfig} = require("../../__helpers__");
+const { testConfig } = require("../../__helpers__");
 
 describe("when merging two objects and a source property has a $comment indicator", function () {
+  test("it should not merge the $comment property", function () {
+    const object1 = {
+      a: {
+        aa: "original",
+      },
+    };
 
-    test("it should not merge the $comment property", function () {
+    const object2 = {
+      a: {
+        $comment: "comment",
+      },
+    };
 
-        const object1 = {
-            "a": {
-                "aa": "original"
-            }
-        };
+    const result = jsonMerger.mergeObjects([object1, object2], testConfig());
 
-        const object2 = {
-            "a": {
-                "$comment": "comment"
-            }
-        };
-
-        const result = jsonMerger.mergeObjects([object1, object2], testConfig());
-
-        expect(result).toMatchSnapshot();
-    });
+    expect(result).toMatchSnapshot();
+  });
 });

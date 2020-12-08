@@ -17,7 +17,8 @@
     "prepublish": "npm run test",
     "pretest": "npm run build",
     "test": "jest",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "prettier": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -68,6 +69,7 @@
     "@types/lodash.range": "^3.2.6",
     "@types/node": "^10.12.18",
     "jest": "^24.9.0",
+    "prettier": "^2.2.1",
     "rimraf": "^3.0.0",
     "typescript": "^3.7.4"
   }

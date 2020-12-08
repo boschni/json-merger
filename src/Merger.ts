@@ -1,7 +1,7 @@
-import Config, {IConfig} from "./Config";
+import Config, { IConfig } from "./Config";
 import DataLoader from "./DataLoader";
 import MergerError from "./MergerError";
-import Processor, {Source, SourceType} from "./Processor";
+import Processor, { Source, SourceType } from "./Processor";
 
 // Import file loaders
 import FileLoader from "./fileLoaders/FileLoader";
@@ -35,110 +35,113 @@ import ReplaceOperation from "./operations/ReplaceOperation";
 import SelectOperation from "./operations/SelectOperation";
 
 export default class Merger {
+  private _config: Config;
+  private _dataDeserializer: DataDeserializer;
+  private _dataLoader: DataLoader;
+  private _dataSerializer: DataSerializer;
+  private _fileLoader: FileLoader;
+  private _processor: Processor;
 
-    private _config: Config;
-    private _dataDeserializer: DataDeserializer;
-    private _dataLoader: DataLoader;
-    private _dataSerializer: DataSerializer;
-    private _fileLoader: FileLoader;
-    private _processor: Processor;
+  constructor(config: Partial<IConfig>) {
+    this._config = new Config(config);
 
-    constructor(config: Partial<IConfig>) {
-        this._config = new Config(config);
+    // Init file loader and add default loaders
+    this._fileLoader = new FileLoader();
+    this._fileLoader.addLoaders([[new FsFileLoader(), 1]]);
 
-        // Init file loader and add default loaders
-        this._fileLoader = new FileLoader();
-        this._fileLoader.addLoaders([
-            [new FsFileLoader(), 1]
-        ]);
+    // Init data deserializer and add default deserializers
+    this._dataDeserializer = new DataDeserializer();
+    this._dataDeserializer.addDeserializers([
+      new JSONDataDeserializer(),
+      new YAMLDataDeserializer(),
+    ]);
 
-        // Init data deserializer and add default deserializers
-        this._dataDeserializer = new DataDeserializer();
-        this._dataDeserializer.addDeserializers([
-            new JSONDataDeserializer(),
-            new YAMLDataDeserializer()
-        ]);
+    // Init data serializer and add default serializers
+    this._dataSerializer = new DataSerializer();
+    this._dataSerializer.addSerializers([new JSONDataSerializer()]);
 
-        // Init data serializer and add default serializers
-        this._dataSerializer = new DataSerializer();
-        this._dataSerializer.addSerializers([
-            new JSONDataSerializer()
-        ]);
+    // Init data loader
+    this._dataLoader = new DataLoader(
+      this._config,
+      this._dataDeserializer,
+      this._fileLoader
+    );
 
-        // Init data loader
-        this._dataLoader = new DataLoader(this._config, this._dataDeserializer, this._fileLoader);
+    // Init processor and add default operations
+    this._processor = new Processor(this._config, this._dataLoader);
+    this._processor.addOperations([
+      new RemoveOperation(this._processor),
+      new ReplaceOperation(this._processor),
+      new ExpressionOperation(this._processor),
+      new ImportOperation(this._processor),
+      new ConcatOperation(this._processor),
+      new AppendOperation(this._processor),
+      new PrependOperation(this._processor),
+      new InsertOperation(this._processor),
+      new SelectOperation(this._processor),
+      new RepeatOperation(this._processor),
+      new MatchOperation(this._processor),
+      new MoveOperation(this._processor),
+      new MergeOperation(this._processor),
+      new IncludeOperation(this._processor),
+      new AfterMergeOperation(this._processor),
+      new AfterMergesOperation(this._processor),
+    ]);
+  }
 
-        // Init processor and add default operations
-        this._processor = new Processor(this._config, this._dataLoader);
-        this._processor.addOperations([
-            new RemoveOperation(this._processor),
-            new ReplaceOperation(this._processor),
-            new ExpressionOperation(this._processor),
-            new ImportOperation(this._processor),
-            new ConcatOperation(this._processor),
-            new AppendOperation(this._processor),
-            new PrependOperation(this._processor),
-            new InsertOperation(this._processor),
-            new SelectOperation(this._processor),
-            new RepeatOperation(this._processor),
-            new MatchOperation(this._processor),
-            new MoveOperation(this._processor),
-            new MergeOperation(this._processor),
-            new IncludeOperation(this._processor),
-            new AfterMergeOperation(this._processor),
-            new AfterMergesOperation(this._processor)
-        ]);
+  mergeObject(object: object, config?: Partial<IConfig>) {
+    const sources = [{ type: SourceType.Object, object } as Source];
+    return this._merge(sources, config);
+  }
+
+  mergeObjects(objects: object[], config?: Partial<IConfig>) {
+    const sources = objects.map(
+      (object) => ({ type: SourceType.Object, object } as Source)
+    );
+    return this._merge(sources, config);
+  }
+
+  mergeFile(uri: string, config?: Partial<IConfig>) {
+    const sources = [{ type: SourceType.Uri, uri } as Source];
+    return this._merge(sources, config);
+  }
+
+  mergeFiles(uris: string[], config?: Partial<IConfig>) {
+    const sources = uris.map(
+      (uri) => ({ type: SourceType.Uri, uri } as Source)
+    );
+    return this._merge(sources, config);
+  }
+
+  setConfig(config?: Partial<IConfig>) {
+    this._config.set(config);
+  }
+
+  clearCaches() {
+    this._dataLoader.clearCache();
+  }
+
+  private _merge(sources: Source[], config?: Partial<IConfig>): any {
+    // Set new config if given
+    if (config !== undefined) {
+      this.setConfig(config);
     }
 
-    mergeObject(object: object, config?: Partial<IConfig>) {
-        const sources = [{type: SourceType.Object, object} as Source];
-        return this._merge(sources, config);
+    // Init result
+    let result: any;
+
+    try {
+      result = this._processor.merge(sources);
+    } catch (e) {
+      throw new MergerError(e, this._processor.currentScope);
     }
 
-    mergeObjects(objects: object[], config?: Partial<IConfig>) {
-        const sources = objects.map(object => ({type: SourceType.Object, object} as Source));
-        return this._merge(sources, config);
+    // Stringify?
+    if (this._config.stringify) {
+      const pretty = this._config.stringify === "pretty";
+      result = this._dataSerializer.serialize(".json", result, pretty);
     }
 
-    mergeFile(uri: string, config?: Partial<IConfig>) {
-        const sources = [{type: SourceType.Uri, uri} as Source];
-        return this._merge(sources, config);
-    }
-
-    mergeFiles(uris: string[], config?: Partial<IConfig>) {
-        const sources = uris.map(uri => ({type: SourceType.Uri, uri} as Source));
-        return this._merge(sources, config);
-    }
-
-    setConfig(config?: Partial<IConfig>) {
-        this._config.set(config);
-    }
-
-    clearCaches() {
-        this._dataLoader.clearCache();
-    }
-
-    private _merge(sources: Source[], config?: Partial<IConfig>): any {
-        // Set new config if given
-        if (config !== undefined) {
-            this.setConfig(config);
-        }
-
-        // Init result
-        let result: any;
-
-        try {
-            result = this._processor.merge(sources);
-        } catch (e) {
-            throw new MergerError(e, this._processor.currentScope);
-        }
-
-        // Stringify?
-        if (this._config.stringify) {
-            const pretty = this._config.stringify === "pretty";
-            result = this._dataSerializer.serialize(".json", result, pretty);
-        }
-
-        return result;
-    }
+    return result;
+  }
 }
