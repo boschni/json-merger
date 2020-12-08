@@ -3,63 +3,65 @@
  */
 
 export class ScopeBase {
+  parent?: ScopeBase;
+  phase: Phase = Phase.Merge;
+  registeredPhases: RegisteredPhasesMap = {};
+  propertyPath: (string | number)[] = [];
+  localVariables: Variables;
+  scopeVariables: Variables = {};
 
-    parent?: ScopeBase;
-    phase: Phase = Phase.Merge;
-    registeredPhases: RegisteredPhasesMap = {};
-    propertyPath: (string | number)[] = [];
-    localVariables: Variables;
-    scopeVariables: Variables = {};
+  constructor(parent?: ScopeBase, localVariables?: Variables, phase?: Phase) {
+    this.localVariables = localVariables;
 
-    constructor(parent?: ScopeBase, localVariables?: Variables, phase?: Phase) {
-        this.localVariables = localVariables;
-
-        if (parent) {
-            this.parent = parent;
-            this.phase = parent.phase;
-            this.scopeVariables = {...this.parent.scopeVariables};
-            this.scopeVariables.$parent = this.parent.scopeVariables;
-        }
-
-        if (this.localVariables) {
-            this.scopeVariables = {...this.scopeVariables, ...this.localVariables};
-        }
-
-        if (phase) {
-            this.deregisterPhase(phase);
-            this.phase = phase;
-        }
+    if (parent) {
+      this.parent = parent;
+      this.phase = parent.phase;
+      this.scopeVariables = { ...this.parent.scopeVariables };
+      this.scopeVariables.$parent = this.parent.scopeVariables;
     }
 
-    enterProperty(propertyName?: string | number) {
-        if (propertyName !== undefined) {
-            this.propertyPath.push(propertyName);
-        }
+    if (this.localVariables) {
+      this.scopeVariables = {
+        ...this.scopeVariables,
+        ...this.localVariables,
+      };
     }
 
-    leaveProperty() {
-        this.propertyPath.pop();
+    if (phase) {
+      this.deregisterPhase(phase);
+      this.phase = phase;
     }
+  }
 
-    registerPhase(phase: Phase) {
-        let scope: ScopeBase = this;
-        while (scope) {
-            scope.registeredPhases[phase] = true;
-            scope = scope.parent;
-        }
+  enterProperty(propertyName?: string | number) {
+    if (propertyName !== undefined) {
+      this.propertyPath.push(propertyName);
     }
+  }
 
-    deregisterPhase(phase: Phase) {
-        let scope: ScopeBase = this;
-        while (scope) {
-            scope.registeredPhases[phase] = false;
-            scope = scope.parent;
-        }
-    }
+  leaveProperty() {
+    this.propertyPath.pop();
+  }
 
-    hasRegisteredPhase(phase: Phase) {
-        return this.registeredPhases[phase] === true;
+  registerPhase(phase: Phase) {
+    let scope: ScopeBase = this;
+    while (scope) {
+      scope.registeredPhases[phase] = true;
+      scope = scope.parent;
     }
+  }
+
+  deregisterPhase(phase: Phase) {
+    let scope: ScopeBase = this;
+    while (scope) {
+      scope.registeredPhases[phase] = false;
+      scope = scope.parent;
+    }
+  }
+
+  hasRegisteredPhase(phase: Phase) {
+    return this.registeredPhases[phase] === true;
+  }
 }
 
 /*
@@ -69,85 +71,124 @@ export class ScopeBase {
 export class GlobalScope extends ScopeBase {}
 
 export class RootMergeObjectScope extends ScopeBase {
-    root: RootMergeObjectScope;
-    source: any;
-    target: any;
-    constructor(source: any, target: any, parent: ScopeBase, localVariables?: Variables, phase?: Phase) {
-        super(parent, localVariables, phase);
-        this.root = this;
-        this.source = source;
-        this.target = target;
-        this.scopeVariables.$root = this.root.scopeVariables;
-        this.scopeVariables.$source = this.source;
-        this.scopeVariables.$target = this.target;
-    }
+  root: RootMergeObjectScope;
+  source: any;
+  target: any;
+  constructor(
+    source: any,
+    target: any,
+    parent: ScopeBase,
+    localVariables?: Variables,
+    phase?: Phase
+  ) {
+    super(parent, localVariables, phase);
+    this.root = this;
+    this.source = source;
+    this.target = target;
+    this.scopeVariables.$root = this.root.scopeVariables;
+    this.scopeVariables.$source = this.source;
+    this.scopeVariables.$target = this.target;
+  }
 }
 
 export class MergeObjectScope extends ScopeBase {
-    root: ScopeWithRoot;
-    source: any;
-    target: any;
-    constructor(source: any, target: any, parent: ScopeWithRoot, localVariables?: Variables, phase?: Phase) {
-        super(parent, localVariables, phase);
-        this.root = parent.root;
-        this.source = source;
-        this.target = target;
-        this.scopeVariables.$root = this.root.scopeVariables;
-        this.scopeVariables.$source = this.source;
-        this.scopeVariables.$target = this.target;
-    }
+  root: ScopeWithRoot;
+  source: any;
+  target: any;
+  constructor(
+    source: any,
+    target: any,
+    parent: ScopeWithRoot,
+    localVariables?: Variables,
+    phase?: Phase
+  ) {
+    super(parent, localVariables, phase);
+    this.root = parent.root;
+    this.source = source;
+    this.target = target;
+    this.scopeVariables.$root = this.root.scopeVariables;
+    this.scopeVariables.$source = this.source;
+    this.scopeVariables.$target = this.target;
+  }
 }
 
 export class RootMergeFileScope extends ScopeBase {
-    root: RootMergeFileScope;
-    source: any;
-    sourceFilePath: string;
-    sourceFileName: string;
-    target: any;
-    constructor(sourceFilePath: string, source: any, target: any, parent: ScopeBase, localVariables?: Variables, phase?: Phase) {
-        super(parent, localVariables, phase);
-        this.root = this;
-        this.source = source;
-        this.target = target;
-        this.sourceFilePath = sourceFilePath;
-        this.sourceFileName = this.sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
-        this.scopeVariables.$root = this.root.scopeVariables;
-        this.scopeVariables.$source = this.source;
-        this.scopeVariables.$target = this.target;
-        this.scopeVariables.$sourceFilePath = this.sourceFilePath;
-        this.scopeVariables.$sourceFileName = this.sourceFileName;
-    }
+  root: RootMergeFileScope;
+  source: any;
+  sourceFilePath: string;
+  sourceFileName: string;
+  target: any;
+  constructor(
+    sourceFilePath: string,
+    source: any,
+    target: any,
+    parent: ScopeBase,
+    localVariables?: Variables,
+    phase?: Phase
+  ) {
+    super(parent, localVariables, phase);
+    this.root = this;
+    this.source = source;
+    this.target = target;
+    this.sourceFilePath = sourceFilePath;
+    this.sourceFileName = this.sourceFilePath
+      .replace(/^.*[\\\/:]/, "")
+      .replace(/\.[^/.]+$/, "");
+    this.scopeVariables.$root = this.root.scopeVariables;
+    this.scopeVariables.$source = this.source;
+    this.scopeVariables.$target = this.target;
+    this.scopeVariables.$sourceFilePath = this.sourceFilePath;
+    this.scopeVariables.$sourceFileName = this.sourceFileName;
+  }
 }
 
 export class MergeFileScope extends ScopeBase {
-    root: MergeFileScope;
-    sourceFileName: string;
-    constructor(public sourceFilePath: string, public source: any, public target: any, parent: ScopeBase, localVariables?: Variables, phase?: Phase) {
-        super(parent, localVariables, phase);
+  root: MergeFileScope;
+  sourceFileName: string;
+  constructor(
+    public sourceFilePath: string,
+    public source: any,
+    public target: any,
+    parent: ScopeBase,
+    localVariables?: Variables,
+    phase?: Phase
+  ) {
+    super(parent, localVariables, phase);
 
-        // Do not inherit the parent scope variables when merging a file
-        this.scopeVariables = {...localVariables};
+    // Do not inherit the parent scope variables when merging a file
+    this.scopeVariables = { ...localVariables };
 
-        this.root = this;
-        this.sourceFileName = this.sourceFilePath.replace(/^.*[\\\/:]/, "").replace(/\.[^/.]+$/, "");
-        this.scopeVariables.$root = this.root.scopeVariables;
-        this.scopeVariables.$source = this.source;
-        this.scopeVariables.$target = this.target;
-        this.scopeVariables.$sourceFilePath = this.sourceFilePath;
-        this.scopeVariables.$sourceFileName = this.sourceFileName;
-    }
+    this.root = this;
+    this.sourceFileName = this.sourceFilePath
+      .replace(/^.*[\\\/:]/, "")
+      .replace(/\.[^/.]+$/, "");
+    this.scopeVariables.$root = this.root.scopeVariables;
+    this.scopeVariables.$source = this.source;
+    this.scopeVariables.$target = this.target;
+    this.scopeVariables.$sourceFilePath = this.sourceFilePath;
+    this.scopeVariables.$sourceFileName = this.sourceFileName;
+  }
 }
 
 export class Scope extends ScopeBase {
-    root: ScopeWithRoot;
-    constructor(parent: ScopeWithRoot, localVariables?: Variables, phase?: Phase) {
-        super(parent, localVariables, phase);
-        this.root = parent.root;
-        this.scopeVariables.$root = this.root.scopeVariables;
-    }
+  root: ScopeWithRoot;
+  constructor(
+    parent: ScopeWithRoot,
+    localVariables?: Variables,
+    phase?: Phase
+  ) {
+    super(parent, localVariables, phase);
+    this.root = parent.root;
+    this.scopeVariables.$root = this.root.scopeVariables;
+  }
 }
 
-export type ScopeWithRoot = RootMergeFileScope | RootMergeObjectScope | MergeFileScope | MergeObjectScope | Scope;
+export type ScopeWithRoot =
+  | RootMergeFileScope
+  | RootMergeObjectScope
+  | MergeFileScope
+  | MergeObjectScope
+  | Scope;
 
 export type AnyScope = GlobalScope | ScopeWithRoot;
 
@@ -156,15 +197,15 @@ export type AnyScope = GlobalScope | ScopeWithRoot;
  */
 
 export const enum Phase {
-    AfterMerge = "afterMerge",
-    AfterMerges = "afterMerges",
-    Merge = "merge"
+  AfterMerge = "afterMerge",
+  AfterMerges = "afterMerges",
+  Merge = "merge",
 }
 
 export interface RegisteredPhasesMap {
-    [phase: string]: boolean;
+  [phase: string]: boolean;
 }
 
 export interface Variables {
-    [name: string]: any;
+  [name: string]: any;
 }
