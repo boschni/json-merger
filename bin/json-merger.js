@@ -16,6 +16,10 @@ program
     "the operation prefix. Defaults to $"
   )
   .option(
+    "-am, --array-merge [operation]",
+    "the default array merge operation. Defaults to combine"
+  )
+  .option(
     "--error-on-file-not-found",
     "throw an error if a file is not found. Defaults to true"
   )
@@ -31,6 +35,7 @@ var config = {
   stringify: program.pretty ? "pretty" : true,
   errorOnFileNotFound: program.errorOnFileNotFound,
   errorOnRefNotFound: program.errorOnRefNotFound,
+  defaultArrayMergeOperation: program.arrayMerge,
 };
 
 // merge the file(s)

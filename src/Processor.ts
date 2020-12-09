@@ -338,9 +338,23 @@ export default class Processor {
     targetProperty?: any
   ) {
     this.currentScope.enterProperty(sourcePropertyName);
-    const result = this.processSource(sourceProperty, targetProperty);
+    const modifiedSourceProperty = this.addDefaultArrayMergeStrategy(
+      sourceProperty,
+      targetProperty
+    );
+    const result = this.processSource(modifiedSourceProperty, targetProperty);
     this.currentScope.leaveProperty();
     return result;
+  }
+
+  addDefaultArrayMergeStrategy(sourceProperty: any, targetProperty: any): any {
+    const isBothArray =
+      Array.isArray(sourceProperty) && Array.isArray(targetProperty);
+    if (isBothArray) {
+      const keyword = this.getKeyword(this._config.defaultArrayMergeOperation);
+      return { [keyword]: sourceProperty };
+    }
+    return sourceProperty;
   }
 
   processSource(source: any, target?: any) {

@@ -17,12 +17,14 @@ Merge JSON (or YAML) files and objects with operations like $import $remove $rep
   - [`operationPrefix: string`](#operationprefix-string)
   - [`params: object`](#params-object)
   - [`stringify: boolean`](#stringify-boolean)
+  - [`defaultArrayMergeOperation: "combine" | "replace" | "concat"`](#default-array-merge-operation)
 - [Operations](#operations)
   - [`$import`](#import)
   - [`$merge`](#merge)
   - [`$remove`](#remove)
   - [`$replace`](#replace)
   - [`$concat`](#concat)
+  - [`$combine`](#combine)
   - [`$append`](#append)
   - [`$prepend`](#prepend)
   - [`$insert`](#insert)
@@ -229,6 +231,7 @@ interface Config {
   operationPrefix?: string;
   params?: object;
   stringify?: boolean | "pretty";
+  defaultArrayMergeOperation: "combine" | "replace" | "concat";
 }
 ```
 
@@ -256,6 +259,15 @@ Object that will be available in [`$expression`](#expression) operations as `$pa
 ### `stringify: boolean | "pretty"`
 
 Set this property to `true` to stringify the JSON result. Set the property to `"pretty"` if the output should be pretty printed.
+
+### `defaultArrayMergeOperation: "combine" | "replace" | "concat"`
+
+Set this property to override default merge operation.
+Default value is set to [`"concat"`](#concat). Possible values are:
+
+- [`"replace"`](#replace)
+- [`"concat"`](#concat)
+- [`"combine"`](#combine)
 
 ## Operations
 
@@ -631,6 +643,42 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 ```json
 {
   "someArray": [1, 2]
+}
+```
+
+### `$combine`
+
+Use the `$combine` operation to combine two arrays.
+
+**javascript**
+
+```javascript
+var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
+```
+
+**a.json**
+
+```json
+{
+  "someArray": [1, 2, 3]
+}
+```
+
+**b.json**
+
+```json
+{
+  "someArray": {
+    "$combine": [3, 3]
+  }
+}
+```
+
+**result**
+
+```json
+{
+  "someArray": [3, 3, 3]
 }
 ```
 
@@ -1834,13 +1882,14 @@ You can use `json-merger` as a command line tool:
 
   Options:
 
-    -V, --version                    output the version number
-    -p, --pretty                     pretty-print the output json
-    -o, --output [file]              the output file. Defaults to stdout
-    -op, --operation-prefix [prefix] the operation prefix. Defaults to $
-    --error-on-file-not-found        throw an error if a file is not found. Defaults to true
-    --error-on-ref-not-found         throw an error if a JSON pointer or JSON path is not found. Defaults to true
-    -h, --help                       output usage information
+    -V, --version                       output the version number
+    -p, --pretty                        pretty-print the output json
+    -o, --output [file]                 the output file. Defaults to stdout
+    -op, --operation-prefix [prefix]    the operation prefix. Defaults to $
+    -am, --array-merge [operation]      the default array merge operation. Defaults to combine
+    --error-on-file-not-found           throw an error if a file is not found. Defaults to true
+    --error-on-ref-not-found            throw an error if a JSON pointer or JSON path is not found. Defaults to true
+    -h, --help                          output usage information
 ```
 
 Usage:

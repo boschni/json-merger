@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when config.defaultArrayMergeOperation is not set combine should be used 1`] = `
+"{
+	\\"a\\": [
+		3,
+		3,
+		3
+	]
+}"
+`;
+
+exports[`when config.defaultArrayMergeOperation is set to a unsupported value, combine should be used 1`] = `
+"{
+	\\"a\\": [
+		3,
+		3,
+		3
+	]
+}"
+`;
+
+exports[`when config.defaultArrayMergeOperation is set to a unsupported value, combine should be used 2`] = `
+"{
+	\\"a\\": [
+		3,
+		3,
+		3
+	]
+}"
+`;
+
+exports[`when config.defaultArrayMergeOperation is set to concat, concat should be used 1`] = `
+"{
+	\\"a\\": [
+		1,
+		2,
+		3,
+		3,
+		3
+	]
+}"
+`;
+
+exports[`when config.defaultArrayMergeOperation is set to replace, replace should be used 1`] = `
+"{
+	\\"a\\": [
+		3,
+		3
+	]
+}"
+`;
