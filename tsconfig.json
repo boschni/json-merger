@@ -1,16 +1,16 @@
 {
-    "compilerOptions": {
-        "declaration": true,
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "outDir": "./dist",
-        "preserveConstEnums": true,
-        "removeComments": true,
-        "sourceMap": true,
-        "target": "ES5"
-    },
-    "include": ["./src/index.ts", "./src/modules.d.ts"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./dist",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "ES5"
+  },
+  "include": ["./src/index.ts", "./src/modules.d.ts"],
+  "exclude": ["node_modules"]
 }
