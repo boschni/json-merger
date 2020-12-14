@@ -3,6 +3,7 @@ const ArrayMergeOperations: ArrayMergeOperation[] = [
   "replace",
   "concat",
 ];
+
 export type ArrayMergeOperation = "combine" | "replace" | "concat";
 
 export default class Config implements IConfig {
@@ -30,11 +31,10 @@ export default class Config implements IConfig {
       config.stringify === true || config.stringify === "pretty"
         ? config.stringify
         : false;
-    this.defaultArrayMergeOperation = ArrayMergeOperations.includes(
-      config.defaultArrayMergeOperation
-    )
-      ? config.defaultArrayMergeOperation
-      : "combine";
+    this.defaultArrayMergeOperation =
+      ArrayMergeOperations.indexOf(config.defaultArrayMergeOperation) !== -1
+        ? config.defaultArrayMergeOperation
+        : "combine";
   }
 }
 
