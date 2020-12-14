@@ -1,3 +1,10 @@
+const ArrayMergeOperations: ArrayMergeOperation[] = [
+  "combine",
+  "replace",
+  "concat",
+];
+export type ArrayMergeOperation = "combine" | "replace" | "concat";
+
 export default class Config implements IConfig {
   cwd: string;
   errorOnFileNotFound: boolean;
@@ -5,6 +12,7 @@ export default class Config implements IConfig {
   operationPrefix: string;
   params: any;
   stringify: boolean | "pretty";
+  defaultArrayMergeOperation: ArrayMergeOperation;
 
   constructor(config?: Partial<IConfig>) {
     this.set(config);
@@ -22,6 +30,11 @@ export default class Config implements IConfig {
       config.stringify === true || config.stringify === "pretty"
         ? config.stringify
         : false;
+    this.defaultArrayMergeOperation = ArrayMergeOperations.includes(
+      config.defaultArrayMergeOperation
+    )
+      ? config.defaultArrayMergeOperation
+      : "combine";
   }
 }
 
@@ -32,4 +45,5 @@ export interface IConfig {
   operationPrefix: string; // the prefix to indicate a property is an operation like $import.
   params: any; // object containing parameters available as $params in $expression operations.
   stringify: boolean | "pretty"; // should the output be stringified?
+  defaultArrayMergeOperation: ArrayMergeOperation; // default array operation which will be applied to merge arrays.
 }
