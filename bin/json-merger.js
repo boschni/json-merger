@@ -16,7 +16,7 @@ program
     "the operation prefix. Defaults to $"
   )
   .option(
-    "-am, --array-merge [operation]",
+    "-am, --default-array-merge-operation [operation]",
     "the default array merge operation. Defaults to combine"
   )
   .option(
@@ -35,7 +35,7 @@ var config = {
   stringify: program.pretty ? "pretty" : true,
   errorOnFileNotFound: program.errorOnFileNotFound,
   errorOnRefNotFound: program.errorOnRefNotFound,
-  defaultArrayMergeOperation: program.arrayMerge,
+  defaultArrayMergeOperation: program.defaultArrayMergeOperation,
 };
 
 // merge the file(s)

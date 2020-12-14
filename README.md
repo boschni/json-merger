@@ -263,7 +263,7 @@ Set this property to `true` to stringify the JSON result. Set the property to `"
 ### `defaultArrayMergeOperation: "combine" | "replace" | "concat"`
 
 Set this property to override default merge operation.
-Default value is set to [`"concat"`](#concat). Possible values are:
+Default value is set to [`"combine"`](#combine). Possible values are:
 
 - [`"replace"`](#replace)
 - [`"concat"`](#concat)
@@ -1886,7 +1886,7 @@ You can use `json-merger` as a command line tool:
     -p, --pretty                        pretty-print the output json
     -o, --output [file]                 the output file. Defaults to stdout
     -op, --operation-prefix [prefix]    the operation prefix. Defaults to $
-    -am, --array-merge [operation]      the default array merge operation. Defaults to combine
+    -am, --default-array-merge-operation [operation]      the default array merge operation. Defaults to combine
     --error-on-file-not-found           throw an error if a file is not found. Defaults to true
     --error-on-ref-not-found            throw an error if a JSON pointer or JSON path is not found. Defaults to true
     -h, --help                          output usage information
