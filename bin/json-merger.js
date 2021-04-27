@@ -29,21 +29,23 @@ program
   )
   .parse(process.argv);
 
+var options = program.opts();
+
 // construct config
 var config = {
-  operationPrefix: program.operationPrefix,
-  stringify: program.pretty ? "pretty" : true,
-  errorOnFileNotFound: program.errorOnFileNotFound,
-  errorOnRefNotFound: program.errorOnRefNotFound,
-  defaultArrayMergeOperation: program.defaultArrayMergeOperation,
+  operationPrefix: options.operationPrefix,
+  stringify: options.pretty ? "pretty" : true,
+  errorOnFileNotFound: options.errorOnFileNotFound,
+  errorOnRefNotFound: options.errorOnRefNotFound,
+  defaultArrayMergeOperation: options.defaultArrayMergeOperation,
 };
 
 // merge the file(s)
 var output = jsonMerger.mergeFiles(program.args, config);
 
 // write to file or stdout
-if (program.output) {
-  fs.outputFileSync(program.output, output);
+if (options.output) {
+  fs.outputFileSync(options.output, output);
 } else {
   console.log(output);
 }

@@ -12,7 +12,7 @@ export default class YAMLDataDeserializer implements DataDeserializerInterface {
   }
 
   deserialize(uri: string, content: string): any {
-    return yaml.safeLoad(content, {
+    return yaml.load(content, {
       filename: uri,
       schema: yaml.JSON_SCHEMA,
     });

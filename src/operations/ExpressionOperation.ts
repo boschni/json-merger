@@ -1,4 +1,4 @@
-import * as safeEval from "safe-eval";
+import { VM } from "vm2";
 import Operation from "./Operation";
 
 export default class ExpressionOperation extends Operation {
@@ -34,16 +34,19 @@ export default class ExpressionOperation extends Operation {
       return;
     }
 
-    // Create eval context
-    const evalContext = {
+    // Define global object VM
+    const sandbox = {
       ...this._processor.currentScope.scopeVariables,
       $sourceProperty: keywordValue,
       $targetProperty: target,
       $input: input,
     };
 
+    // Create VM
+    const vm = new VM({ sandbox });
+
     // Evaluate the expression
-    return safeEval(expression, evalContext);
+    return vm.run(expression);
   }
 }
 
