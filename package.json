@@ -60,7 +60,7 @@
     "commander": "^7.2.0",
     "fs-extra": "^9.1.0",
     "js-yaml": "^4.1.0",
-    "json-ptr": "^2.0.0",
+    "json-ptr": "^3.0.0",
     "jsonpath": "^1.1.1",
     "lodash.range": "^3.2.0",
     "vm2": "^3.9.3"
