@@ -81,7 +81,9 @@ describe("Merger()", function () {
       },
       "b.json": {
         a: {
-          $expression: "$targetProperty + 10",
+          $replace: {
+            with: 10,
+          },
         },
       },
     };

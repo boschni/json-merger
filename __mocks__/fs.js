@@ -26,10 +26,7 @@ fs.__setJsonMockFiles = function (newMockFiles, stringify) {
 };
 
 fs.readFileSync = jest.fn(function (fileName) {
-  if (mockFiles !== undefined) {
-    if (mockFiles[fileName] === undefined) {
-      throw new Error("readFileSyncMock: file does not exist");
-    }
+  if (mockFiles !== undefined && mockFiles[fileName] !== undefined) {
     return mockFiles[fileName];
   } else {
     return fsActual.readFileSync(fileName, "utf8");
