@@ -38,7 +38,7 @@ describe("when merging two objects and a source property has an $expression oper
         `An error occurred while processing the property "$expression"`
       );
       expect(e.message).toMatch(`at #/a/$expression`);
-      expect(e.message).toMatch(`Invalid or unexpected token`);
+      expect(e.message).toMatch(`Unexpected character '@'`);
     }
   });
 
