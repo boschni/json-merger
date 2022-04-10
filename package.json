@@ -14,7 +14,7 @@
     "build": "tsc",
     "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
-    "prepublish": "npm run test",
+    "prepare": "npm run test",
     "pretest": "npm run build",
     "test": "jest && npm run test:bin:json && npm run test:bin:yaml",
     "test:bin:json": "./bin/json-merger.js ./__tests__/bin.json",
