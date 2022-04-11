@@ -20,11 +20,11 @@ program
     "the default array merge operation. Defaults to combine"
   )
   .option(
-    "--error-on-file-not-found",
+    "--error-on-file-not-found [value]",
     "throw an error if a file is not found. Defaults to true"
   )
   .option(
-    "--error-on-ref-not-found",
+    "--error-on-ref-not-found [value]",
     "throw an error if a JSON pointer or JSON path is not found. Defaults to true"
   )
   .parse(process.argv);
@@ -35,8 +35,8 @@ var options = program.opts();
 var config = {
   operationPrefix: options.operationPrefix,
   stringify: options.pretty ? "pretty" : true,
-  errorOnFileNotFound: options.errorOnFileNotFound,
-  errorOnRefNotFound: options.errorOnRefNotFound,
+  errorOnFileNotFound: options.errorOnFileNotFound !== "false",
+  errorOnRefNotFound: options.errorOnRefNotFound !== "false",
   defaultArrayMergeOperation: options.defaultArrayMergeOperation,
 };
 
