@@ -1,6 +1,6 @@
 {
   "name": "json-merger",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "Merge JSON (or YAML) files and objects with indicators like $import $remove $replace $merge etc",
   "main": "dist/index.js",
   "bin": {
@@ -60,7 +60,7 @@
     "commander": "^9.1.0",
     "fs-extra": "^10.0.1",
     "js-yaml": "^4.1.0",
-    "json-ptr": "^3.1.0",
+    "json-ptr": "^3.1.1",
     "jsonpath": "^1.1.1",
     "lodash.range": "^3.2.0",
     "vm2": "^3.9.17"
