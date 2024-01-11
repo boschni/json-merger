@@ -62,8 +62,7 @@
     "js-yaml": "^4.1.0",
     "json-ptr": "^3.1.1",
     "jsonpath": "^1.1.1",
-    "lodash.range": "^3.2.0",
-    "vm2": "^3.9.17"
+    "lodash.range": "^3.2.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",

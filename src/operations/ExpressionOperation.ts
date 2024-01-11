@@ -1,4 +1,4 @@
-import { VM } from "vm2";
+import { Script } from "vm";
 import Operation from "./Operation";
 
 export default class ExpressionOperation extends Operation {
@@ -43,10 +43,10 @@ export default class ExpressionOperation extends Operation {
     };
 
     // Create VM
-    const vm = new VM({ sandbox });
+    const script = new Script(expression);
 
     // Evaluate the expression
-    return vm.run(expression);
+    return script.runInNewContext(sandbox);
   }
 }
 
@@ -57,6 +57,6 @@ export default class ExpressionOperation extends Operation {
 export type ExpressionKeywordValue =
   | string // the expression
   | {
-      expression: string; // the expression
-      input?: any; // value of the $input variable
-    };
+    expression: string; // the expression
+    input?: any; // value of the $input variable
+  };
