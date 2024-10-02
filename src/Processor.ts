@@ -1,5 +1,5 @@
-import * as path from "path";
-import * as jsonpath from "jsonpath";
+import path from "path";
+import jsonpath from "jsonpath";
 import { JsonPointer } from "json-ptr";
 import { isObject } from "./utils/types";
 import {
