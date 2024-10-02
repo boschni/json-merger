@@ -44,8 +44,9 @@
     "schema",
     "select"
   ],
-  "author": "Niek Bosch <just.niek@gmail.com>",
+  "author": "Rob Walker <rnwalker7@gmail.com>",
   "contributors": [
+    "Niek Bosch <just.niek@gmail.com>",
     "Andreas Louv <andreas@louv.dk>"
   ],
   "license": "MIT",
