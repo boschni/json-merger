@@ -10,7 +10,7 @@
     "preserveConstEnums": true,
     "removeComments": true,
     "sourceMap": true,
-    "target": "ES5",
+    "target": "ES6",
     "esModuleInterop": true
   },
   "include": ["./src/index.ts"]

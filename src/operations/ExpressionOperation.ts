@@ -45,11 +45,10 @@ export default class ExpressionOperation extends Operation {
     // Create VM
     const context = VM.createContext(sandbox);
 
+    // Evaluate the expression
     const code = 'eval("' + expression + '");';
-
     const retValue = VM.runInContext(code, context);
 
-    // Evaluate the expression
     return retValue;
   }
 }
