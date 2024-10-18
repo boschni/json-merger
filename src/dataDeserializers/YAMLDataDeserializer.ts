@@ -1,4 +1,4 @@
-import * as yaml from "js-yaml";
+import yaml from "js-yaml";
 import { DataDeserializerInterface } from "./DataDeserializer";
 
 const yamlFileRegex = /\.ya?ml$/;

@@ -8,6 +8,7 @@ export type ArrayMergeOperation = "combine" | "replace" | "concat";
 
 export default class Config implements IConfig {
   cwd: string;
+  enableExpressionOperation: boolean;
   errorOnFileNotFound: boolean;
   errorOnRefNotFound: boolean;
   operationPrefix: string;
@@ -24,6 +25,7 @@ export default class Config implements IConfig {
     this.cwd = typeof config.cwd === "string" ? config.cwd : "";
     this.errorOnFileNotFound = config.errorOnFileNotFound !== false;
     this.errorOnRefNotFound = config.errorOnRefNotFound !== false;
+    this.enableExpressionOperation = config.enableExpressionOperation === true;
     this.operationPrefix =
       typeof config.operationPrefix === "string" ? config.operationPrefix : "$";
     this.params = config.params;
@@ -39,11 +41,36 @@ export default class Config implements IConfig {
 }
 
 export interface IConfig {
-  cwd: string; // the current working directory in which to search. Defaults to process.cwd().
-  errorOnFileNotFound: boolean; // should we throw an error if a file does not exist?
-  errorOnRefNotFound: boolean; // should we throw an error if a JSON pointer or JSON path returns undefined?
-  operationPrefix: string; // the prefix to indicate a property is an operation like $import.
-  params: any; // object containing parameters available as $params in $expression operations.
-  stringify: boolean | "pretty"; // should the output be stringified?
-  defaultArrayMergeOperation: ArrayMergeOperation; // default array operation which will be applied to merge arrays.
+  /**
+   * The current working directory in which to search. Defaults to process.cwd().
+   */
+  cwd: string;
+  /**
+   * Indicates if an error should be throw if a file does not exist.
+   */
+  errorOnFileNotFound: boolean;
+  /**
+   * Indicates if an error should be throw if a JSON pointer or JSON path returns undefined.
+   */
+  errorOnRefNotFound: boolean;
+  /**
+   * The prefix to indicate a property is an operation like $import.
+   */
+  operationPrefix: string;
+  /**
+   * Enables the expression operation. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false",
+   */
+  enableExpressionOperation: boolean;
+  /**
+   * Object containing parameters available as $params in $expression operations.
+   */
+  params: any;
+  /**
+   * Indicates if the output should be stringified.
+   */
+  stringify: boolean | "pretty";
+  /**
+   * Default array operation which will be applied to merge arrays.
+   */
+  defaultArrayMergeOperation: ArrayMergeOperation;
 }

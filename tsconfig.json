@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "esModuleInterop": true,
     "module": "commonjs",
     "noImplicitAny": true,
     "noUnusedLocals": true,
@@ -9,8 +10,9 @@
     "outDir": "./dist",
     "preserveConstEnums": true,
     "removeComments": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ES5"
+    "target": "ES6"
   },
   "include": ["./src/index.ts"]
 }

@@ -17,6 +17,7 @@ import DataSerializer from "./dataSerializers/DataSerializer";
 import JSONDataSerializer from "./dataSerializers/JSONDataSerializer";
 
 // Import operations
+import type Operation from "./operations/Operation";
 import AfterMergeOperation from "./operations/AfterMergeOperation";
 import AfterMergesOperation from "./operations/AfterMergesOperation";
 import AppendOperation from "./operations/AppendOperation";
@@ -70,10 +71,16 @@ export default class Merger {
 
     // Init processor and add default operations
     this._processor = new Processor(this._config, this._dataLoader);
-    this._processor.addOperations([
+
+    const operations: Operation[] = [];
+
+    if (this._config.enableExpressionOperation) {
+      operations.push(new ExpressionOperation(this._processor));
+    }
+
+    operations.push(
       new RemoveOperation(this._processor),
       new ReplaceOperation(this._processor),
-      new ExpressionOperation(this._processor),
       new ImportOperation(this._processor),
       new CombineOperation(this._processor),
       new ConcatOperation(this._processor),
@@ -87,8 +94,10 @@ export default class Merger {
       new MergeOperation(this._processor),
       new IncludeOperation(this._processor),
       new AfterMergeOperation(this._processor),
-      new AfterMergesOperation(this._processor),
-    ]);
+      new AfterMergesOperation(this._processor)
+    );
+
+    this._processor.addOperations(operations);
   }
 
   mergeObject(object: object, config?: Partial<IConfig>) {

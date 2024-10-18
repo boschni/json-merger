@@ -1,4 +1,4 @@
-import * as jsonpath from "jsonpath";
+import jsonpath from "jsonpath";
 import { JsonPointer } from "json-ptr";
 import Operation from "./Operation";
 

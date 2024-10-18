@@ -12,6 +12,7 @@ Merge JSON (or YAML) files and objects with operations like $import $remove $rep
   - [`Merger(config?: Config)`](#mergerconfig-config)
 - [Config](#config)
   - [`cwd: string`](#cwd-string)
+  - [`enableExpressionOperation: boolean`](#enableexpressionoperation-boolean)
   - [`errorOnFileNotFound: boolean`](#erroronfilenotfound-boolean)
   - [`errorOnRefNotFound: boolean`](#erroronrefnotfound-boolean)
   - [`operationPrefix: string`](#operationprefix-string)
@@ -36,6 +37,7 @@ Merge JSON (or YAML) files and objects with operations like $import $remove $rep
   - [`$expression`](#expression)
 - [Scopes](#scopes)
 - [Command line interface `json-merger`](#command-line-interface-json-merger)
+- [Changelog](#changelog)
 - [Roadmap](#roadmap)
 
 ## API
@@ -226,6 +228,7 @@ merger.clearCaches();
 ```typescript
 interface Config {
   cwd?: string;
+  enableExpressionOperation?: boolean;
   errorOnFileNotFound?: boolean;
   errorOnRefNotFound?: boolean;
   operationPrefix?: string;
@@ -238,6 +241,12 @@ interface Config {
 ### `cwd: string`
 
 The current working directory when importing files. Defaults to process.cwd().
+
+### `enableExpressionOperation: boolean`
+
+Set this property to `true` to enable the $expression operation.
+
+IMPORTANT: Do not use it to run untrusted code because it uses the node:vm module.
 
 ### `errorOnFileNotFound: boolean`
 
@@ -1583,6 +1592,9 @@ var result = jsonMerger.mergeFiles(["a.json", "b.json"]);
 Use the `$expression` operation to calculate a value with the help of a JavaScript expression.
 The expression has access to the standard built-in JavaScript objects, the current [scope](#scopes) and optionally an `$input` variable.
 
+By default this operation is disabled because it allows executing untrusted code which could introduce a security risk.
+It can be enabled by setting the [`enableExpressionOperation`](#enableexpressionoperation-boolean) option.
+
 #### Calculate a value
 
 **javascript**
@@ -1882,14 +1894,15 @@ You can use `json-merger` as a command line tool:
 
   Options:
 
-    -V, --version                       output the version number
-    -p, --pretty                        pretty-print the output json
-    -o, --output [file]                 the output file. Defaults to stdout
-    -op, --operation-prefix [prefix]    the operation prefix. Defaults to $
-    -am, --default-array-merge-operation [operation]      the default array merge operation. Defaults to combine
-    --error-on-file-not-found           throw an error if a file is not found. Defaults to true
-    --error-on-ref-not-found            throw an error if a JSON pointer or JSON path is not found. Defaults to true
-    -h, --help                          output usage information
+    -V, --version                                     output the version number
+    -p, --pretty                                      pretty-print the output json
+    -o, --output [file]                               the output file. Defaults to stdout
+    -op, --operation-prefix [prefix]                  the operation prefix. Defaults to $
+    -am, --default-array-merge-operation [operation]  the default array merge operation. Defaults to combine
+    --enable-expression-operation [value]             enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false
+    --error-on-file-not-found [value]                 throw an error if a file is not found. Defaults to true
+    --error-on-ref-not-found [value]                  throw an error if a JSON pointer or JSON path is not found. Defaults to true
+    -h, --help                                        output usage information
 ```
 
 Usage:
@@ -1905,6 +1918,16 @@ Install `json-merger` globally to be able to use the command line interface.
 ```sh
 npm install -g json-merger
 ```
+
+## Changelog
+
+### 2.0.0
+
+- Changed emitted JavaScript target to ES6.
+- The `$expression` operation is using the `node:vm` package instead of the deprecated `vm2` package.
+- The `$expression` operation is disabled by default because it allows executing untrusted code.
+- Added the `enableExpressionOperation` configuration option to enable the `$expression` operation.
+- Added the `--enable-expression-operation` CLI option to enable the `$expression` operation.
 
 ## Roadmap
 

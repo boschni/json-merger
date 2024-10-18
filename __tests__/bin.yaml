@@ -1,2 +1,4 @@
 "a":
   "@replace": 10
+"b":
+  "$expression": "expressions not enabled"
