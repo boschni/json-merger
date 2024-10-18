@@ -2,24 +2,24 @@
 
 exports[`when merging two files and a source property has a $afterMerge indicator and $import is used it should handle the phases correctly 1`] = `
 "{
-	\\"a\\": {
-		\\"b\\": \\"This should be the value of /a/b\\",
-		\\"bb\\": \\"This should be the value of /a/b\\"
+	"a": {
+		"b": "This should be the value of /a/b",
+		"bb": "This should be the value of /a/b"
 	}
 }"
 `;
 
 exports[`when merging two files and a source property has a $afterMerge indicator it should process the $afterMerge property after processing the current source 1`] = `
 "{
-	\\"a\\": \\"This should be the value of a\\",
-	\\"aa\\": \\"some value\\"
+	"a": "This should be the value of a",
+	"aa": "some value"
 }"
 `;
 
 exports[`when merging two objects and a source property has a $afterMerge indicator it should process the $afterMerge property after processing the current source 1`] = `
 "{
-	\\"a\\": \\"This should be the value of /a\\",
-	\\"a2\\": \\"This should be the value of /a\\",
-	\\"b\\": \\"some value\\"
+	"a": "This should be the value of /a",
+	"a2": "This should be the value of /a",
+	"b": "some value"
 }"
 `;

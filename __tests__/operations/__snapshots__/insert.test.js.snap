@@ -2,24 +2,24 @@
 
 exports[`$insert on a non array item should do nothing and be stripped 1`] = `
 "{
-	\\"1a\\": {
-		\\"1aa\\": 1
+	"1a": {
+		"1aa": 1
 	},
-	\\"2b\\": {}
+	"2b": {}
 }"
 `;
 
 exports[`when merging two arrays and a source array item has an $insert indicator and $insert.index is set to '-' it should append the $insert.value to the target array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa1\\": \\"string\\"
+			"aa1": "string"
 		},
 		{
-			\\"aa2\\": \\"string\\"
+			"aa2": "string"
 		},
 		{
-			\\"bb\\": \\"append\\"
+			"bb": "append"
 		}
 	]
 }"
@@ -27,15 +27,15 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and $insert.index is set to -1 it should insert the $insert.value to the target array before the last item 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa1\\": \\"string\\"
+			"aa1": "string"
 		},
 		{
-			\\"bb\\": \\"insert before last\\"
+			"bb": "insert before last"
 		},
 		{
-			\\"aa2\\": \\"string\\"
+			"aa2": "string"
 		}
 	]
 }"
@@ -43,12 +43,12 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and $insert.index is set to 0 it should prepend the $insert.value to the target array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"bb\\": \\"prepend\\"
+			"bb": "prepend"
 		},
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		}
 	]
 }"
@@ -56,18 +56,18 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and $insert.index is set to 1 and an other item also has $insert.index set to 1 it should insert the last $insert.value to the target array at index 1 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa1\\": \\"string\\"
+			"aa1": "string"
 		},
 		{
-			\\"cc\\": \\"insert at index 1\\"
+			"cc": "insert at index 1"
 		},
 		{
-			\\"bb\\": \\"insert at index 2\\"
+			"bb": "insert at index 2"
 		},
 		{
-			\\"aa2\\": \\"string\\"
+			"aa2": "string"
 		}
 	]
 }"
@@ -75,15 +75,15 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and $insert.index is set to 1 it should insert the $insert.value to the target array at index 1 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa1\\": \\"string\\"
+			"aa1": "string"
 		},
 		{
-			\\"bb\\": \\"insert at index 1\\"
+			"bb": "insert at index 1"
 		},
 		{
-			\\"aa2\\": \\"string\\"
+			"aa2": "string"
 		}
 	]
 }"
@@ -91,15 +91,15 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and $insert.index is set to a value higher than the target array length it should append $insert.value to the target array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa1\\": \\"string\\"
+			"aa1": "string"
 		},
 		{
-			\\"aa2\\": \\"string\\"
+			"aa2": "string"
 		},
 		{
-			\\"bb\\": \\"append\\"
+			"bb": "append"
 		}
 	]
 }"
@@ -107,15 +107,15 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and the source array also has an $append operation then the $insert operation trumps the $append operation 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		},
 		{
-			\\"bb\\": \\"append\\"
+			"bb": "append"
 		},
 		{
-			\\"cc\\": \\"insert\\"
+			"cc": "insert"
 		}
 	]
 }"
@@ -123,15 +123,15 @@ exports[`when merging two arrays and a source array item has an $insert indicato
 
 exports[`when merging two arrays and a source array item has an $insert indicator and the source array also has an $prepend operation then the $insert operation trumps the $prepend operation 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"cc\\": \\"insert\\"
+			"cc": "insert"
 		},
 		{
-			\\"bb\\": \\"prepend\\"
+			"bb": "prepend"
 		},
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		}
 	]
 }"

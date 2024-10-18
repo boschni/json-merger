@@ -2,13 +2,13 @@
 
 exports[`.mergeObjects() should process the objects and return the result 1`] = `
 "{
-	\\"a\\": \\"this should be the value of a\\",
-	\\"b\\": \\"this should be the value of b\\"
+	"a": "this should be the value of a",
+	"b": "this should be the value of b"
 }"
 `;
 
 exports[`.mergeObjects() should use the config object 1`] = `
-Object {
+{
   "a": "this should be the value of a and not be pretty printed",
   "b": "this should be the value of b and not be pretty printed",
 }

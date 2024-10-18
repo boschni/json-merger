@@ -2,7 +2,7 @@
 
 exports[`when merging two arrays and a source array item has a $match indicator and $match.index is set it should search for a match in the target array and use $match.then as value 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		3
 	]
@@ -11,7 +11,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator and $match.index is set to '-' it should match with the last item in the target array and use $match.then as value 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2
 	]
@@ -20,7 +20,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator and $match.path is set it should search for a match in the target array and use $match.then as value 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		3
 	]
@@ -29,7 +29,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator and $match.query is set it should search for a match in the target array and use $match.then as value 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		3
 	]
@@ -38,16 +38,16 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator it should correct the result array index if a matched item below the current source array index has been removed 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"prop\\": \\"this should be the first item\\"
+			"prop": "this should be the first item"
 		},
 		{
-			\\"prop\\": \\"this should be the second item\\",
-			\\"prop2\\": \\"this should be added to the second item\\"
+			"prop": "this should be the second item",
+			"prop2": "this should be added to the second item"
 		},
 		{
-			\\"prop\\": \\"this should be the third item\\"
+			"prop": "this should be the third item"
 		}
 	]
 }"
@@ -55,14 +55,14 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator it should correct the result array index if a matched item equal to the current source array index has been removed 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"prop\\": \\"this should be the first item\\",
-			\\"prop2\\": \\"this should be added to the first item\\"
+			"prop": "this should be the first item",
+			"prop2": "this should be added to the first item"
 		},
 		{
-			\\"prop\\": \\"this should be the second item\\",
-			\\"prop2\\": \\"this should be added to the second item\\"
+			"prop": "this should be the second item",
+			"prop2": "this should be added to the second item"
 		}
 	]
 }"
@@ -70,7 +70,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator it should ignore the item if no matching $match.index has been found 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2,
 		3
@@ -80,7 +80,7 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator it should ignore the item if no matching $match.query has been found 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2,
 		3
@@ -90,13 +90,13 @@ exports[`when merging two arrays and a source array item has a $match indicator 
 
 exports[`when merging two arrays and a source array item has a $match indicator it should process and merge the $match.then value if a match is found 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"a1\\": \\"original\\"
+			"a1": "original"
 		},
 		{
-			\\"a2\\": \\"original\\",
-			\\"b2\\": \\"merged\\"
+			"a2": "original",
+			"b2": "merged"
 		}
 	]
 }"

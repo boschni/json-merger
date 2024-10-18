@@ -2,57 +2,57 @@
 
 exports[`when merging two objects and a source object contains a $select operation and $select is a string it should treat it as a json pointer and select a value in the source 1`] = `
 "{
-	\\"a\\": \\"should be the value of /a\\",
-	\\"b\\": [
-		\\"should be the value of /a\\"
+	"a": "should be the value of /a",
+	"b": [
+		"should be the value of /a"
 	]
 }"
 `;
 
 exports[`when merging two objects and a source object contains a $select operation and $select.from is set it should process the $select.from value and select from the result 1`] = `
 "{
-	\\"a\\": \\"should be the value of /a\\"
+	"a": "should be the value of /a"
 }"
 `;
 
 exports[`when merging two objects and a source object contains a $select operation and $select.path is set it should use the json pointer to select a value in the source 1`] = `
 "{
-	\\"a\\": \\"should be the value of /a\\",
-	\\"b\\": [
-		\\"should be the value of /a\\"
+	"a": "should be the value of /a",
+	"b": [
+		"should be the value of /a"
 	]
 }"
 `;
 
 exports[`when merging two objects and a source object contains a $select operation and $select.query is set it should use the json path to select a value in the source 1`] = `
 "{
-	\\"a\\": \\"should be the value of /a\\",
-	\\"b\\": [
-		\\"should not be the value of /a\\",
-		\\"should be the value of /a\\"
+	"a": "should be the value of /a",
+	"b": [
+		"should not be the value of /a",
+		"should be the value of /a"
 	]
 }"
 `;
 
 exports[`when merging two objects and a source object contains a $select operation and a $select.query matching multiple elements is set and $select.multiple is true it should return an array with all matches 1`] = `
 "{
-	\\"a\\": [
-		\\"should be in the /a array\\",
-		\\"should also be in the /a array\\"
+	"a": [
+		"should be in the /a array",
+		"should also be in the /a array"
 	],
-	\\"b\\": [
-		\\"should be in the /a array\\",
-		\\"should also be in the /a array\\"
+	"b": [
+		"should be in the /a array",
+		"should also be in the /a array"
 	]
 }"
 `;
 
 exports[`when merging two objects and a source object contains a $select operation and a $select.query matching multiple elements is set but $select.multiple is not set it should return the first value 1`] = `
 "{
-	\\"a\\": \\"should be the value of /a\\",
-	\\"b\\": [
-		\\"should be the value of /a\\",
-		\\"should not be the value of /a\\"
+	"a": "should be the value of /a",
+	"b": [
+		"should be the value of /a",
+		"should not be the value of /a"
 	]
 }"
 `;

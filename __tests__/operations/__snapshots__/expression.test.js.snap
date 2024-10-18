@@ -2,42 +2,42 @@
 
 exports[`when merging two objects and a source property has an $expression operation and an $expression.input property it should process the property and use the result as $input variable 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": 3
+	"a": {
+		"aa": 3
 	}
 }"
 `;
 
 exports[`when merging two objects and a source property has an $expression operation it should execute the expression and return the result 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"should be the value of /a/aa\\"
+	"a": {
+		"aa": "should be the value of /a/aa"
 	}
 }"
 `;
 
 exports[`when merging two objects and a source property has an $expression operation then the expression should have a access to the JavaScript engine APIs 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": 2017
+	"a": {
+		"aa": 2017
 	}
 }"
 `;
 
 exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$sourceProperty' referring to the unprocessed current source property 1`] = `
 "{
-	\\"a\\": \\"should be the value of a\\"
+	"a": "should be the value of a"
 }"
 `;
 
 exports[`when merging two objects and a source property has an $expression operation then the expression should have a local property named '$targetProperty' referring to the processed current target property 1`] = `
 "{
-	\\"a\\": \\"should be the value of a\\"
+	"a": "should be the value of a"
 }"
 `;
 
 exports[`when merging two objects and a source property has an $expression operation then the expression should use the current scope object as context 1`] = `
 "{
-	\\"a\\": \\"should be the value of a\\"
+	"a": "should be the value of a"
 }"
 `;

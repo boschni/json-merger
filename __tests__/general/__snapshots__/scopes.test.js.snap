@@ -2,126 +2,126 @@
 
 exports[`when importing a file then $root in the file should refer to the root of the file 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"This should be the value of /a/aa\\",
-		\\"sharedProp\\": \\"This should be the value of /a/aa\\"
+	"a": {
+		"aa": "This should be the value of /a/aa",
+		"sharedProp": "This should be the value of /a/aa"
 	},
-	\\"sharedProp\\": \\"wrong\\"
+	"sharedProp": "wrong"
 }"
 `;
 
 exports[`when importing a file then $sourceFilename in the file should refer to the filename without extension 1`] = `
 "{
-	\\"a\\": \\"a\\",
-	\\"b\\": \\"b\\"
+	"a": "a",
+	"b": "b"
 }"
 `;
 
 exports[`when importing a file then the parent scope variables should not be accessible 1`] = `
 "[
 	{
-		\\"a\\": \\"object\\",
-		\\"b\\": \\"undefined\\"
+		"a": "object",
+		"b": "undefined"
 	}
 ]"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $parent.$target in object2 $merge.with should refer to the processed object1 1`] = `
 "{
-	\\"targetProp\\": \\"should be the value of mergeSharedProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
+	"targetProp": "should be the value of mergeSharedProp",
+	"sharedProp": {
+		"mergeSourceProp": "$merge.source.mergeSourceProp",
+		"mergeSharedProp": "should be the value of mergeSharedProp",
+		"mergeWithProp": "$merge.with.mergeWithProp"
 	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
+	"sourceProp": "object2.sourceProperty"
 }"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $root.$source in object2 $merge.with should refer to the unprocessed object2 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": {
+		"mergeSourceProp": "$merge.source.mergeSourceProp",
+		"mergeSharedProp": "should be the value of mergeSharedProp",
+		"mergeWithProp": "$merge.with.mergeWithProp"
 	},
-	\\"sourceProp\\": \\"should be the value of mergeSharedProp\\"
+	"sourceProp": "should be the value of mergeSharedProp"
 }"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $root.$target in object2 $merge.with should refer to the processed object1 1`] = `
 "{
-	\\"targetProp\\": \\"should be the value of mergeSharedProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
+	"targetProp": "should be the value of mergeSharedProp",
+	"sharedProp": {
+		"mergeSourceProp": "$merge.source.mergeSourceProp",
+		"mergeSharedProp": "should be the value of mergeSharedProp",
+		"mergeWithProp": "$merge.with.mergeWithProp"
 	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
+	"sourceProp": "object2.sourceProperty"
 }"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $source in object2 $merge.with should refer to the unprocessed object2 $merge.with 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"should be the value of mergeSharedProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": {
+		"mergeSourceProp": "$merge.source.mergeSourceProp",
+		"mergeSharedProp": "should be the value of mergeSharedProp",
+		"mergeWithProp": "should be the value of mergeSharedProp"
 	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
+	"sourceProp": "object2.sourceProperty"
 }"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $sourceProperty in object2 $merge.with should refer to the unprocessed object2 $merge.with property 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"$sourceProperty\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": {
+		"mergeSourceProp": "$merge.source.mergeSourceProp",
+		"mergeSharedProp": "$sourceProperty",
+		"mergeWithProp": "$merge.with.mergeWithProp"
 	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
+	"sourceProp": "object2.sourceProperty"
 }"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $target in object2 $merge.with should refer to the processed object2 $merge.source 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": {
+		"mergeSourceProp": "should be the value of mergeSharedProp",
+		"mergeSharedProp": "should be the value of mergeSharedProp",
+		"mergeWithProp": "$merge.with.mergeWithProp"
 	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
+	"sourceProp": "object2.sourceProperty"
 }"
 `;
 
 exports[`when merging object1 and object2 and two objects are merged with $merge in object2 then $targetProperty in object2 $merge.with should refer to the processed object2 $merge.source property 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": {
-		\\"mergeSourceProp\\": \\"$merge.source.mergeSourceProp\\",
-		\\"mergeSharedProp\\": \\"should be the value of mergeSharedProp\\",
-		\\"mergeWithProp\\": \\"$merge.with.mergeWithProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": {
+		"mergeSourceProp": "$merge.source.mergeSourceProp",
+		"mergeSharedProp": "should be the value of mergeSharedProp",
+		"mergeWithProp": "$merge.with.mergeWithProp"
 	},
-	\\"sourceProp\\": \\"object2.sourceProperty\\"
+	"sourceProp": "object2.sourceProperty"
 }"
 `;
 
 exports[`when merging object1 and object2 then $source in object2 should refer to the unprocessed object2 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\",
-	\\"sourceProp\\": \\"should be the value of sharedProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": "should be the value of sharedProp",
+	"sourceProp": "should be the value of sharedProp"
 }"
 `;
 
 exports[`when merging object1 and object2 then $sourceProperty in object2 should refer to the unprocessed object2 property 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"$sourceProperty\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": "$sourceProperty"
 }"
 `;
 
@@ -129,8 +129,8 @@ exports[`when merging object1 and object2 then $target in object1 should refer t
 
 exports[`when merging object1 and object2 then $target in object2 should refer to the processed object1 1`] = `
 "{
-	\\"targetProp\\": \\"should be the value of sharedProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\"
+	"targetProp": "should be the value of sharedProp",
+	"sharedProp": "should be the value of sharedProp"
 }"
 `;
 
@@ -138,8 +138,8 @@ exports[`when merging object1 and object2 then $targetProperty in object1 should
 
 exports[`when merging object1 and object2 then $targetProperty in object2 should refer to the processed property in object1 1`] = `
 "{
-	\\"targetProp\\": \\"object1.targetProp\\",
-	\\"sharedProp\\": \\"should be the value of sharedProp\\",
-	\\"sourceProp\\": \\"object2.sourceProp\\"
+	"targetProp": "object1.targetProp",
+	"sharedProp": "should be the value of sharedProp",
+	"sourceProp": "object2.sourceProp"
 }"
 `;

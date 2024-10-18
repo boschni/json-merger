@@ -2,24 +2,24 @@
 
 exports[`$append on a non array item should do nothing and be stripped 1`] = `
 "{
-	\\"1a\\": {
-		\\"1aa\\": 1
+	"1a": {
+		"1aa": 1
 	},
-	\\"2b\\": {}
+	"2b": {}
 }"
 `;
 
 exports[`when merging two arrays and a source item has $append and an other item also has $append it should append them in the order they are defined 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		},
 		{
-			\\"bb\\": \\"append 1\\"
+			"bb": "append 1"
 		},
 		{
-			\\"cc\\": \\"append 2\\"
+			"cc": "append 2"
 		}
 	]
 }"
@@ -27,12 +27,12 @@ exports[`when merging two arrays and a source item has $append and an other item
 
 exports[`when merging two arrays and a source item has $append it should append the source array item to the target array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		},
 		{
-			\\"bb\\": \\"append\\"
+			"bb": "append"
 		}
 	]
 }"
@@ -40,12 +40,12 @@ exports[`when merging two arrays and a source item has $append it should append 
 
 exports[`when merging two arrays and a source item has $append it should process the $append.value property before appending it to the target array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		},
 		{
-			\\"bb\\": \\"append\\"
+			"bb": "append"
 		}
 	]
 }"

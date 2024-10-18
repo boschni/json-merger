@@ -2,12 +2,12 @@
 
 exports[`when merging two arrays and a source array item has a $replace indicator it should process the $replace.with property and replace the array item with the result 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"a1\\": \\"original\\"
+			"a1": "original"
 		},
 		{
-			\\"b2\\": \\"replaced\\"
+			"b2": "replaced"
 		}
 	]
 }"
@@ -15,16 +15,16 @@ exports[`when merging two arrays and a source array item has a $replace indicato
 
 exports[`when merging two objects and a source property has a $replace indicator it should not merge the source property but replace it with $replace.with 1`] = `
 "{
-	\\"a\\": {
-		\\"bb\\": \\"replaced\\"
+	"a": {
+		"bb": "replaced"
 	}
 }"
 `;
 
 exports[`when merging two objects and a source property has a $replace indicator it should process the $replace.with property and replace the source property with the result 1`] = `
 "{
-	\\"a\\": {
-		\\"bb\\": \\"replaced\\"
+	"a": {
+		"bb": "replaced"
 	}
 }"
 `;

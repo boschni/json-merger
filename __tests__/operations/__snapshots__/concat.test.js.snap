@@ -2,7 +2,7 @@
 
 exports[`when merging two objects and a source property has a $concat indicator it should concat even if both values are not arrays 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2
 	]
@@ -11,7 +11,7 @@ exports[`when merging two objects and a source property has a $concat indicator 
 
 exports[`when merging two objects and a source property has a $concat indicator it should concat even if one value is not an array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2
 	]
@@ -20,7 +20,7 @@ exports[`when merging two objects and a source property has a $concat indicator 
 
 exports[`when merging two objects and a source property has a $concat indicator it should concat the source property with the target 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2,
 		3,

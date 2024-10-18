@@ -2,35 +2,35 @@
 
 exports[`when merging two objects and a source property has a $merge indicator it should merge the $merge.source property with the $merge.with property and the result of it should be merged with the target 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"original\\",
-		\\"bb\\": \\"with\\"
+	"a": {
+		"aa": "original",
+		"bb": "with"
 	}
 }"
 `;
 
 exports[`when merging two objects and a source property has a $merge indicator it should process the $merge result before merging with the target 1`] = `
 "{
-	\\"a\\": \\"source\\"
+	"a": "source"
 }"
 `;
 
 exports[`when merging two objects and a source property has a $merge indicator it should process the $merge.source property before being merged with the $merge.with property 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"original\\",
-		\\"ba\\": \\"source\\",
-		\\"bb\\": \\"with\\"
+	"a": {
+		"aa": "original",
+		"ba": "source",
+		"bb": "with"
 	}
 }"
 `;
 
 exports[`when merging two objects and a source property has a $merge indicator it should process the $merge.with property before merging with the $merge.source property 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"original\\",
-		\\"ba\\": \\"source\\",
-		\\"bb\\": \\"with\\"
+	"a": {
+		"aa": "original",
+		"ba": "source",
+		"bb": "with"
 	}
 }"
 `;

@@ -2,19 +2,19 @@
 
 exports[`when config.params is set it should be possible to override the $params property when using $import 1`] = `
 "{
-	\\"object1\\": {
-		\\"params\\": {
-			\\"prop\\": \\"this is the params object\\"
+	"object1": {
+		"params": {
+			"prop": "this is the params object"
 		}
 	},
-	\\"object2\\": {
-		\\"params\\": {
-			\\"prop\\": \\"this is the import params object\\"
+	"object2": {
+		"params": {
+			"prop": "this is the import params object"
 		}
 	},
-	\\"object3\\": {
-		\\"params\\": {
-			\\"prop\\": \\"this is the params object\\"
+	"object3": {
+		"params": {
+			"prop": "this is the params object"
 		}
 	}
 }"
@@ -22,22 +22,22 @@ exports[`when config.params is set it should be possible to override the $params
 
 exports[`when config.params is set it should expose the property in the source as $params property 1`] = `
 "{
-	\\"object1Params\\": {
-		\\"prop\\": \\"this is the params object\\"
+	"object1Params": {
+		"prop": "this is the params object"
 	},
-	\\"object2Params\\": {
-		\\"prop\\": \\"this is the params object\\"
+	"object2Params": {
+		"prop": "this is the params object"
 	}
 }"
 `;
 
 exports[`when config.params is set should not cache an imported file or files imported by the imported file if the params are different 1`] = `
 "{
-	\\"a\\": {
-		\\"prop\\": \\"first params prop\\"
+	"a": {
+		"prop": "first params prop"
 	},
-	\\"b\\": {
-		\\"prop\\": \\"second params prop\\"
+	"b": {
+		"prop": "second params prop"
 	}
 }"
 `;

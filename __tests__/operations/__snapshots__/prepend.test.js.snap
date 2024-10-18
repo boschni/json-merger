@@ -2,24 +2,24 @@
 
 exports[`$prepend on a non array item should do nothing and be stripped 1`] = `
 "{
-	\\"1a\\": {
-		\\"1aa\\": 1
+	"1a": {
+		"1aa": 1
 	},
-	\\"2b\\": {}
+	"2b": {}
 }"
 `;
 
 exports[`when merging two arrays and the source item has $prepend and an other item also has $prepend it should prepend them in the order they are defined 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"cc\\": \\"prepend 2\\"
+			"cc": "prepend 2"
 		},
 		{
-			\\"bb\\": \\"prepend 1\\"
+			"bb": "prepend 1"
 		},
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		}
 	]
 }"
@@ -27,12 +27,12 @@ exports[`when merging two arrays and the source item has $prepend and an other i
 
 exports[`when merging two arrays and the source item has $prepend it should prepend the source array item 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"bb\\": \\"prepend\\"
+			"bb": "prepend"
 		},
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		}
 	]
 }"
@@ -40,12 +40,12 @@ exports[`when merging two arrays and the source item has $prepend it should prep
 
 exports[`when merging two arrays and the source item has $prepend it should process the $prepend.value property before prepending it to the target array 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		{
-			\\"bb\\": \\"prepend\\"
+			"bb": "prepend"
 		},
 		{
-			\\"aa\\": \\"string\\"
+			"aa": "string"
 		}
 	]
 }"

@@ -2,7 +2,7 @@
 
 exports[`when merging two arrays and a source property has a $remove indicator it should remove the item 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		2,
 		3
 	]
@@ -11,6 +11,6 @@ exports[`when merging two arrays and a source property has a $remove indicator i
 
 exports[`when merging two objects and a source property has a $remove indicator it should remove the property 1`] = `
 "{
-	\\"a\\": {}
+	"a": {}
 }"
 `;

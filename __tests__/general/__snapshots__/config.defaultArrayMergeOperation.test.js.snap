@@ -2,7 +2,7 @@
 
 exports[`when config.defaultArrayMergeOperation is not set combine should be used 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		3,
 		3,
 		3
@@ -12,7 +12,7 @@ exports[`when config.defaultArrayMergeOperation is not set combine should be use
 
 exports[`when config.defaultArrayMergeOperation is set to a unsupported value, combine should be used 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		3,
 		3,
 		3
@@ -22,7 +22,7 @@ exports[`when config.defaultArrayMergeOperation is set to a unsupported value, c
 
 exports[`when config.defaultArrayMergeOperation is set to a unsupported value, combine should be used 2`] = `
 "{
-	\\"a\\": [
+	"a": [
 		3,
 		3,
 		3
@@ -32,7 +32,7 @@ exports[`when config.defaultArrayMergeOperation is set to a unsupported value, c
 
 exports[`when config.defaultArrayMergeOperation is set to concat, concat should be used 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		1,
 		2,
 		3,
@@ -44,7 +44,7 @@ exports[`when config.defaultArrayMergeOperation is set to concat, concat should 
 
 exports[`when config.defaultArrayMergeOperation is set to replace, replace should be used 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		3,
 		3
 	]

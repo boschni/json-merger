@@ -2,7 +2,7 @@
 
 exports[`when merging two objects and a source property has a $combine indicator it should combine if no defaultArrayMergeOperation specified 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		3,
 		3,
 		3
@@ -12,18 +12,18 @@ exports[`when merging two objects and a source property has a $combine indicator
 
 exports[`when merging two objects and a source property has a $combine indicator it should combine objects 1`] = `
 "{
-	\\"a\\": {
-		\\"prop1\\": \\"prop1 from a\\",
-		\\"prop2\\": \\"prop2 from b\\",
-		\\"prop3\\": \\"prop3 from b\\"
+	"a": {
+		"prop1": "prop1 from a",
+		"prop2": "prop2 from b",
+		"prop3": "prop3 from b"
 	},
-	\\"b\\": \\"b\\"
+	"b": "b"
 }"
 `;
 
 exports[`when merging two objects and a source property has a $combine indicator it should combine the source property with the target 1`] = `
 "{
-	\\"a\\": [
+	"a": [
 		3,
 		3,
 		3

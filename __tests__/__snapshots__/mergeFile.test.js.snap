@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.mergeFile() should be able to load an absolute path 1`] = `
-Object {
+{
   "a": 10,
 }
 `;
 
 exports[`.mergeFile() should process YAML files 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"replaced\\"
+	"a": {
+		"aa": "replaced"
 	}
 }"
 `;
 
 exports[`.mergeFile() should process a file if it exists and return the result 1`] = `
 "{
-	\\"a\\": 10
+	"a": 10
 }"
 `;
 
 exports[`.mergeFile() should use the config object 1`] = `
-Object {
+{
   "a": "this should not be pretty printed",
 }
 `;

@@ -2,14 +2,14 @@
 
 exports[`when config.stringify is set to 'pretty' it should stringify the output with tabs and newlines 1`] = `
 "{
-	\\"a\\": 1
+	"a": 1
 }"
 `;
 
 exports[`when config.stringify is set to false it should not stringify the output 1`] = `
-Object {
+{
   "a": 1,
 }
 `;
 
-exports[`when config.stringify is set to true it should stringify the output 1`] = `"{\\"a\\":1}"`;
+exports[`when config.stringify is set to true it should stringify the output 1`] = `"{"a":1}"`;

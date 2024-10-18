@@ -2,9 +2,9 @@
 
 exports[`when config.enableExpressionOperation is set to false it should not process expression operations 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": {
-			\\"$expression\\": \\"'should be the value of /a/aa'\\"
+	"a": {
+		"aa": {
+			"$expression": "'should be the value of /a/aa'"
 		}
 	}
 }"
@@ -12,17 +12,17 @@ exports[`when config.enableExpressionOperation is set to false it should not pro
 
 exports[`when config.enableExpressionOperation is set to true it should process expression operations 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"should be the value of /a/aa\\"
+	"a": {
+		"aa": "should be the value of /a/aa"
 	}
 }"
 `;
 
 exports[`when config.enableExpressionOperation is set to undefined it should not process expression operations 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": {
-			\\"$expression\\": \\"'should be the value of /a/aa'\\"
+	"a": {
+		"aa": {
+			"$expression": "'should be the value of /a/aa'"
 		}
 	}
 }"

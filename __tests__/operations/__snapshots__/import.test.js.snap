@@ -2,21 +2,21 @@
 
 exports[`when processing an object containing an $import operation it and $import is an array containing multiple imports should resolve to the processed files and merge them in the order they are defined before returning the result 1`] = `
 "{
-	\\"a\\": {
-		\\"a\\": {
-			\\"aa\\": \\"processed a.a.aa\\",
-			\\"bb\\": \\"added by b.json\\"
+	"a": {
+		"a": {
+			"aa": "processed a.a.aa",
+			"bb": "added by b.json"
 		},
-		\\"b\\": \\"replaced by b.json\\"
+		"b": "replaced by b.json"
 	}
 }"
 `;
 
 exports[`when processing an object containing an $import operation it and $import.params is set it should process it and use the property as source params 1`] = `
 "{
-	\\"a\\": {
-		\\"params\\": {
-			\\"prop\\": \\"this should be in params\\"
+	"a": {
+		"params": {
+			"prop": "this should be in params"
 		}
 	}
 }"
@@ -24,35 +24,35 @@ exports[`when processing an object containing an $import operation it and $impor
 
 exports[`when processing an object containing an $import operation it should resolve the file path relative to the current file 1`] = `
 "{
-	\\"a\\": {
-		\\"b\\": \\"this should be the value of /a/b\\"
+	"a": {
+		"b": "this should be the value of /a/b"
 	}
 }"
 `;
 
 exports[`when processing an object containing an $import operation it should resolve to a property in the processed file if also a json pointer is given 1`] = `
 "{
-	\\"a\\": \\"processed\\"
+	"a": "processed"
 }"
 `;
 
 exports[`when processing an object containing an $import operation it should resolve to the file defined in the $import property 1`] = `
 "{
-	\\"a\\": {
-		\\"b\\": 100
+	"a": {
+		"b": 100
 	}
 }"
 `;
 
 exports[`when processing an object containing an $import operation it should resolve to the processed file 1`] = `
 "{
-	\\"a\\": \\"processed\\"
+	"a": "processed"
 }"
 `;
 
 exports[`when processing an object containing an $import operation it should resolve to the processed file and then process the result against the target 1`] = `
 "{
-	\\"array\\": [
+	"array": [
 		1,
 		2
 	]
@@ -64,17 +64,17 @@ exports[`when processing an object containing an $import operation it should res
 exports[`when processing an object containing an $import operation it should resolve to undefined if the file does not exist and Config.errorOnFileNotFound is false 1`] = `"{}"`;
 
 exports[`when processing an object containing an $import operation it should throw with a nested processing stack trace if the files do exist but a nested import does not exist and Config.errorOnFileNotFound is true 1`] = `
-"An error occurred while processing the property \\"$import\\"
+"An error occurred while processing the property "$import"
     at /fake/path/c.json#/c/$import
     at /fake/path/b.json#/b/$import
     at #/a/$import
 
-The file \\"/fake/path/d.json\\" does not exist. Set Config.errorOnFileNotFound to false to suppress this message"
+The file "/fake/path/d.json" does not exist. Set Config.errorOnFileNotFound to false to suppress this message"
 `;
 
 exports[`when processing an object containing an $import operation it should throw with a processing stack trace if the files do exist but the pointer does not exist and Config.errorOnRefNotFound is true 1`] = `
-"An error occurred while processing the property \\"$import\\"
+"An error occurred while processing the property "$import"
     at #/a/$import
 
-The JSON pointer \\"/b/c/nonExisting\\" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message"
+The JSON pointer "/b/c/nonExisting" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message"
 `;

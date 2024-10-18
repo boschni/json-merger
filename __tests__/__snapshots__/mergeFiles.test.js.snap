@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.mergeFiles() should merge the files in order 1`] = `
-Object {
+{
   "a": 30,
 }
 `;
 
 exports[`.mergeFiles() should process the files if they exist 1`] = `
 "{
-	\\"a\\": 10,
-	\\"b\\": 20
+	"a": 10,
+	"b": 20
 }"
 `;

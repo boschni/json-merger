@@ -2,52 +2,52 @@
 
 exports[`when merging two objects it should be possible to escape a keyword but the value should be processed 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"this should be the value of /a/aa\\",
-		\\"$replace\\": \\"this should be the value of /a/$replace\\"
+	"a": {
+		"aa": "this should be the value of /a/aa",
+		"$replace": "this should be the value of /a/$replace"
 	}
 }"
 `;
 
 exports[`when merging two objects it should be possible to escape a keyword with an additional prefix character 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"this should be the value of /a/aa\\",
-		\\"$replace\\": \\"this should be the value of /a/$replace\\"
+	"a": {
+		"aa": "this should be the value of /a/aa",
+		"$replace": "this should be the value of /a/$replace"
 	}
 }"
 `;
 
 exports[`when merging two objects it should be possible to use an operation name in a property name starting with one other character 1`] = `
 "{
-	\\"@replace\\": {
-		\\"aa\\": \\"this should be the value of /@replace/aa\\"
+	"@replace": {
+		"aa": "this should be the value of /@replace/aa"
 	}
 }"
 `;
 
 exports[`when merging two objects it should be possible to use an operation name in a property name starting with two other characters 1`] = `
 "{
-	\\"@@replace\\": {
-		\\"aa\\": \\"this should be the value of /@@replace/aa\\"
+	"@@replace": {
+		"aa": "this should be the value of /@@replace/aa"
 	}
 }"
 `;
 
 exports[`when merging two objects it should merge non-operation properties starting with the operation prefix 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"this should be the value of /a/aa\\",
-		\\"$noOperation\\": \\"this should be the value of /a/$noOperation\\"
+	"a": {
+		"aa": "this should be the value of /a/aa",
+		"$noOperation": "this should be the value of /a/$noOperation"
 	}
 }"
 `;
 
 exports[`when merging two objects it should merge non-operation properties starting with the operation prefix and an additional prefix character 1`] = `
 "{
-	\\"a\\": {
-		\\"aa\\": \\"this should be the value of /a/aa\\",
-		\\"$$noOperation\\": \\"this should be the value of /a/$$noOperation\\"
+	"a": {
+		"aa": "this should be the value of /a/aa",
+		"$$noOperation": "this should be the value of /a/$$noOperation"
 	}
 }"
 `;
