@@ -14,7 +14,7 @@ describe("when config.operationPrefix is set", function () {
       object,
       testConfig({
         operationPrefix: "@",
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();

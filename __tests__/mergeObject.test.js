@@ -23,7 +23,7 @@ describe(".mergeObject()", function () {
       object,
       testConfig({
         stringify: false,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();

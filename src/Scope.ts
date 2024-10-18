@@ -79,7 +79,7 @@ export class RootMergeObjectScope extends ScopeBase {
     target: any,
     parent: ScopeBase,
     localVariables?: Variables,
-    phase?: Phase
+    phase?: Phase,
   ) {
     super(parent, localVariables, phase);
     this.root = this;
@@ -100,7 +100,7 @@ export class MergeObjectScope extends ScopeBase {
     target: any,
     parent: ScopeWithRoot,
     localVariables?: Variables,
-    phase?: Phase
+    phase?: Phase,
   ) {
     super(parent, localVariables, phase);
     this.root = parent.root;
@@ -124,7 +124,7 @@ export class RootMergeFileScope extends ScopeBase {
     target: any,
     parent: ScopeBase,
     localVariables?: Variables,
-    phase?: Phase
+    phase?: Phase,
   ) {
     super(parent, localVariables, phase);
     this.root = this;
@@ -151,7 +151,7 @@ export class MergeFileScope extends ScopeBase {
     public target: any,
     parent: ScopeBase,
     localVariables?: Variables,
-    phase?: Phase
+    phase?: Phase,
   ) {
     super(parent, localVariables, phase);
 
@@ -175,7 +175,7 @@ export class Scope extends ScopeBase {
   constructor(
     parent: ScopeWithRoot,
     localVariables?: Variables,
-    phase?: Phase
+    phase?: Phase,
   ) {
     super(parent, localVariables, phase);
     this.root = parent.root;

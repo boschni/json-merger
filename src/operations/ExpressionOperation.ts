@@ -24,7 +24,7 @@ export default class ExpressionOperation extends Operation {
       if (keywordValue.input !== undefined) {
         input = this._processor.processSourceProperty(
           keywordValue.input,
-          "input"
+          "input",
         );
       }
     }

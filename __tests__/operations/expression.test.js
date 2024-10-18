@@ -35,7 +35,7 @@ describe("when merging two objects and a source property has an $expression oper
       expect("this code").toBe("unreachable");
     } catch (e) {
       expect(e.message).toMatch(
-        `An error occurred while processing the property "$expression"`
+        `An error occurred while processing the property "$expression"`,
       );
       expect(e.message).toMatch(`at #/a/$expression`);
       expect(e.message).toMatch(`Invalid or unexpected token`);

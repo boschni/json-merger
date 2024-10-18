@@ -12,7 +12,7 @@ export default class AppendOperation extends Operation {
     _sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    _target: any[]
+    _target: any[],
   ) {
     const keywordValue: AppendKeywordValue = source[keyword];
     const processedItem = this._processor.processSource(keywordValue);

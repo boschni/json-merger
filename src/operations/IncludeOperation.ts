@@ -22,7 +22,7 @@ export default class IncludeOperation extends Operation {
     sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    target: any[]
+    target: any[],
   ): ProcessArrayItemResult {
     const keywordValue: IncludeKeywordValue = source[keyword];
 
@@ -36,7 +36,7 @@ export default class IncludeOperation extends Operation {
       sourceArrayIndex,
       resultArray,
       resultArrayIndex,
-      target
+      target,
     );
   }
 }

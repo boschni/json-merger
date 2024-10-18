@@ -8,7 +8,7 @@ export default class DataLoader {
   constructor(
     private _config: Config,
     private _dataDeserializer: DataDeserializer,
-    private _fileLoader: FileLoader
+    private _fileLoader: FileLoader,
   ) {}
 
   load(uri: string, currentUri: string): any {
@@ -26,7 +26,7 @@ export default class DataLoader {
     } catch (e) {
       if (this._config.errorOnFileNotFound) {
         throw new Error(
-          `The file "${uri}" does not exist. Set Config.errorOnFileNotFound to false to suppress this message`
+          `The file "${uri}" does not exist. Set Config.errorOnFileNotFound to false to suppress this message`,
         );
       }
       return;

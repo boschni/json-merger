@@ -164,7 +164,7 @@ describe("when processing an object containing an $import operation it", functio
       object,
       testConfig({
         errorOnFileNotFound: false,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -189,7 +189,7 @@ describe("when processing an object containing an $import operation it", functio
       object,
       testConfig({
         errorOnRefNotFound: false,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -207,17 +207,17 @@ describe("when processing an object containing an $import operation it", functio
         object,
         testConfig({
           errorOnFileNotFound: true,
-        })
+        }),
       );
 
       expect("this code").toBe("unreachable");
     } catch (e) {
       expect(e.message).toMatch(
-        `An error occurred while processing the property "$import"`
+        `An error occurred while processing the property "$import"`,
       );
       expect(e.message).toMatch(`at #/a/$import`);
       expect(e.message).toMatch(
-        /The file ".*non_existing\.json" does not exist/
+        /The file ".*non_existing\.json" does not exist/,
       );
     }
   });
@@ -247,7 +247,7 @@ describe("when processing an object containing an $import operation it", functio
         object,
         testConfig({
           errorOnRefNotFound: true,
-        })
+        }),
       );
 
       expect("this code").toBe("unreachable");
@@ -283,7 +283,7 @@ describe("when processing an object containing an $import operation it", functio
         object,
         testConfig({
           errorOnFileNotFound: true,
-        })
+        }),
       );
 
       expect("this code").toBe("unreachable");

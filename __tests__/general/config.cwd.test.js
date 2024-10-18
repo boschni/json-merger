@@ -22,7 +22,7 @@ describe("when config.cwd is set", function () {
       object,
       testConfig({
         cwd: "./test",
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -51,7 +51,7 @@ describe("when config.cwd is set", function () {
     const merger = new jsonMerger.Merger(
       testConfig({
         cwd: "./test",
-      })
+      }),
     );
 
     const result1 = merger.mergeObject(object);
@@ -59,7 +59,7 @@ describe("when config.cwd is set", function () {
     merger.setConfig(
       testConfig({
         cwd: "./test2",
-      })
+      }),
     );
 
     const result2 = merger.mergeObject(object2);

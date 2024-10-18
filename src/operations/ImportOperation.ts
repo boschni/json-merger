@@ -34,7 +34,7 @@ export default class ImportOperation extends Operation {
         scopeVariables = {};
         scopeVariables.$params = this._processor.processSourceProperty(
           importValue.params,
-          "params"
+          "params",
         );
       }
 
@@ -42,7 +42,7 @@ export default class ImportOperation extends Operation {
       return this._processor.loadAndProcessFileByRef(
         importValue.path,
         result,
-        scopeVariables
+        scopeVariables,
       );
     }, undefined);
 

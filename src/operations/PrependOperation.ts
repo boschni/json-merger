@@ -12,7 +12,7 @@ export default class PrependOperation extends Operation {
     _sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    _target: any[]
+    _target: any[],
   ) {
     const keywordValue: PrependKeywordValue = source[keyword];
     const processedItem = this._processor.processSource(keywordValue);

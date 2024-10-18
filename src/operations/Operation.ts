@@ -36,12 +36,12 @@ export default abstract class Operation {
     _sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    _target: any[]
+    _target: any[],
   ): ProcessArrayItemResult {
     resultArray[resultArrayIndex] = this.processInObject(
       keyword,
       source,
-      resultArray[resultArrayIndex]
+      resultArray[resultArrayIndex],
     );
     return { resultArray, resultArrayIndex };
   }

@@ -34,7 +34,7 @@ export default class SelectOperation extends Operation {
       if (keywordValue.from !== undefined) {
         selectContext = this._processor.processSourceProperty(
           keywordValue.from,
-          "from"
+          "from",
         );
       }
 
@@ -42,12 +42,12 @@ export default class SelectOperation extends Operation {
       if (typeof keywordValue.path === "string") {
         value = this._processor.resolveJsonPointer(
           selectContext,
-          keywordValue.path
+          keywordValue.path,
         );
       } else if (typeof keywordValue.query === "string") {
         value = this._processor.resolveJsonPath(
           selectContext,
-          keywordValue.query
+          keywordValue.query,
         );
         if (keywordValue.multiple !== true) {
           value = value[0];

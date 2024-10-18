@@ -85,11 +85,11 @@ describe("when merging two objects and a source property has a $combine indicato
 
     const resultWithNoCombine = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig()
+      testConfig(),
     );
     const resultWithCombine = jsonMerger.mergeObjects(
       [object1, object2combine],
-      testConfig()
+      testConfig(),
     );
 
     expect(resultWithCombine).toBe(resultWithNoCombine);

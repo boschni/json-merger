@@ -13,7 +13,7 @@ describe("when config.stringify is set", function () {
       object,
       testConfig({
         stringify: false,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -30,7 +30,7 @@ describe("when config.stringify is set", function () {
       object,
       testConfig({
         stringify: true,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -47,7 +47,7 @@ describe("when config.stringify is set", function () {
       object,
       testConfig({
         stringify: "pretty",
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();

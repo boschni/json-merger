@@ -90,17 +90,17 @@ describe("when merging two objects and a source object contains a $select operat
         object,
         testConfig({
           errorOnRefNotFound: true,
-        })
+        }),
       );
 
       expect("this code").toBe("unreachable");
     } catch (e) {
       expect(e.message).toMatch(
-        `An error occurred while processing the property "$select"`
+        `An error occurred while processing the property "$select"`,
       );
       expect(e.message).toMatch(`at #/a/$select`);
       expect(e.message).toMatch(
-        `The JSON pointer "/nonExisting/1" resolves to undefined`
+        `The JSON pointer "/nonExisting/1" resolves to undefined`,
       );
     }
   });
@@ -119,17 +119,17 @@ describe("when merging two objects and a source object contains a $select operat
         object,
         testConfig({
           errorOnRefNotFound: true,
-        })
+        }),
       );
 
       expect("this code").toBe("unreachable");
     } catch (e) {
       expect(e.message).toMatch(
-        `An error occurred while processing the property "$select"`
+        `An error occurred while processing the property "$select"`,
       );
       expect(e.message).toMatch(`at #/a/$select`);
       expect(e.message).toMatch(
-        `The JSON path "$.nonExisting.1" resolves to undefined`
+        `The JSON path "$.nonExisting.1" resolves to undefined`,
       );
     }
   });

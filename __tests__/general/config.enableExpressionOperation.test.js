@@ -19,7 +19,7 @@ describe("when config.enableExpressionOperation is set", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ enableExpressionOperation: undefined })
+      testConfig({ enableExpressionOperation: undefined }),
     );
 
     expect(result).toMatchSnapshot();
@@ -42,7 +42,7 @@ describe("when config.enableExpressionOperation is set", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ enableExpressionOperation: false })
+      testConfig({ enableExpressionOperation: false }),
     );
 
     expect(result).toMatchSnapshot();
@@ -65,7 +65,7 @@ describe("when config.enableExpressionOperation is set", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ enableExpressionOperation: true })
+      testConfig({ enableExpressionOperation: true }),
     );
 
     expect(result).toMatchSnapshot();

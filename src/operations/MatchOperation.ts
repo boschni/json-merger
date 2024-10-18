@@ -14,7 +14,7 @@ export default class MatchOperation extends Operation {
     sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    target: any[]
+    target: any[],
   ) {
     const keywordValue: MatchKeywordValue = source[keyword];
 
@@ -41,7 +41,7 @@ export default class MatchOperation extends Operation {
       // Try to find a matching item in the result
       if (JsonPointer.get(resultArray, keywordValue.path) !== undefined) {
         matchedResultArrayIndex = Number(
-          JsonPointer.decode(keywordValue.path)[0]
+          JsonPointer.decode(keywordValue.path)[0],
         );
       }
     }
@@ -61,7 +61,7 @@ export default class MatchOperation extends Operation {
       sourceArrayIndex,
       resultArray,
       matchedResultArrayIndex,
-      target
+      target,
     );
 
     // Check if an array item has been inserted or removed below or at the current array item

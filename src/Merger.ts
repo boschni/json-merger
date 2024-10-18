@@ -66,7 +66,7 @@ export default class Merger {
     this._dataLoader = new DataLoader(
       this._config,
       this._dataDeserializer,
-      this._fileLoader
+      this._fileLoader,
     );
 
     // Init processor and add default operations
@@ -94,7 +94,7 @@ export default class Merger {
       new MergeOperation(this._processor),
       new IncludeOperation(this._processor),
       new AfterMergeOperation(this._processor),
-      new AfterMergesOperation(this._processor)
+      new AfterMergesOperation(this._processor),
     );
 
     this._processor.addOperations(operations);
@@ -107,7 +107,7 @@ export default class Merger {
 
   mergeObjects(objects: object[], config?: Partial<IConfig>) {
     const sources = objects.map(
-      (object) => ({ type: SourceType.Object, object } as Source)
+      (object) => ({ type: SourceType.Object, object }) as Source,
     );
     return this._merge(sources, config);
   }
@@ -119,7 +119,7 @@ export default class Merger {
 
   mergeFiles(uris: string[], config?: Partial<IConfig>) {
     const sources = uris.map(
-      (uri) => ({ type: SourceType.Uri, uri } as Source)
+      (uri) => ({ type: SourceType.Uri, uri }) as Source,
     );
     return this._merge(sources, config);
   }

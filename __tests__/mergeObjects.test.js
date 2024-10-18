@@ -37,7 +37,7 @@ describe(".mergeObjects()", function () {
       [object1, object2],
       testConfig({
         stringify: false,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();

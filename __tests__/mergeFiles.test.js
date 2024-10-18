@@ -44,7 +44,7 @@ describe(".mergeFiles()", function () {
       ["a.json", "b.json", "b.json"],
       testConfig({
         stringify: false,
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -55,7 +55,7 @@ describe(".mergeFiles()", function () {
       ["nonExisting.json"],
       testConfig({
         errorOnFileNotFound: false,
-      })
+      }),
     );
 
     expect(result).toBe(undefined);
@@ -67,13 +67,13 @@ describe(".mergeFiles()", function () {
         ["nonExisting.json"],
         testConfig({
           errorOnFileNotFound: true,
-        })
+        }),
       );
 
       expect("this code").toBe("unreachable");
     } catch (e) {
       expect(e.message).toMatch(
-        /The file ".*nonExisting\.json" does not exist/
+        /The file ".*nonExisting\.json" does not exist/,
       );
     }
   });

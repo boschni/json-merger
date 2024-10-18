@@ -24,7 +24,7 @@ describe("when config.params is set", function () {
         params: {
           prop: "this is the params object",
         },
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();
@@ -74,7 +74,7 @@ describe("when config.params is set", function () {
         params: {
           prop: "this is the params object",
         },
-      })
+      }),
     );
 
     expect(result).toMatchSnapshot();

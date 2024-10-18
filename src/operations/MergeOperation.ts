@@ -12,7 +12,7 @@ export default class MergeOperation extends Operation {
     const processedSourceProperty =
       this._processor.processSourcePropertyInNewMergeObjectScope(
         keywordValue.source,
-        "source"
+        "source",
       );
 
     // Process $merge.with property and use the processed $merge.source property as target
@@ -20,7 +20,7 @@ export default class MergeOperation extends Operation {
       this._processor.processSourcePropertyInNewMergeObjectScope(
         keywordValue.with,
         "with",
-        processedSourceProperty
+        processedSourceProperty,
       );
 
     // Process $merge result and use the original target as target

@@ -13,23 +13,23 @@ program
   .option("-o, --output [file]", "the output file. Defaults to stdout")
   .option(
     "-op, --operation-prefix [prefix]",
-    "the operation prefix. Defaults to $"
+    "the operation prefix. Defaults to $",
   )
   .option(
     "-am, --default-array-merge-operation [operation]",
-    "the default array merge operation. Defaults to combine"
+    "the default array merge operation. Defaults to combine",
   )
   .option(
     "--error-on-file-not-found [value]",
-    "throw an error if a file is not found. Defaults to true"
+    "throw an error if a file is not found. Defaults to true",
   )
   .option(
     "--error-on-ref-not-found [value]",
-    "throw an error if a JSON pointer or JSON path is not found. Defaults to true"
+    "throw an error if a JSON pointer or JSON path is not found. Defaults to true",
   )
   .option(
     "--enable-expression-operation [value]",
-    "Enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false"
+    "Enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false",
   )
   .parse(process.argv);
 

@@ -14,7 +14,7 @@ describe("when config.defaultArrayMergeOperation is", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ defaultArrayMergeOperation })
+      testConfig({ defaultArrayMergeOperation }),
     );
 
     expect(result).toMatchSnapshot();
@@ -32,7 +32,7 @@ describe("when config.defaultArrayMergeOperation is", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ defaultArrayMergeOperation })
+      testConfig({ defaultArrayMergeOperation }),
     );
 
     expect(result).toMatchSnapshot();
@@ -50,7 +50,7 @@ describe("when config.defaultArrayMergeOperation is", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ defaultArrayMergeOperation })
+      testConfig({ defaultArrayMergeOperation }),
     );
 
     expect(result).toMatchSnapshot();
@@ -68,7 +68,7 @@ describe("when config.defaultArrayMergeOperation is", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ defaultArrayMergeOperation })
+      testConfig({ defaultArrayMergeOperation }),
     );
 
     expect(result).toMatchSnapshot();
@@ -86,7 +86,7 @@ describe("when config.defaultArrayMergeOperation is", function () {
 
     const result = jsonMerger.mergeObjects(
       [object1, object2],
-      testConfig({ defaultArrayMergeOperation })
+      testConfig({ defaultArrayMergeOperation }),
     );
 
     expect(result).toMatchSnapshot();

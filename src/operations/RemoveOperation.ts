@@ -24,7 +24,7 @@ export default class RemoveOperation extends Operation {
     _sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    _target: any[]
+    _target: any[],
   ) {
     const keywordValue: RemoveKeywordValue = source[keyword];
     if (keywordValue === true) {

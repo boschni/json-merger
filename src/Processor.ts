@@ -30,7 +30,10 @@ export default class Processor {
   private _nameOperationMap: NameOperationMap = {};
   private _operationNames: string[] = [];
 
-  constructor(private _config: Config, private _dataLoader: DataLoader) {
+  constructor(
+    private _config: Config,
+    private _dataLoader: DataLoader,
+  ) {
     // Enable all operations
     this._enabledOperationNames = this._operationNames;
   }
@@ -61,7 +64,7 @@ export default class Processor {
         result,
         undefined,
         scopeVariables,
-        Phase.AfterMerges
+        Phase.AfterMerges,
       );
     }
 
@@ -82,7 +85,7 @@ export default class Processor {
       target,
       this.currentScope,
       scopeVariables,
-      phase
+      phase,
     );
     this._enterScope(scope);
     let result = this.processSource(source, target);
@@ -94,7 +97,7 @@ export default class Processor {
         result,
         target,
         scopeVariables,
-        Phase.AfterMerge
+        Phase.AfterMerge,
       );
     }
 
@@ -176,7 +179,7 @@ export default class Processor {
     uri: string,
     target?: any,
     scopeVariables?: any,
-    isRoot: boolean = false
+    isRoot: boolean = false,
   ): any {
     // Get absolute URI
     const currentUri = this.getCurrentUri();
@@ -199,7 +202,7 @@ export default class Processor {
       (x) =>
         x.absoluteUri === absoluteUri &&
         x.target === target &&
-        x.hashedScopeVariables === hashedScopeVariables
+        x.hashedScopeVariables === hashedScopeVariables,
     )[0];
 
     // Return cache result if found
@@ -231,7 +234,7 @@ export default class Processor {
         target,
         this.currentScope,
         scopeVariables,
-        this.currentScope.phase
+        this.currentScope.phase,
       );
     } else {
       scope = new MergeFileScope(
@@ -240,7 +243,7 @@ export default class Processor {
         target,
         this.currentScope,
         scopeVariables,
-        this.currentScope.phase
+        this.currentScope.phase,
       );
     }
 
@@ -256,7 +259,7 @@ export default class Processor {
         undefined,
         scope,
         scopeVariables,
-        Phase.AfterMerge
+        Phase.AfterMerge,
       );
       this._enterScope(mergeObjectScope);
       result = this.processSource(result);
@@ -283,7 +286,7 @@ export default class Processor {
     ref: string,
     target?: any,
     scopeVariables?: object,
-    isRoot: boolean = false
+    isRoot: boolean = false,
   ) {
     const [uri, pointer] = ref.split("#");
     let result = this.loadAndProcessFile(uri, target, scopeVariables, isRoot);
@@ -297,19 +300,19 @@ export default class Processor {
     sourceProperty: any,
     sourcePropertyName: string,
     targetProperty?: any,
-    scopeVariables?: any
+    scopeVariables?: any,
   ) {
     const scope = new MergeObjectScope(
       sourceProperty,
       targetProperty,
       this.currentScope as ScopeWithRoot,
-      scopeVariables
+      scopeVariables,
     );
     this._enterScope(scope);
     const result = this.processSourceProperty(
       sourceProperty,
       sourcePropertyName,
-      targetProperty
+      targetProperty,
     );
     this._leaveScope();
     return result;
@@ -319,14 +322,14 @@ export default class Processor {
     sourceProperty: any,
     sourcePropertyName: string,
     targetProperty?: any,
-    scopeVariables?: any
+    scopeVariables?: any,
   ) {
     const scope = new Scope(this.currentScope as ScopeWithRoot, scopeVariables);
     this._enterScope(scope);
     const result = this.processSourceProperty(
       sourceProperty,
       sourcePropertyName,
-      targetProperty
+      targetProperty,
     );
     this._leaveScope();
     return result;
@@ -335,12 +338,12 @@ export default class Processor {
   processSourceProperty(
     sourceProperty: any,
     sourcePropertyName: string,
-    targetProperty?: any
+    targetProperty?: any,
   ) {
     this.currentScope.enterProperty(sourcePropertyName);
     const modifiedSourceProperty = this.addDefaultArrayMergeStrategy(
       sourceProperty,
-      targetProperty
+      targetProperty,
     );
     const result = this.processSource(modifiedSourceProperty, targetProperty);
     this.currentScope.leaveProperty();
@@ -402,7 +405,7 @@ export default class Processor {
       result[targetKey] = this.processSourceProperty(
         source[key],
         key,
-        target[key]
+        target[key],
       );
 
       // value of "undefined" indicates the property must be deleted (see "remove" operation)
@@ -433,7 +436,7 @@ export default class Processor {
         sourceItemIndex,
         processResult.resultArray,
         processResult.resultArrayIndex + 1,
-        target
+        target,
       );
       this.currentScope.leaveProperty();
     });
@@ -447,7 +450,7 @@ export default class Processor {
     sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    target: any[]
+    target: any[],
   ): ProcessArrayItemResult {
     if (isObject(source)) {
       // Check if the array item is an operation
@@ -464,7 +467,7 @@ export default class Processor {
             sourceArrayIndex,
             resultArray,
             resultArrayIndex,
-            target
+            target,
           );
           this.currentScope.leaveProperty();
           return result;
@@ -473,7 +476,7 @@ export default class Processor {
     }
     resultArray[resultArrayIndex] = this.processSource(
       source,
-      resultArray[resultArrayIndex]
+      resultArray[resultArrayIndex],
     );
     return { resultArray, resultArrayIndex };
   }
@@ -489,7 +492,7 @@ export default class Processor {
 
     if (result === undefined && this._config.errorOnRefNotFound) {
       throw new Error(
-        `The JSON pointer "${pointer}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`
+        `The JSON pointer "${pointer}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`,
       );
     }
 
@@ -510,7 +513,7 @@ export default class Processor {
       (result === undefined || result.length === 0)
     ) {
       throw new Error(
-        `The JSON path "${path}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`
+        `The JSON path "${path}" resolves to undefined. Set Config.errorOnRefNotFound to false to suppress this message`,
       );
     }
 

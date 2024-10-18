@@ -12,12 +12,12 @@ export default class InsertOperation extends Operation {
     _sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    _target: any[]
+    _target: any[],
   ) {
     const keywordValue: InsertKeywordValue = source[keyword];
     const item = this._processor.processSourceProperty(
       keywordValue.value,
-      "value"
+      "value",
     );
     const index =
       keywordValue.index === "-" ? resultArray.length : keywordValue.index;

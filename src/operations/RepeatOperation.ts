@@ -64,7 +64,7 @@ export default class RepeatOperation extends Operation {
         itemTo = itemTo > 0 ? itemTo + 1 : itemTo - 1;
         itemStep = itemTo < itemFrom ? -Math.abs(itemStep) : Math.abs(itemStep);
         range(itemFrom, itemTo, itemStep).forEach((i) =>
-          values.push({ value: i })
+          values.push({ value: i }),
         );
       });
     }
@@ -74,7 +74,7 @@ export default class RepeatOperation extends Operation {
       // Process in property
       const processedIn = this._processor.processSourceProperty(
         keywordValue.in,
-        "in"
+        "in",
       );
 
       // Handle array
@@ -108,7 +108,7 @@ export default class RepeatOperation extends Operation {
         keywordValue.value,
         "value",
         undefined,
-        scopeVariables
+        scopeVariables,
       );
     });
 

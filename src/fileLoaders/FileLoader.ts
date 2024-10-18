@@ -5,7 +5,7 @@ export default class FileLoader {
   load(uri: string, currentUri: string): string {
     // Find loader
     const loader = this._loaders.filter((x) =>
-      x.loader.match(uri, currentUri)
+      x.loader.match(uri, currentUri),
     )[0];
 
     if (loader === undefined) {
@@ -22,7 +22,7 @@ export default class FileLoader {
   addLoader(loader: FileLoaderInterface, priority: number) {
     this._loaders.push({ loader, priority });
     this._loaders = this._loaders.sort(
-      (a: Loader, b: Loader) => -(a.priority - b.priority)
+      (a: Loader, b: Loader) => -(a.priority - b.priority),
     );
   }
 
@@ -40,7 +40,7 @@ export default class FileLoader {
 
     // Find loader
     const loader = this._loaders.filter((x) =>
-      x.loader.match(uri, currentUri)
+      x.loader.match(uri, currentUri),
     )[0];
 
     // Check if a loader was found

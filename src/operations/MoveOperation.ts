@@ -12,7 +12,7 @@ export default class MoveOperation extends Operation {
     _sourceArrayIndex: number,
     resultArray: any[],
     resultArrayIndex: number,
-    _target: any[]
+    _target: any[],
   ) {
     const keywordValue: MoveKeywordValue = source[keyword];
 
@@ -32,7 +32,7 @@ export default class MoveOperation extends Operation {
         item = this._processor.processSourceProperty(
           keywordValue.value,
           "value",
-          item
+          item,
         );
       }
     }
