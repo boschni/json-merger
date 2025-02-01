@@ -20,6 +20,10 @@ program
     "the default array merge operation. Defaults to combine",
   )
   .option(
+    "-s, --spaces <value>",
+    "Use number of spaces instead of tab when pretty-printing json."
+  )
+  .option(
     "--error-on-file-not-found [value]",
     "throw an error if a file is not found. Defaults to true",
   )
@@ -30,10 +34,6 @@ program
   .option(
     "--enable-expression-operation [value]",
     "Enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false",
-  )
-  .option(
-    "-s, --spaces <value>",
-    "Use number of spaces instead of tab when pretty-printing json."
   )
   .parse(process.argv);
 
