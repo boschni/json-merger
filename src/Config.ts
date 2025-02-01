@@ -15,7 +15,7 @@ export default class Config implements IConfig {
   params: any;
   stringify: boolean | "pretty";
   defaultArrayMergeOperation: ArrayMergeOperation;
-  prettyPrintIndenting: number | "\t";
+  spaces?: number;
 
   constructor(config?: Partial<IConfig>) {
     this.set(config);
@@ -38,7 +38,7 @@ export default class Config implements IConfig {
       ArrayMergeOperations.indexOf(config.defaultArrayMergeOperation) !== -1
         ? config.defaultArrayMergeOperation
         : "combine";
-    this.prettyPrintIndenting = config.prettyPrintIndenting ?? "\t";
+    this.spaces = config.spaces;
   }
 }
 
@@ -76,7 +76,7 @@ export interface IConfig {
    */
   defaultArrayMergeOperation: ArrayMergeOperation;
   /**
-   * Indicate if the output should indent with spaces or tab character when json is prettified
+   * Indicates if the output should indent with spaces instead tab character when prettifying json
    */
-  prettyPrintIndenting: number | "\t"
+  spaces?: number
 }

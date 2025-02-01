@@ -1,8 +1,8 @@
 const jsonMerger = require("../../dist");
 const { testConfig } = require("../../__helpers__");
 
-describe("when config.stringify is set  to \"pretty\" and config.prettyPrintIndenting is set", function () {
-  test("to a number between 1 and 10, it will indent with that many spaces", function () {
+describe("when config.stringify is set to \"pretty\" and config.spaces is set", function () {
+  test("to a number between 1 and 10 (ex. 3), it will indent with that many spaces", function () {
     const object = {
       a: {
         b: {
@@ -15,14 +15,14 @@ describe("when config.stringify is set  to \"pretty\" and config.prettyPrintInde
       object,
       testConfig({
         stringify: "pretty",
-        prettyPrintIndenting: 3
+        spaces: 3
       }),
     );
 
     expect(result).toMatchSnapshot();
   });
 
-  test("to \\t it should indent with tabs", function () {
+  test("to undefined it should indent with tabs", function () {
     const object = {
       a: {
         $replace: 1,
@@ -33,7 +33,7 @@ describe("when config.stringify is set  to \"pretty\" and config.prettyPrintInde
       object,
       testConfig({
         stringify: "pretty",
-        prettyPrintIndenting: "\t"
+        spaces: undefined
       }),
     );
 

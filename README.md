@@ -19,7 +19,7 @@ Merge JSON (or YAML) files and objects with operations like $import $remove $rep
   - [`params: object`](#params-object)
   - [`stringify: boolean`](#stringify-boolean--pretty)
   - [`defaultArrayMergeOperation: "combine" | "replace" | "concat"`](#defaultarraymergeoperation-combine--replace--concat)
-  - [`prettyPrintIndenting: number | "\t"`](#prettyprintindenting-number--t)
+  - [`spaces?: number`](#spaces-number)
 - [Operations](#operations)
   - [`$import`](#import)
   - [`$merge`](#merge)
@@ -279,10 +279,11 @@ Default value is set to [`"combine"`](#combine). Possible values are:
 - [`"concat"`](#concat)
 - [`"combine"`](#combine)
 
-### `prettyPrintIndenting: number | "\t"`
+### `spaces?: number`
 
-Set this property to override how to indent the prettified json.
-Defaults to a tab character (`\t`). Can be any number between 1 and 10 or `\t`.
+Set this property to indent with spaces instead of tabs when prettifying json.
+Invalid numbers disables the configuration and resets to tab character. Supports numbers between 0 and 10.
+Lower than 0 assumes 0 and higher than 10 assumes 10.
 
 ## Operations
 

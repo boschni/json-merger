@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when config.stringify is set to "pretty" and config.spaces is set to a number between 1 and 10 (ex. 3), it will indent with that many spaces 1`] = `
+"{
+   "a": {
+      "b": {
+         "c": 1
+      }
+   }
+}"
+`;
+
+exports[`when config.stringify is set to "pretty" and config.spaces is set to undefined it should indent with tabs 1`] = `
+"{
+	"a": 1
+}"
+`;

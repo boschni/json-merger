@@ -39,6 +39,9 @@ program
 
 var options = program.opts();
 
+// Custom options parsing
+var spaces = parseInt(options.spaces);
+
 // construct config
 var config = {
   operationPrefix: options.operationPrefix,
@@ -47,7 +50,7 @@ var config = {
   errorOnRefNotFound: options.errorOnRefNotFound !== "false",
   defaultArrayMergeOperation: options.defaultArrayMergeOperation,
   enableExpressionOperation: options.enableExpressionOperation === "true",
-  prettyPrintIndenting: parseInt(options.spaces) ?? "\t"
+  spaces: isNaN(spaces) ? undefined : spaces,
 };
 
 // merge the file(s)
