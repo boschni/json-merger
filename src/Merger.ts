@@ -150,7 +150,8 @@ export default class Merger {
     // Stringify?
     if (this._config.stringify) {
       const pretty = this._config.stringify === "pretty";
-      result = this._dataSerializer.serialize(".json", result, pretty);
+      const indenting = this._config.prettyPrintIndenting;
+      result = this._dataSerializer.serialize(".json", result, pretty, indenting);
     }
 
     return result;

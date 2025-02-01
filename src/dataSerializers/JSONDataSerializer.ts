@@ -10,8 +10,8 @@ export default class JSONDataSerializer implements DataSerializerInterface {
     return jsonFileRegex.test(uri);
   }
 
-  serialize(_: string, data: any, pretty: boolean): string {
-    const space = pretty ? "\t" : undefined;
+  serialize(_: string, data: any, pretty: boolean, indenting: number | "\t"): string {
+    const space = pretty ? indenting : undefined;
     return JSON.stringify(data, null, space);
   }
 }

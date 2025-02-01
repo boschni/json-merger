@@ -31,6 +31,10 @@ program
     "--enable-expression-operation [value]",
     "Enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false",
   )
+  .option(
+    "-s, --spaces [value]",
+    "Use number of spaces instead of tab when pretty-printing json."
+  )
   .parse(process.argv);
 
 var options = program.opts();
@@ -43,6 +47,7 @@ var config = {
   errorOnRefNotFound: options.errorOnRefNotFound !== "false",
   defaultArrayMergeOperation: options.defaultArrayMergeOperation,
   enableExpressionOperation: options.enableExpressionOperation === "true",
+  prettyPrintIndenting: options.spaces ?? "\t"
 };
 
 // merge the file(s)

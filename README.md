@@ -19,6 +19,7 @@ Merge JSON (or YAML) files and objects with operations like $import $remove $rep
   - [`params: object`](#params-object)
   - [`stringify: boolean`](#stringify-boolean--pretty)
   - [`defaultArrayMergeOperation: "combine" | "replace" | "concat"`](#defaultarraymergeoperation-combine--replace--concat)
+  - [`prettyPrintIndenting: number | "\t"`](#prettyprintindenting-number--t)
 - [Operations](#operations)
   - [`$import`](#import)
   - [`$merge`](#merge)
@@ -277,6 +278,11 @@ Default value is set to [`"combine"`](#combine). Possible values are:
 - [`"replace"`](#replace)
 - [`"concat"`](#concat)
 - [`"combine"`](#combine)
+
+### `prettyPrintIndenting: number | "\t"`
+
+Set this property to override how to indent the prettified json.
+Defaults to a tab character (`\t`). Can be any number between 1 and 10 or `\t`.
 
 ## Operations
 
@@ -1899,6 +1905,7 @@ You can use `json-merger` as a command line tool:
     -o, --output [file]                               the output file. Defaults to stdout
     -op, --operation-prefix [prefix]                  the operation prefix. Defaults to $
     -am, --default-array-merge-operation [operation]  the default array merge operation. Defaults to combine
+    -s, --spaces [value]                              Use number of spaces instead of tab when pretty-printing json.
     --enable-expression-operation [value]             enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false
     --error-on-file-not-found [value]                 throw an error if a file is not found. Defaults to true
     --error-on-ref-not-found [value]                  throw an error if a JSON pointer or JSON path is not found. Defaults to true
