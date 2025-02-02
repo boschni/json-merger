@@ -1904,8 +1904,8 @@ You can use `json-merger` as a command line tool:
     -V, --version                                     output the version number
     -p, --pretty                                      pretty-print the output json
     -o, --output [file]                               the output file. Defaults to stdout
-    -op, --operation-prefix [prefix]                  the operation prefix. Defaults to $
-    -am, --default-array-merge-operation [operation]  the default array merge operation. Defaults to combine
+    --op, --operation-prefix [prefix]                 the operation prefix. Defaults to $
+    --am, --default-array-merge-operation [operation] the default array merge operation. Defaults to combine
     -s, --spaces <value>                              Use number of spaces instead of tab when pretty-printing json.
     --enable-expression-operation [value]             enables expressions. Do not use it to run untrusted code because it uses the node:vm module. Defaults to false
     --error-on-file-not-found [value]                 throw an error if a file is not found. Defaults to true
@@ -1936,6 +1936,14 @@ npm install -g json-merger
 - The `$expression` operation is disabled by default because it allows executing untrusted code.
 - Added the `enableExpressionOperation` configuration option to enable the `$expression` operation.
 - Added the `--enable-expression-operation` CLI option to enable the `$expression` operation.
+
+### 2.1.0
+
+- Added the `--spaces` CLI option to allow pretty formatting with spaces instead of tabs.
+
+### 3.0.0
+
+- The `-op` and `-am` CLI options have been renamed to `--op` and `--am`.
 
 ## Roadmap
 

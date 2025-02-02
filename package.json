@@ -18,7 +18,7 @@
     "pretest": "npm run build",
     "test": "jest && npm run test:bin:json && npm run test:bin:yaml",
     "test:bin:json": "./bin/json-merger.js --enable-expression-operation true ./__tests__/bin.json",
-    "test:bin:yaml": "./bin/json-merger.js -op @ ./__tests__/bin.yaml",
+    "test:bin:yaml": "./bin/json-merger.js --op @ ./__tests__/bin.yaml",
     "watch": "tsc --watch",
     "prettier": "prettier --write ."
   },
@@ -60,8 +60,8 @@
     }
   },
   "dependencies": {
-    "commander": "^12.1.0",
-    "fs-extra": "^11.2.0",
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
     "js-yaml": "^4.1.0",
     "json-ptr": "^3.1.1",
     "jsonpath": "^1.1.1",
@@ -73,8 +73,8 @@
     "@types/lodash.range": "^3.2.9",
     "@types/node": "^20.16.12",
     "jest": "^29.7.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.3"
   }
 }
