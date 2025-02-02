@@ -15,6 +15,7 @@ export default class Config implements IConfig {
   params: any;
   stringify: boolean | "pretty";
   defaultArrayMergeOperation: ArrayMergeOperation;
+  spaces?: number;
 
   constructor(config?: Partial<IConfig>) {
     this.set(config);
@@ -37,6 +38,7 @@ export default class Config implements IConfig {
       ArrayMergeOperations.indexOf(config.defaultArrayMergeOperation) !== -1
         ? config.defaultArrayMergeOperation
         : "combine";
+    this.spaces = config.spaces;
   }
 }
 
@@ -73,4 +75,8 @@ export interface IConfig {
    * Default array operation which will be applied to merge arrays.
    */
   defaultArrayMergeOperation: ArrayMergeOperation;
+  /**
+   * Indicates if the output should indent with spaces instead tab character when prettifying json
+   */
+  spaces?: number
 }

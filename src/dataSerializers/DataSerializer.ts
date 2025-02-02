@@ -1,7 +1,7 @@
 export default class DataSerializer {
   private _serializers: DataSerializerInterface[] = [];
 
-  serialize(uri: string, data: any, pretty: boolean): any {
+  serialize(uri: string, data: any, pretty: boolean, spaces?: number): any {
     const serializer = this._serializers.filter((x) => x.match(uri))[0];
 
     // Check if a loader was found
@@ -9,7 +9,7 @@ export default class DataSerializer {
       throw new Error(`No serializer found for file "${uri}"`);
     }
 
-    return serializer.serialize(uri, data, pretty);
+    return serializer.serialize(uri, data, pretty, spaces);
   }
 
   addSerializer(serializer: DataSerializerInterface) {
@@ -27,5 +27,5 @@ export default class DataSerializer {
 
 export interface DataSerializerInterface {
   match(uri: string): boolean;
-  serialize(uri: string, data: any, pretty: boolean): string;
+  serialize(uri: string, data: any, pretty: boolean, spaces?: number): string;
 }

@@ -20,6 +20,10 @@ program
     "the default array merge operation. Defaults to combine",
   )
   .option(
+    "-s, --spaces <value>",
+    "Use number of spaces instead of tab when pretty-printing json."
+  )
+  .option(
     "--error-on-file-not-found [value]",
     "throw an error if a file is not found. Defaults to true",
   )
@@ -35,6 +39,9 @@ program
 
 var options = program.opts();
 
+// Custom options parsing
+var spaces = parseInt(options.spaces);
+
 // construct config
 var config = {
   operationPrefix: options.operationPrefix,
@@ -43,6 +50,7 @@ var config = {
   errorOnRefNotFound: options.errorOnRefNotFound !== "false",
   defaultArrayMergeOperation: options.defaultArrayMergeOperation,
   enableExpressionOperation: options.enableExpressionOperation === "true",
+  spaces: isNaN(spaces) ? undefined : spaces,
 };
 
 // merge the file(s)
